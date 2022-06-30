@@ -20,7 +20,7 @@ public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
 
     public boolean saveUser(CustomUser customUser){
-        CustomUser customUserFromDB = userRepo.findUserByUsername(customUser.getUsername());
+        CustomUser customUserFromDB = userRepo.findCustomUserByEmail(customUser.getEmail());
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (customUserFromDB != null)
             return false;
@@ -32,25 +32,32 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public CustomUser findUserByUsername(String username) throws UsernameNotFoundException {
-        CustomUser customUser = userRepo.findUserByUsername(username);
+    public CustomUser findUserByEmail(String email) throws UsernameNotFoundException {
+        CustomUser customUser = userRepo.findCustomUserByEmail(email);
         if (customUser == null) {
-            throw new UsernameNotFoundException("Unknown user: " + username);
+            throw new UsernameNotFoundException("Unknown user: " + email);
         }
         return customUser;
     }
 
+
+    public Boolean checkEmailAvailability(String email) {
+        CustomUser customUser = userRepo.findCustomUserByEmail(email);
+        if (customUser == null)
+            return Boolean.TRUE;
+        return Boolean.FALSE;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        CustomUser myUser = userRepo.findUserByUsername(username);
+        CustomUser myUser = userRepo.findCustomUserByEmail(username);
         if (myUser == null) {
             throw new UsernameNotFoundException("Unknown user: " + username);
         }
-        UserDetails user = User.builder()
-                .username(myUser.getUsername())
+        return User.builder()
+                .username(myUser.getEmail())
                 .password(myUser.getPassword())
-               // .roles(myUser.getRole().getName())
+                .roles("USER")
                 .build();
-        return user;
     }
 }

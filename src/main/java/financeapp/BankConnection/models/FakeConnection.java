@@ -6,8 +6,13 @@ import lombok.Getter;
 
 import javax.persistence.Entity;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
+/**
+ * Фейковое соединение, которое позволяет получить 30 транзакций со случайной суммой
+ */
 @Entity
 @Getter
 public class FakeConnection extends BankConnection {
