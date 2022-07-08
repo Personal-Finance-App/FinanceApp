@@ -1,7 +1,7 @@
 package financeapp.config;
 
 
-import financeapp.Users.UserService;
+import financeapp.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
