@@ -44,6 +44,11 @@ public class TinkoffService {
                 .execute().body().getPayload().getSessionid();
         logger.debug("Received SessionId: " + sessionId);
 
+        if (sessionId == null)
+            throw new RuntimeException("Can't get sessionId");
+        connection.setActiveSessionId(sessionId);
+        tinkoffConnectionRepo.save(connection);
+
         RequestBody dataForWarmUp = new FormBody.Builder()
                 .add("deviceId", deviceId).build();
 
@@ -63,10 +68,6 @@ public class TinkoffService {
         TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
         String deviceId = connection.getDeviceId();
 
-        if (sessionId == null)
-            throw new RuntimeException("Can't get sessionId");
-        connection.setActiveSessionId(sessionId);
-        tinkoffConnectionRepo.save(connection);
 
         RequestBody dataForSmsRequest = new FormBody.Builder()
                 .add("phone", phone)
@@ -74,6 +75,11 @@ public class TinkoffService {
                 .build();
         var smsResponse = api.requestSms(sessionId, dataForSmsRequest).execute();
         var operationTicket = smsResponse.body().getOperationTicket();
+
+        var statusCode = smsResponse.body().getResultCode();
+
+        if (statusCode == "REQUEST_RATE_LIMIT_EXCEEDED")
+            throw new RuntimeException("REQUEST_RATE_LIMIT_EXCEEDED");
 
         if (operationTicket == null) {
             logger.error("SMS code doesn't sent! \n" + smsResponse.message());
