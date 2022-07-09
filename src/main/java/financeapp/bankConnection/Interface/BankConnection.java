@@ -1,11 +1,10 @@
 package financeapp.bankConnection.Interface;
 
 import financeapp.accounts.models.Transaction;
+import financeapp.users.CustomUser;
 import lombok.Getter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +20,18 @@ public abstract class BankConnection {
     @Id
     @Column(name = "id", nullable = false)
     private UUID id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private CustomUser user;
+
+    public BankConnection() {
+        id = UUID.randomUUID();
+    }
+
+    public void setUser(CustomUser user) {
+        this.user = user;
+    }
 
     public abstract List<Transaction> getTransactions(LocalDate fromDate);
 
