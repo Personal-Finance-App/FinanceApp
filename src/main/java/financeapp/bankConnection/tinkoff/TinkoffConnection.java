@@ -18,6 +18,8 @@ import java.util.UUID;
 public class TinkoffConnection extends BankConnection {
     private String deviceId;
     private String activeSessionId;
+    private String hashedPin;
+    private String pinSetDate;
 
     public TinkoffConnection(String sessionId) {
         super();

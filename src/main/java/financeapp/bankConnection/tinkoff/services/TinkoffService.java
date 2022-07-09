@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class TinkoffService {
@@ -26,7 +29,7 @@ public class TinkoffService {
     TinkoffApi api = TinkoffApiFactory.getService();
     Logger logger = LoggerFactory.getLogger(TinkoffService.class);
 
-    public String RegisterSendSms(String phone, CustomUser user) throws IOException {
+    public String GetSession(CustomUser user) throws IOException {
         TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
         if (connection == null) {
             connection = new TinkoffConnection("to-do");
@@ -35,12 +38,14 @@ public class TinkoffService {
 
         String deviceId = connection.getDeviceId();
 
-
         logger.debug("Request sessionId");
-        var sessionId = api.getSession(deviceId).execute().body().getPayload().getSessionid();
+        var sessionId = api.getSession(
+                        new FormBody.Builder().add("deviceId", deviceId).build())
+                .execute().body().getPayload().getSessionid();
         logger.debug("Received SessionId: " + sessionId);
 
-        RequestBody dataForWarmUp = new FormBody.Builder().add("deviceId", deviceId).build();
+        RequestBody dataForWarmUp = new FormBody.Builder()
+                .add("deviceId", deviceId).build();
 
         var code = api.warmUpCache(sessionId, dataForWarmUp).execute().body().getResultCode();
 
@@ -49,13 +54,19 @@ public class TinkoffService {
             throw new RuntimeException("something went wrong");
         }
         logger.debug("Warming up session complete");
+        return sessionId;
 
+    }
+
+    public String RegisterSendSms(String phone, CustomUser user) throws IOException {
+        var sessionId = GetSession(user);
+        TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
+        String deviceId = connection.getDeviceId();
 
         if (sessionId == null)
             throw new RuntimeException("Can't get sessionId");
         connection.setActiveSessionId(sessionId);
         tinkoffConnectionRepo.save(connection);
-
 
         RequestBody dataForSmsRequest = new FormBody.Builder()
                 .add("phone", phone)
@@ -70,6 +81,14 @@ public class TinkoffService {
         }
         logger.debug("SMS code have been sent, received operationTicket: " + operationTicket);
         return operationTicket;
+    }
+
+    private String GeneratePinHash() {
+        return UUID.randomUUID().toString().replace("-", "") + UUID.randomUUID().toString().replace("-", "");
+    }
+
+    private DateTimeFormatter dateFormatter() {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     }
 
     public void RegisterFinal(String operationTicket, String sms, String password, CustomUser user) throws IOException {
@@ -92,6 +111,53 @@ public class TinkoffService {
         var response = api.confirmSms(sessionId, confirmSmsData).execute();
         logger.debug(response.body().getPayload().getKey());
         logger.debug(response.body().getPayload().getSsoId());
+
+        var confirmPassword = api.
+                confirmPassword(new FormBody.Builder()
+                        .add("deviceId", deviceId)
+                        .add("password", password).build(), sessionId).execute();
+
+        logger.debug("Password confirmed");
+
+
+        var pinCode = GeneratePinHash();
+        var setDate = LocalDate.now().format(dateFormatter());
+        var settingPinCode = api.
+                setUpPin(new FormBody.Builder()
+                                .add("deviceId", deviceId)
+                                .add("pinHash", pinCode)
+                                .add("auth_type_set_date", setDate)
+                                .build(),
+                        sessionId).execute();
+
+        connection.setHashedPin(pinCode);
+        connection.setPinSetDate(setDate);
+        tinkoffConnectionRepo.save(connection);
+        logger.debug("PinCode set and saved");
+    }
+
+    public String AuthWithPin(CustomUser user) throws IOException {
+        var connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
+        if (connection == null)
+            throw new RuntimeException("User must authorize first");
+
+        if (connection.getHashedPin().isEmpty() || connection.getPinSetDate().isEmpty())
+            throw new RuntimeException("User must login with sms first");
+
+        var newSession = GetSession(user);
+
+        var dataForAuth = new FormBody.Builder()
+                .add("deviceId", connection.getDeviceId())
+                .add("oldSessionId", connection.getActiveSessionId())
+                .add("pinHash", connection.getHashedPin())
+                .add("auth_type_set_date", connection.getPinSetDate())
+                .add("auth_type", "pin")
+                .build();
+
+        var auth = api.loginByPinCode(newSession, dataForAuth);
+        connection.setActiveSessionId(newSession);
+        tinkoffConnectionRepo.save(connection);
+        return newSession;
     }
 
 }
