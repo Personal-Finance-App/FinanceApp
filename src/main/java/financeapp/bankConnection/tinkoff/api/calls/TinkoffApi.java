@@ -4,6 +4,7 @@ import financeapp.bankConnection.tinkoff.api.responseEntitys.Session;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.SmsRequest;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.WarmUpCache;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.afterConfirm.ConfirmSmsAnswer;
+import financeapp.bankConnection.tinkoff.api.responseEntitys.pingConfirm.PingAnswer;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -13,9 +14,10 @@ import retrofit2.http.Query;
 
 /**
  * Интерфейс, позволяющий отправлять запросы на сервер тинькова со стандартными значениями
- * (они иммитируют запросы с телефона)
- * Значения указаны в фабрике
+ * (они имитируют запросы с телефона)
+ * Значения указаны на фабрике
  * Использование: TinkoffApiFactory.getService().__название_метода__.execute()
+ *
  * @see TinkoffApiFactory
  */
 public interface TinkoffApi {
@@ -28,7 +30,7 @@ public interface TinkoffApi {
     /**
      * Запрос, отправляя который, пользователь получает смс-код
      *
-     * @param sessionid индентификатор сессии
+     * @param sessionid идентификатор сессии
      * @param phone     номер телефона (в формате +7**********)
      * @param deviceId  - deviceID = oldDevicdeId
      * @return initialOperationTicket
@@ -44,8 +46,8 @@ public interface TinkoffApi {
 
 
     /**
-     * @param sessionid индентификатор сессии
-     * @param deviceId  RequestBody с deviceId
+     * @param sessionid идентификатор сессии
+     * @param deviceId  информация об устройстве
      * @return StatusCode должен быть OK
      * @see WarmUpCache
      */
@@ -58,11 +60,11 @@ public interface TinkoffApi {
 
 
     /**
-     * @param sessionid              индентификатор сессии- индентификатор сессии
-     * @param initialOperationTicket какой-то индентификатор, который получаем из функции requestSms
+     * @param sessionid              идентификатор сессии
+     * @param initialOperationTicket какой-то идентификатор, который получаем из функции requestSms
      * @param initialOperation       изначальная операция например auth/by/phone
      * @param confirmationData       строчка с смс-кодом
-     * @param deviceId               строчка с смс-кодом
+     * @param deviceId               информация об устройстве
      * @return ...
      * @see ConfirmSmsAnswer
      */
@@ -77,10 +79,10 @@ public interface TinkoffApi {
                                       @Field("confirmationData") String confirmationData);
 
     /**
-     * Как я понял, нужно отправлять пароль от онлайн банка, для того, чтобы выполнять Расширенный набор вызовов функций
+     * Как я понял, нужно отправлять пароль от онлайн банка, для того, чтобы выполнять расширенный набор вызовов функций
      * Но может получать список счетов и транзакций этого не требует
      *
-     * @param sessionid индентификатор сессии- индентификатор сессии
+     * @param sessionid идентификатор сессии
      * @param deviceId  - информация об устройстве <br>
      * @param password  - пароль от онлайн банка <br>
      * @return TODO: понять что вернет
@@ -93,7 +95,7 @@ public interface TinkoffApi {
                             @Field("password") String password);
 
     /**
-     * @param sessionid       индентификатор сессии- индентификатор сессии
+     * @param sessionid       идентификатор сессии
      * @param deviceId        информация об устройстве
      * @param pinHash         пин-код который, наверное, будет храниться у пользователя
      * @param authTypeSetDate время установки пин кода
@@ -109,16 +111,16 @@ public interface TinkoffApi {
 
 
     /**
-     * @param sessionid    индентификатор сессии
+     * @param sessionid    идентификатор сессии
      * @param deviceId     информация об устройстве
-     * @param oldSessionId инщдентификатор старой ссессий
+     * @param oldSessionId идентификатор старой сессий
      * @param pinHash      пин код
      * @param setDate      дата установки пин кода
      * @param authType     всегда значение равно pin
      * @return TODO: новые какие-то данные (?)
      */
 
-    @POST("/auth/by/pin")
+    @POST("/v1/auth/by/pin")
     @FormUrlEncoded
     Call<?> loginByPinCode(@Query("sessionid") String sessionid,
                            @Field("deviceId") String deviceId,
@@ -133,29 +135,45 @@ public interface TinkoffApi {
      * Получить список всех доступных счетов
      *
      * @param deviceId  информация об устройстве
-     * @param sessionid индентификатор сессии- индентификатор сессии
+     * @param sessionid идентификатор сессии
      * @return список счетов
      */
-    @POST("/accounts_flat")
+    @POST("/v1/accounts_flat")
     @FormUrlEncoded
-    Call<?> accountsList(@Query("deviceId") String deviceId,
-                         @Query("sessionid - индентификатор сессии") String sessionid);
+    Call<?> accountsList(@Query("sessionid") String sessionid,
+                         @Field("deviceId") String deviceId,
+                         @Query("oldDeviceId") String oldsDeviceId);
 
     /**
      * Получить список транзакций для счета, начиная с даты
      *
      * @param deviceId  информация об устройстве
-     * @param sessionid индентификатор сессии- индентификатор сессии
-     * @param accountId индентификатор счета, получаемый из accountsList
+     * @param sessionid идентификатор сессии
+     * @param accountId идентификатор счета, получаемый из accountsList
      * @param start     дата начала
      * @return список транзакций
      */
-    @POST("/operations")
+    @POST("/v1/operations")
     @FormUrlEncoded
     Call<?> transactionList(@Query("deviceId") String deviceId,
-                            @Query("sessionid - индентификатор сессии") String sessionid,
+                            @Query("sessionid") String sessionid,
                             @Query("account") String accountId,
                             @Query("start") String start);
+
+
+    /**
+     * Функция, которая может вернуть состояние сессии
+     *
+     * @param sessionid   идентификатор сессии-
+     * @param deviceid    информация об устройстве
+     * @param oldDeviceId информация об устройстве
+     * @return "accessLevel": "ANONYMOUS" / "TODO" / "TODO"
+     */
+    @POST("/v1/ping")
+    @FormUrlEncoded
+    Call<PingAnswer> pingSession(@Query("sessionid") String sessionid,
+                                 @Field("deviceId") String deviceid,
+                                 @Field("oldDeviceId") String oldDeviceId);
 
 
 }
