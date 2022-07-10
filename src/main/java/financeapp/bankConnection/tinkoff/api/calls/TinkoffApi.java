@@ -4,13 +4,11 @@ import financeapp.bankConnection.tinkoff.api.responseEntitys.Session;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.SmsRequest;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.WarmUpCache;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.afterConfirm.ConfirmSmsAnswer;
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.Headers;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
-
 
 
 /**
@@ -22,119 +20,140 @@ import retrofit2.http.Query;
  */
 public interface TinkoffApi {
 
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
+
     @POST("/v1/auth/session")
-    Call<Session> getSession(@Body RequestBody data);
+    @FormUrlEncoded
+    Call<Session> getSession(@Field("deviceId") String deviceId, @Field("oldDeviceId") String oldDeviceId);
 
     /**
      * Запрос, отправляя который, пользователь получает смс-код
      *
-     * @param sessionId индентификатор сессии
-     * @param data      RequestBody с phone (в формате +7**********) и deviceId
+     * @param sessionid индентификатор сессии
+     * @param phone     номер телефона (в формате +7**********)
+     * @param deviceId  - deviceID = oldDevicdeId
      * @return initialOperationTicket
      * @see SmsRequest
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
     @POST("/v1/auth/by/phone")
+    @FormUrlEncoded
     Call<SmsRequest> requestSms(
-            @Query("sessionId") String sessionId,
-            @Body RequestBody data);
+            @Query("sessionid") String sessionid,
+            @Field("phone") String phone,
+            @Field("deviceId") String deviceId,
+            @Field("oldDeviceId") String oldDevicdeId);
 
 
     /**
-     * @param sessionId индентификатор сессии
+     * @param sessionid индентификатор сессии
      * @param deviceId  RequestBody с deviceId
      * @return StatusCode должен быть OK
      * @see WarmUpCache
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
+
     @POST("/v1/warmup_cache")
-    Call<WarmUpCache> warmUpCache(@Query("sessionId") String sessionId,
-                                  @Body RequestBody deviceId);
+    @FormUrlEncoded
+    Call<WarmUpCache> warmUpCache(@Query("sessionid") String sessionid,
+                                  @Field("deviceId") String deviceId,
+                                  @Field("oldDeviceId") String oldDeviceId);
 
 
     /**
-     * @param sessionId индентификатор сессии- индентификатор сессии
-     * @param data      RequestBody со след содержанием: <br>
-     *                  initialOperationTicket -  какой-то индентификатор, который получаем из функции requestSms <br>
-     *                  initialOperation - изначальная операция например auth/by/phone <br>
-     *                  confirmationData - строчка с смс-кодом <br>
-     *                  deviceId - строчка с смс-кодом <br>
+     * @param sessionid              индентификатор сессии- индентификатор сессии
+     * @param initialOperationTicket какой-то индентификатор, который получаем из функции requestSms
+     * @param initialOperation       изначальная операция например auth/by/phone
+     * @param confirmationData       строчка с смс-кодом
+     * @param deviceId               строчка с смс-кодом
      * @return ...
      * @see ConfirmSmsAnswer
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
+
     @POST("/v1/confirm")
-    Call<ConfirmSmsAnswer> confirmSms(@Query("sessionId") String sessionId,
-                                      @Body RequestBody data);
+    @FormUrlEncoded
+    Call<ConfirmSmsAnswer> confirmSms(@Query("sessionid") String sessionid,
+                                      @Field("deviceId") String deviceId,
+                                      @Field("oldDeviceId") String oldDeviceId,
+                                      @Field("initialOperationTicket") String initialOperationTicket,
+                                      @Field("initialOperation") String initialOperation,
+                                      @Field("confirmationData") String confirmationData);
 
     /**
      * Как я понял, нужно отправлять пароль от онлайн банка, для того, чтобы выполнять Расширенный набор вызовов функций
      * Но может получать список счетов и транзакций этого не требует
      *
-     * @param sessionId индентификатор сессии- индентификатор сессии
-     * @param data      RequestBody со след содержанием: <br>
-     *                  password  - пароль от онлайн банка <br>
-     *                  deviceId  - информация об устройстве <br>
+     * @param sessionid индентификатор сессии- индентификатор сессии
+     * @param deviceId  - информация об устройстве <br>
+     * @param password  - пароль от онлайн банка <br>
      * @return TODO: понять что вернет
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
     @POST("/v1/auth/by/password")
-    Call<?> confirmPassword(@Body RequestBody data,
-                            @Query("sessionId") String sessionId);
+    @FormUrlEncoded
+    Call<?> confirmPassword(@Query("sessionid") String sessionid,
+                            @Field("deviceId") String deviceId,
+                            @Field("oldDeviceId") String oldDeviceId,
+                            @Field("password") String password);
 
     /**
-     * @param data     RequestBody со след содержанием: <br>
-     *                 sessionId  индентификатор сессии- индентификатор сессии <br>
-     *                 pinHash    пин-код который, наверное, будет храниться у пользователя <br>
-     * @param deviceId информация об устройстве
+     * @param sessionid       индентификатор сессии- индентификатор сессии
+     * @param deviceId        информация об устройстве
+     * @param pinHash         пин-код который, наверное, будет храниться у пользователя
+     * @param authTypeSetDate время установки пин кода
      * @return TODO: понять что вернет
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
     @POST("/v1/auth/pin/set")
-    Call<?> setUpPin(@Body RequestBody data,
-                     @Query("deviceId") String deviceId);
+    @FormUrlEncoded
+    Call<?> setUpPin(@Query("sessionid") String sessionid,
+                     @Field("deviceId") String deviceId,
+                     @Field("oldDeviceId") String oldDeviceId,
+                     @Field("pinHash") String pinHash,
+                     @Field("auth_type_set_date") String authTypeSetDate);
+
 
     /**
-     * @param sessionId     индентификатор сессии- индентификатор сессии
-     * @param data <br> RequestBody со след содержанием
-     * deviceId      - информация об устройстве <br>
-     * pinHash       - пин код <br>
-     * auth_type     - всегда значение равно pin <br>
-     * oldSessionId  - индентификатор сессии <br>
+     * @param sessionid    индентификатор сессии
+     * @param deviceId     информация об устройстве
+     * @param oldSessionId инщдентификатор старой ссессий
+     * @param pinHash      пин код
+     * @param setDate      дата установки пин кода
+     * @param authType     всегда значение равно pin
      * @return TODO: новые какие-то данные (?)
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
-    @POST("/v1/auth/by/pin")
-    Call<?> loginByPinCode(@Query("sessionId") String sessionId,
-                           @Body RequestBody data);
+
+    @POST("/auth/by/pin")
+    @FormUrlEncoded
+    Call<?> loginByPinCode(@Query("sessionid") String sessionid,
+                           @Field("deviceId") String deviceId,
+                           @Field("oldDeviceId") String oldDeviceId,
+                           @Field("oldSessionId") String oldSessionId,
+                           @Field("pinHash") String pinHash,
+                           @Field("auth_type_set_date") String setDate,
+                           @Field("auth_type") String authType);
 
 
     /**
      * Получить список всех доступных счетов
      *
-     * @param deviceId   информация об устройстве
-     * @param sessionId  индентификатор сессии- индентификатор сессии
+     * @param deviceId  информация об устройстве
+     * @param sessionid индентификатор сессии- индентификатор сессии
      * @return список счетов
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
-    @POST("/v1/accounts_flat")
+    @POST("/accounts_flat")
+    @FormUrlEncoded
     Call<?> accountsList(@Query("deviceId") String deviceId,
-                         @Query("sessionId - индентификатор сессии") String sessionId);
+                         @Query("sessionid - индентификатор сессии") String sessionid);
 
     /**
      * Получить список транзакций для счета, начиная с даты
      *
-     * @param deviceId   информация об устройстве
-     * @param sessionId  индентификатор сессии- индентификатор сессии
-     * @param accountId  индентификатор счета, получаемый из accountsList
-     * @param start      дата начала
+     * @param deviceId  информация об устройстве
+     * @param sessionid индентификатор сессии- индентификатор сессии
+     * @param accountId индентификатор счета, получаемый из accountsList
+     * @param start     дата начала
      * @return список транзакций
      */
-    @Headers({"Content-Type: application/json", "user-agent: HUAWEI MAR-LX1M/android: 10/TCSMB/5.8.1"})
-    @POST("/v1/operations")
+    @POST("/operations")
+    @FormUrlEncoded
     Call<?> transactionList(@Query("deviceId") String deviceId,
-                            @Query("sessionId - индентификатор сессии") String sessionId,
+                            @Query("sessionid - индентификатор сессии") String sessionid,
                             @Query("account") String accountId,
                             @Query("start") String start);
 
