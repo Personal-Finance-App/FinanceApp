@@ -6,8 +6,6 @@ import financeapp.bankConnection.tinkoff.TinkoffConnectionRepo;
 import financeapp.bankConnection.tinkoff.api.calls.TinkoffApi;
 import financeapp.bankConnection.tinkoff.api.calls.TinkoffApiFactory;
 import financeapp.users.CustomUser;
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -76,7 +75,7 @@ public class TinkoffService {
      */
     public String RegisterSendSms(String phone, CustomUser user) throws IOException, RuntimeException {
         var sessionId = GetSession(user);
-        TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
+        TinkoffConnection connection = getConnection(user);
         String deviceId = connection.getDeviceId();
 
         var smsResponse = api.requestSms(sessionId, phone, deviceId, deviceId).execute();
@@ -115,31 +114,27 @@ public class TinkoffService {
      * @param user            Пользотваель
      */
     public void RegisterFinal(String operationTicket, String sms, String password, CustomUser user) throws IOException {
-        TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
-        if (connection == null) {
-            throw new RuntimeException("Не возможно найти deviceId и Session");
-        }
-
+        TinkoffConnection connection = getConnection(user);
         String deviceId = connection.getDeviceId();
         String sessionId = connection.getActiveSessionId();
 
         String smsConfirm = "{\"SMSBYID\": \"" + sms + "\"}";
         logger.debug("For session " + sessionId + " and operation ticket " + operationTicket + "sending confirmation code");
         logger.debug("Confirmation Data " + smsConfirm);
-        RequestBody confirmSmsData = new FormBody.Builder()
-                .add("initialOperationTicket", operationTicket)
-                .add("initialOperation", "\"auth/by/phone\"")
-                .add("confirmationData", smsConfirm)
-                .add("deviceId", deviceId).build();
         var response = api.confirmSms(sessionId, deviceId, deviceId, operationTicket, "auth/by/phone", smsConfirm).execute();
         assert response.body() != null;
-        logger.debug(response.body().getPayload().getKey());
-        logger.debug(response.body().getPayload().getSsoId());
+
+        if (!response.body().getResultCode().equals("OK"))
+            throw new RuntimeException("Ответ от сервера Тинькофф: " + response.body().getResultCode());
+
+        logger.debug("Сессия потверждена СМС Кодом");
+        logger.debug("Попытка отправить пароль");
 
         var confirmPassword = api.
                 confirmPassword(sessionId, deviceId, deviceId, password).execute();
 
-        logger.debug("Password confirmed");
+        logger.debug("Пароль потвержден");
+        logger.debug("Попытка установить пин-код");
 
 
         var pinCode = GeneratePinHash();
@@ -150,11 +145,11 @@ public class TinkoffService {
         connection.setHashedPin(pinCode);
         connection.setPinSetDate(setDate);
         tinkoffConnectionRepo.save(connection);
-        logger.debug("PinCode set and saved");
+        logger.debug("Пин код установлен и сохранен в базу данных");
     }
 
     /**
-     * Аутенфикация с помощью пин-кода
+     * Аутенфикация с помощью пин-кода <br>
      *
      * @param user Пользователь
      * @return ID новой сессии
@@ -181,5 +176,57 @@ public class TinkoffService {
         tinkoffConnectionRepo.save(connection);
         return newSession;
     }
+
+    private TinkoffConnection getConnection(CustomUser user) {
+        var connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
+        if (connection == null)
+            throw new RuntimeException("Пользователя не существует. Сначала нужно зарегистрироваться");
+
+        if (connection.getHashedPin().isEmpty() || connection.getPinSetDate().isEmpty())
+            throw new RuntimeException("Пользователь сначала должен зарегистрироваться и авторизоваться");
+        return connection;
+    }
+
+    private String getSession(CustomUser user) throws IOException {
+        var connection = getConnection(user);
+        var pingResult = api.pingSession(connection.getActiveSessionId(), connection.getDeviceId(), connection.getDeviceId()).execute();
+        assert pingResult.body() != null;
+        var accessLevel = pingResult.body().getPayload().getAccessLevel();
+
+        if (accessLevel.equals("CANDIDATE")) {
+            // Возможно удалить все данные, которые есть?
+            // Потому что этот статус появляется только после ввода смс кода и перед вводом пароля
+            // Тут он возникнуть ну никак не может
+            throw new RuntimeException("Вам необходимо пройти регистрацию заново");
+        }
+
+        if (accessLevel.equals("ANONYMOUS"))
+            return AuthWithPin(user);
+
+        return connection.getActiveSessionId();
+    }
+
+    public List<?> getAccounts(CustomUser user) throws IOException {
+        var sessionId = getSession(user);
+        var connection = getConnection(user);
+        var accounts = api.accountsList(connection.getActiveSessionId(),
+                connection.getDeviceId(),
+                connection.getDeviceId()).execute();
+
+        // TODO: parse accounts
+
+        //TODO: create account if in not db ?
+
+        return null;
+    }
+
+//    public List<?> getOperations(CustomUser user, Account account) throws IOException {
+//        var sessionId = getSession(user);
+//        var connection = getConnection(user);
+//
+//        var operations = api.accountsList(sessionId, connection.getDeviceId(), connection.getDeviceId());
+//
+//
+//    }
 
 }
