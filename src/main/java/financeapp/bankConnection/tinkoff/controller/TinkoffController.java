@@ -1,18 +1,24 @@
 package financeapp.bankConnection.tinkoff.controller;
 
+import com.google.gson.Gson;
 import financeapp.bankConnection.tinkoff.services.TinkoffService;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Arrays;
+
 
 @RestController
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -20,18 +26,23 @@ import java.io.IOException;
 public class TinkoffController {
     private final TinkoffService tinkoffService;
     private final UserRepo userRepo;
+    private static final Gson gson = new Gson();
 
 
-    @PostMapping("/auth/initregister")
-    public ResponseEntity<?> Register(@RequestParam String phone, Authentication authentication) {
+    @PostMapping(path = "/auth/initregister", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> Register(@RequestBody PhoneData phoneData, Authentication authentication) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
-        String operationTicket = null;
+        Logger logger = LoggerFactory.getLogger(TinkoffController.class);
+        String operationTicket;
         try {
-            operationTicket = tinkoffService.RegisterSendSms(phone, user);
-        } catch (IOException e) {
-            e.printStackTrace();
+            operationTicket = tinkoffService.RegisterSendSms(phoneData.getPhone(), user);
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            return ResponseEntity.ok().body(gson.toJson("{'error' : '" + e.getLocalizedMessage() + "'}"));
         }
-        return ResponseEntity.ok().body(operationTicket);
+        return ResponseEntity.ok().body(gson.toJson("{'operationTicketId' : '" + operationTicket + "'}"));
     }
 
     // Доставать Юзера
@@ -45,7 +56,6 @@ public class TinkoffController {
         }
         return ResponseEntity.ok().body("OK");
     }
-
 }
 
 @Data
@@ -53,4 +63,9 @@ class FinalRegisterData {
     private String sms;
     private String password;
     private String operationTicket;
+}
+
+@Data
+class PhoneData {
+    private String phone;
 }
