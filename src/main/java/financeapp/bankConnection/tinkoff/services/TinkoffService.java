@@ -29,7 +29,14 @@ public class TinkoffService {
     TinkoffApi api = TinkoffApiFactory.getService();
     Logger logger = LoggerFactory.getLogger(TinkoffService.class);
 
-    public String GetSession(CustomUser user) throws IOException {
+    /**
+     * Функция, которая запрашивает новую сессию.
+     * Я так понимаю, ей лучше не злоупотреблять, и если она остается не незавершенной то мб банят
+     *
+     * @param user Пользователь
+     * @return ID сессии
+     */
+    public String GetSession(CustomUser user) throws IOException, RuntimeException {
         TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
         if (connection == null) {
             connection = new TinkoffConnection("to-do");
@@ -39,51 +46,53 @@ public class TinkoffService {
         String deviceId = connection.getDeviceId();
 
         logger.debug("Request sessionId");
-        var sessionId = api.getSession(
-                        new FormBody.Builder().add("deviceId", deviceId).build())
-                .execute().body().getPayload().getSessionid();
+        var sessionId = Objects.requireNonNull(api.getSession(deviceId, deviceId)
+                .execute().body()).getPayload().getSessionid();
         logger.debug("Received SessionId: " + sessionId);
 
         if (sessionId == null)
-            throw new RuntimeException("Can't get sessionId");
+            throw new RuntimeException("Невозможно получить sessionId");
         connection.setActiveSessionId(sessionId);
         tinkoffConnectionRepo.save(connection);
 
-        RequestBody dataForWarmUp = new FormBody.Builder()
-                .add("deviceId", deviceId).build();
 
-        var code = api.warmUpCache(sessionId, dataForWarmUp).execute().body().getResultCode();
+        var code = Objects.requireNonNull(api.warmUpCache(sessionId, deviceId, deviceId).execute().body()).getResultCode();
 
         if (!Objects.equals(code, "OK")) {
-            logger.error("Something went wrong");
-            throw new RuntimeException("something went wrong");
+            throw new RuntimeException("Что-то пошло не так =(");
         }
         logger.debug("Warming up session complete");
         return sessionId;
 
     }
 
-    public String RegisterSendSms(String phone, CustomUser user) throws IOException {
+    /**
+     * Запрос регистрации <br>
+     * На этом этапе отправляется код на номер телефона
+     *
+     * @param phone номер телефона в формате +7**********
+     * @param user  Пользьватель
+     * @return OperationTicketId - ID запроса, на который нужено будет ответить
+     */
+    public String RegisterSendSms(String phone, CustomUser user) throws IOException, RuntimeException {
         var sessionId = GetSession(user);
         TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
         String deviceId = connection.getDeviceId();
 
-
-        RequestBody dataForSmsRequest = new FormBody.Builder()
-                .add("phone", phone)
-                .add("deviceId", deviceId)
-                .build();
-        var smsResponse = api.requestSms(sessionId, dataForSmsRequest).execute();
+        var smsResponse = api.requestSms(sessionId, phone, deviceId, deviceId).execute();
+        assert smsResponse.body() != null;
         var operationTicket = smsResponse.body().getOperationTicket();
 
         var statusCode = smsResponse.body().getResultCode();
 
-        if (statusCode == "REQUEST_RATE_LIMIT_EXCEEDED")
-            throw new RuntimeException("REQUEST_RATE_LIMIT_EXCEEDED");
+        if (statusCode.equals("REQUEST_RATE_LIMIT_EXCEEDED"))
+            throw new RuntimeException("Превышен лимит запросов к серверу Тинькофф");
+
+        if (statusCode.equals("INVALID_REQUEST_DATA"))
+            throw new RuntimeException("Некорректный номер телефона");
 
         if (operationTicket == null) {
-            logger.error("SMS code doesn't sent! \n" + smsResponse.message());
-            throw new RuntimeException("SMS code doesn't sent!");
+            throw new RuntimeException("СМС Код не отправлен!");
         }
         logger.debug("SMS code have been sent, received operationTicket: " + operationTicket);
         return operationTicket;
@@ -97,16 +106,24 @@ public class TinkoffService {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     }
 
+    /**
+     * Завершение регистрации сессии
+     *
+     * @param operationTicket ID запроса, на который нужно ответить
+     * @param sms             смс код от пользотваеля
+     * @param password        пароль от онлайн банка
+     * @param user            Пользотваель
+     */
     public void RegisterFinal(String operationTicket, String sms, String password, CustomUser user) throws IOException {
         TinkoffConnection connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
         if (connection == null) {
-            throw new RuntimeException("Can't find registred deviceId and Session");
+            throw new RuntimeException("Не возможно найти deviceId и Session");
         }
 
         String deviceId = connection.getDeviceId();
         String sessionId = connection.getActiveSessionId();
 
-        String smsConfirm = "{\"SMSBYID\":\" " + sms + "\"}";
+        String smsConfirm = "{\"SMSBYID\": \"" + sms + "\"}";
         logger.debug("For session " + sessionId + " and operation ticket " + operationTicket + "sending confirmation code");
         logger.debug("Confirmation Data " + smsConfirm);
         RequestBody confirmSmsData = new FormBody.Builder()
@@ -114,14 +131,13 @@ public class TinkoffService {
                 .add("initialOperation", "\"auth/by/phone\"")
                 .add("confirmationData", smsConfirm)
                 .add("deviceId", deviceId).build();
-        var response = api.confirmSms(sessionId, confirmSmsData).execute();
+        var response = api.confirmSms(sessionId, deviceId, deviceId, operationTicket, "auth/by/phone", smsConfirm).execute();
+        assert response.body() != null;
         logger.debug(response.body().getPayload().getKey());
         logger.debug(response.body().getPayload().getSsoId());
 
         var confirmPassword = api.
-                confirmPassword(new FormBody.Builder()
-                        .add("deviceId", deviceId)
-                        .add("password", password).build(), sessionId).execute();
+                confirmPassword(sessionId, deviceId, deviceId, password).execute();
 
         logger.debug("Password confirmed");
 
@@ -129,12 +145,7 @@ public class TinkoffService {
         var pinCode = GeneratePinHash();
         var setDate = LocalDate.now().format(dateFormatter());
         var settingPinCode = api.
-                setUpPin(new FormBody.Builder()
-                                .add("deviceId", deviceId)
-                                .add("pinHash", pinCode)
-                                .add("auth_type_set_date", setDate)
-                                .build(),
-                        sessionId).execute();
+                setUpPin(sessionId, deviceId, deviceId, pinCode, setDate).execute();
 
         connection.setHashedPin(pinCode);
         connection.setPinSetDate(setDate);
@@ -142,6 +153,12 @@ public class TinkoffService {
         logger.debug("PinCode set and saved");
     }
 
+    /**
+     * Аутенфикация с помощью пин-кода
+     *
+     * @param user Пользователь
+     * @return ID новой сессии
+     */
     public String AuthWithPin(CustomUser user) throws IOException {
         var connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
         if (connection == null)
@@ -152,15 +169,14 @@ public class TinkoffService {
 
         var newSession = GetSession(user);
 
-        var dataForAuth = new FormBody.Builder()
-                .add("deviceId", connection.getDeviceId())
-                .add("oldSessionId", connection.getActiveSessionId())
-                .add("pinHash", connection.getHashedPin())
-                .add("auth_type_set_date", connection.getPinSetDate())
-                .add("auth_type", "pin")
-                .build();
 
-        var auth = api.loginByPinCode(newSession, dataForAuth);
+        var auth = api.loginByPinCode(newSession,
+                connection.getDeviceId(),
+                connection.getDeviceId(),
+                connection.getActiveSessionId(),
+                connection.getHashedPin(),
+                connection.getPinSetDate(),
+                "pin");
         connection.setActiveSessionId(newSession);
         tinkoffConnectionRepo.save(connection);
         return newSession;
