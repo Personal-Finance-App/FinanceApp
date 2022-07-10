@@ -23,7 +23,7 @@ public class TinkoffConnection extends BankConnection {
 
     public TinkoffConnection(String sessionId) {
         super();
-        deviceId = UUID.randomUUID().toString();
+        deviceId = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         activeSessionId = sessionId;
     }
 
