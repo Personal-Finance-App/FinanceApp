@@ -182,8 +182,6 @@ public class TinkoffService {
         if (connection == null)
             throw new RuntimeException("Пользователя не существует. Сначала нужно зарегистрироваться");
 
-        if (connection.getHashedPin().isEmpty() || connection.getPinSetDate().isEmpty())
-            throw new RuntimeException("Пользователь сначала должен зарегистрироваться и авторизоваться");
         return connection;
     }
 
@@ -208,7 +206,10 @@ public class TinkoffService {
 
     public List<?> getAccounts(CustomUser user) throws IOException {
         var sessionId = getSession(user);
+
         var connection = getConnection(user);
+        if (connection.getHashedPin().isEmpty() || connection.getPinSetDate().isEmpty())
+            throw new RuntimeException("Пользователь сначала должен зарегистрироваться и авторизоваться");
         var accounts = api.accountsList(connection.getActiveSessionId(),
                 connection.getDeviceId(),
                 connection.getDeviceId()).execute();

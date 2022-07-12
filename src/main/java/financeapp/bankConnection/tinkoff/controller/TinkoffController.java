@@ -45,7 +45,6 @@ public class TinkoffController {
         return ResponseEntity.ok().body(gson.toJson("{'operationTicketId' : '" + operationTicket + "'}"));
     }
 
-    // Доставать Юзера
     @PostMapping("/auth/finalregister")
     public ResponseEntity<?> FinalRegister(@RequestBody FinalRegisterData data, Authentication authentication) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());

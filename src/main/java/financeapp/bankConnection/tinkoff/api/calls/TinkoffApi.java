@@ -89,10 +89,10 @@ public interface TinkoffApi {
      */
     @POST("/v1/auth/by/password")
     @FormUrlEncoded
-    Call<?> confirmPassword(@Query("sessionid") String sessionid,
-                            @Field("deviceId") String deviceId,
-                            @Field("oldDeviceId") String oldDeviceId,
-                            @Field("password") String password);
+    Call<ConfirmSmsAnswer> confirmPassword(@Query("sessionid") String sessionid,
+                                           @Field("deviceId") String deviceId,
+                                           @Field("oldDeviceId") String oldDeviceId,
+                                           @Field("password") String password);
 
     /**
      * @param sessionid       идентификатор сессии
