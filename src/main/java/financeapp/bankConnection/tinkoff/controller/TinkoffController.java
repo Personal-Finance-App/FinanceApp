@@ -1,6 +1,7 @@
 package financeapp.bankConnection.tinkoff.controller;
 
 import com.google.gson.Gson;
+import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountPayload;
 import financeapp.bankConnection.tinkoff.services.TinkoffService;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 @RestController
@@ -67,22 +70,21 @@ public class TinkoffController {
 
 
     /**
-     * Запрашивает список аккаунтов и возращает их пользователю
+     * Запрашивает список аккаунтов и возвращает их пользователю
      *
-     * @return
+     * @return список счетов пользователей
      */
     @GetMapping("/accounts")
     public ResponseEntity<?> RequestAccount(Authentication authentication) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
+        List<AccountPayload> accounts = new ArrayList<>();
         try {
-            var accounts = tinkoffService.getAccounts(user);
+            accounts = tinkoffService.getAccounts(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok().body("OK");
+        return ResponseEntity.ok().body(gson.toJson(accounts));
     }
-
-    ;
 }
 
 @Data

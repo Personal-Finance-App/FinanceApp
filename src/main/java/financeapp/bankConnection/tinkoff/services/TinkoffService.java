@@ -5,6 +5,7 @@ import financeapp.bankConnection.tinkoff.TinkoffConnection;
 import financeapp.bankConnection.tinkoff.TinkoffConnectionRepo;
 import financeapp.bankConnection.tinkoff.api.calls.TinkoffApi;
 import financeapp.bankConnection.tinkoff.api.calls.TinkoffApiFactory;
+import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountPayload;
 import financeapp.users.CustomUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -127,18 +128,23 @@ public class TinkoffService {
         if (!response.body().getResultCode().equals("OK"))
             throw new RuntimeException("Ответ от сервера Тинькофф: " + response.body().getResultCode());
 
+        if (!response.body().getPayload().getAccessLevel().equals("CANDIDATE"))
+            throw new RuntimeException("Что-то пошло не так - " + response.body().getResultCode());
         logger.debug("Сессия потверждена СМС Кодом");
         logger.debug("Попытка отправить пароль");
 
         var confirmPassword = api.
                 confirmPassword(sessionId, deviceId, deviceId, password).execute();
 
+//        if (!response.body().getPayload().getAccessLevel().equals("CLIENT"))
+//            throw new RuntimeException("Что-то пошло не так");
+
         logger.debug("Пароль потвержден");
         logger.debug("Попытка установить пин-код");
 
 
         var pinCode = GeneratePinHash();
-        var setDate = LocalDate.now().format(dateFormatter());
+        var setDate = LocalDateTime.now().format(dateFormatter());
         var settingPinCode = api.
                 setUpPin(sessionId, deviceId, deviceId, pinCode, setDate).execute();
 
@@ -171,7 +177,15 @@ public class TinkoffService {
                 connection.getActiveSessionId(),
                 connection.getHashedPin(),
                 connection.getPinSetDate(),
-                "pin");
+                "pin").execute();
+
+        assert auth.body() != null;
+        if (auth.body().getResultCode().equals("WRONG_PIN_CODE")) {
+            throw new RuntimeException("Неверный пин-код");
+            // удалить аккаунт и попросить заново зарегестрироваться?
+        }
+
+        logger.info(auth.body().getPayload().getAccessLevel());
         connection.setActiveSessionId(newSession);
         tinkoffConnectionRepo.save(connection);
         return newSession;
@@ -204,7 +218,7 @@ public class TinkoffService {
         return connection.getActiveSessionId();
     }
 
-    public List<?> getAccounts(CustomUser user) throws IOException {
+    public List<AccountPayload> getAccounts(CustomUser user) throws IOException {
         var sessionId = getSession(user);
 
         var connection = getConnection(user);
@@ -214,11 +228,8 @@ public class TinkoffService {
                 connection.getDeviceId(),
                 connection.getDeviceId()).execute();
 
-        // TODO: parse accounts
-
-        //TODO: create account if in not db ?
-
-        return null;
+        assert accounts.body() != null;
+        return accounts.body().getPayload();
     }
 
 //    public List<?> getOperations(CustomUser user, Account account) throws IOException {

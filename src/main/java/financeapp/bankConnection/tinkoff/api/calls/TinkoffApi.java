@@ -1,8 +1,10 @@
 package financeapp.bankConnection.tinkoff.api.calls;
 
+import financeapp.bankConnection.tinkoff.api.responseEntitys.PinConfirm.SetUpPinAnswer;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.Session;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.SmsRequest;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.WarmUpCache;
+import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountsAnswer;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.afterConfirm.ConfirmSmsAnswer;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.pingConfirm.PingAnswer;
 import retrofit2.Call;
@@ -103,11 +105,11 @@ public interface TinkoffApi {
      */
     @POST("/v1/auth/pin/set")
     @FormUrlEncoded
-    Call<?> setUpPin(@Query("sessionid") String sessionid,
-                     @Field("deviceId") String deviceId,
-                     @Field("oldDeviceId") String oldDeviceId,
-                     @Field("pinHash") String pinHash,
-                     @Field("auth_type_set_date") String authTypeSetDate);
+    Call<SetUpPinAnswer> setUpPin(@Query("sessionid") String sessionid,
+                                  @Field("deviceId") String deviceId,
+                                  @Field("oldDeviceId") String oldDeviceId,
+                                  @Field("pinHash") String pinHash,
+                                  @Field("auth_type_set_date") String authTypeSetDate);
 
 
     /**
@@ -122,13 +124,13 @@ public interface TinkoffApi {
 
     @POST("/v1/auth/by/pin")
     @FormUrlEncoded
-    Call<?> loginByPinCode(@Query("sessionid") String sessionid,
-                           @Field("deviceId") String deviceId,
-                           @Field("oldDeviceId") String oldDeviceId,
-                           @Field("oldSessionId") String oldSessionId,
-                           @Field("pinHash") String pinHash,
-                           @Field("auth_type_set_date") String setDate,
-                           @Field("auth_type") String authType);
+    Call<ConfirmSmsAnswer> loginByPinCode(@Query("sessionid") String sessionid,
+                                          @Field("deviceId") String deviceId,
+                                          @Field("oldDeviceId") String oldDeviceId,
+                                          @Field("oldSessionId") String oldSessionId,
+                                          @Field("pinHash") String pinHash,
+                                          @Field("auth_type_set_date") String setDate,
+                                          @Field("auth_type") String authType);
 
 
     /**
@@ -140,9 +142,9 @@ public interface TinkoffApi {
      */
     @POST("/v1/accounts_flat")
     @FormUrlEncoded
-    Call<?> accountsList(@Query("sessionid") String sessionid,
-                         @Field("deviceId") String deviceId,
-                         @Query("oldDeviceId") String oldsDeviceId);
+    Call<AccountsAnswer> accountsList(@Query("sessionid") String sessionid,
+                                      @Field("deviceId") String deviceId,
+                                      @Query("oldDeviceId") String oldsDeviceId);
 
     /**
      * Получить список транзакций для счета, начиная с даты
