@@ -11,10 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,6 +26,12 @@ public class TinkoffController {
     private static final Gson gson = new Gson();
 
 
+    /**
+     * Начало процесса регистрации - отправка СМС Кода
+     *
+     * @param phoneData номер телефона в формате +7********** - обязательно проверять
+     * @return operationTicketId - его в будущем использовать нужно будет
+     */
     @PostMapping(path = "/auth/initregister", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> Register(@RequestBody PhoneData phoneData, Authentication authentication) {
@@ -45,6 +48,12 @@ public class TinkoffController {
         return ResponseEntity.ok().body(gson.toJson("{'operationTicketId' : '" + operationTicket + "'}"));
     }
 
+    /**
+     * Завершение регстрации устройства
+     *
+     * @param data код из смс, пароль, operationTicketId
+     * @return OK или не ок(
+     */
     @PostMapping("/auth/finalregister")
     public ResponseEntity<?> FinalRegister(@RequestBody FinalRegisterData data, Authentication authentication) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
@@ -55,6 +64,25 @@ public class TinkoffController {
         }
         return ResponseEntity.ok().body("OK");
     }
+
+
+    /**
+     * Запрашивает список аккаунтов и возращает их пользователю
+     *
+     * @return
+     */
+    @GetMapping("/accounts")
+    public ResponseEntity<?> RequestAccount(Authentication authentication) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        try {
+            var accounts = tinkoffService.getAccounts(user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body("OK");
+    }
+
+    ;
 }
 
 @Data
