@@ -1,11 +1,20 @@
 package financeapp.bankConnection.tinkoff.services;
 
 
+import financeapp.accounts.models.Account;
+import financeapp.accounts.repositories.AccountRepo;
 import financeapp.bankConnection.tinkoff.TinkoffConnection;
 import financeapp.bankConnection.tinkoff.TinkoffConnectionRepo;
 import financeapp.bankConnection.tinkoff.api.calls.TinkoffApi;
 import financeapp.bankConnection.tinkoff.api.calls.TinkoffApiFactory;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountPayload;
+import financeapp.category.CategoryService;
+import financeapp.transaction.models.AbstractTransaction;
+import financeapp.transaction.models.IncomeTransaction;
+import financeapp.transaction.models.PayTransaction;
+import financeapp.transaction.models.TransferTransaction;
+import financeapp.transaction.services.TransactionPattern;
+import financeapp.transaction.services.TransactionService;
 import financeapp.users.CustomUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -25,6 +38,15 @@ public class TinkoffService {
 
     @Autowired
     TinkoffConnectionRepo tinkoffConnectionRepo;
+
+    @Autowired
+    AccountRepo accountRepo;
+
+    @Autowired
+    TransactionService transactionService;
+
+    @Autowired
+    CategoryService categoryService;
 
     TinkoffApi api = TinkoffApiFactory.getService();
     Logger logger = LoggerFactory.getLogger(TinkoffService.class);
@@ -168,13 +190,14 @@ public class TinkoffService {
         if (connection.getHashedPin().isEmpty() || connection.getPinSetDate().isEmpty())
             throw new RuntimeException("User must login with sms first");
 
+        var oldSession = connection.getActiveSessionId();
         var newSession = GetSession(user);
 
 
         var auth = api.loginByPinCode(newSession,
                 connection.getDeviceId(),
                 connection.getDeviceId(),
-                connection.getActiveSessionId(),
+                oldSession,
                 connection.getHashedPin(),
                 connection.getPinSetDate(),
                 "pin").execute();
@@ -232,13 +255,64 @@ public class TinkoffService {
         return accounts.body().getPayload();
     }
 
-//    public List<?> getOperations(CustomUser user, Account account) throws IOException {
-//        var sessionId = getSession(user);
-//        var connection = getConnection(user);
-//
-//        var operations = api.accountsList(sessionId, connection.getDeviceId(), connection.getDeviceId());
-//
-//
-//    }
+    public AbstractTransaction createTransaction(TransactionPattern data) {
+        AbstractTransaction newTransaction;
+        LocalDateTime time = Instant.ofEpochMilli(data.getDateTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+
+        newTransaction = switch (data.getType().toLowerCase()) {
+            case "pay" -> new PayTransaction(data.getAmount(), data.getDescription(), time, data.getMerchantName());
+            case "income", "correction" -> new IncomeTransaction(data.getAmount(), data.getDescription(),
+                    time, data.getMerchantName(), data.getSendDetails());
+            case "transfer", "cash" -> new TransferTransaction(data.getAmount(), data.getDescription(), time, data.getMerchantName(), data.getMessage());
+            default -> throw new RuntimeException("Don't now type of transaction :" + data.getType());
+        };
+
+        //Определение категории
+        var category = categoryService.GetOrCreateCategoryByMccCode(data.getMccString(), data.getCategoryName());
+        newTransaction.setCategory(category);
+
+        return newTransaction;
+    }
+
+    public List<AbstractTransaction> getOperations(CustomUser user, Account account) throws IOException {
+        var sessionId = getSession(user);
+        var connection = getConnection(user);
+        LocalDateTime startTime = account.getLastSync();
+        if (startTime == null)
+            startTime = LocalDateTime.now().minusMonths(6);
+
+        ZonedDateTime zdt = ZonedDateTime.of(startTime, ZoneId.systemDefault());
+        var resultTime = zdt.toInstant().toEpochMilli();
+
+        LocalDateTime syncTime = LocalDateTime.now();
+
+        var operations = api.transactionList(connection.getDeviceId(),
+                connection.getDeviceId(), sessionId, account.getIdInSystem(), String.valueOf(resultTime)).execute();
+
+        List<AbstractTransaction> result = new ArrayList<>();
+
+        assert operations.body() != null;
+        operations.body().getPayload().forEach(transactionPayload -> {
+            if (transactionPayload.getStatus().equals("OK")) {
+                TransactionPattern data = new TransactionPattern();
+                data.setAmount(transactionPayload.getAmount());
+                data.setDateTime(Long.valueOf(transactionPayload.getDateTimeMilliSeconds()));
+                data.setDescription(transactionPayload.getDescription());
+                data.setCategoryName(transactionPayload.getCategoryName());
+                data.setMccString(transactionPayload.getMccString());
+                data.setMessage(transactionPayload.getMessage());
+                data.setMerchantName(transactionPayload.getMerchantName());
+                data.setType(transactionPayload.getGroup());
+                data.setSendDetails(transactionPayload.getSenderDetails());
+                result.add(this.createTransaction(data));
+            }
+        });
+
+
+        return result;
+
+
+    }
 
 }

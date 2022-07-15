@@ -1,8 +1,11 @@
 package financeapp.bankConnection.tinkoff.controller;
 
 import com.google.gson.Gson;
+import financeapp.accounts.AccountData;
+import financeapp.accounts.services.AccountService;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountPayload;
 import financeapp.bankConnection.tinkoff.services.TinkoffService;
+import financeapp.transaction.services.TransactionService;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +30,9 @@ import java.util.List;
 public class TinkoffController {
     private final TinkoffService tinkoffService;
     private final UserRepo userRepo;
+    private final AccountService accountService;
     private static final Gson gson = new Gson();
+    private final TransactionService transactionService;
 
 
     /**
@@ -84,6 +90,42 @@ public class TinkoffController {
             e.printStackTrace();
         }
         return ResponseEntity.ok().body(gson.toJson(accounts));
+    }
+
+    @PostMapping("/accounts/confirm")
+    public ResponseEntity<?> ConfirmAccount(@RequestBody List<AccountPayload> accounts, Authentication authentication) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        List<AccountData> accountDataList = new ArrayList<>();
+        accounts.forEach(accountPayload -> accountDataList.add(new AccountData(accountPayload.getName(),
+                accountPayload.getId(),
+                accountPayload.getExternalAccountNumber(),
+                accountPayload.getAccountGroup())));
+
+        accountDataList.forEach(accountData -> accountService.CreateAccountFromPayload(accountData, user));
+        return ResponseEntity.ok().body(gson.toJson("{'message' : 'created'}"));
+    }
+
+    @GetMapping("/accounts/sync")
+    public ResponseEntity<?> SyncAccount(Authentication authentication) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        var accounts = user.getAccountList();
+        var receivedCount = 0;
+        var savedCount = 0;
+
+        accounts.forEach(account -> {
+            if (account.getProvider().equals("Тинькофф")) {
+                try {
+                    var operations = tinkoffService.getOperations(user, account);
+                    var saved = transactionService.saveTransactions(operations, account, LocalDateTime.now());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return ResponseEntity.ok().body(gson.toJson("{'message' : 'synced', " +
+                "'received' : " + receivedCount + "," +
+                "'saved': " + savedCount + "}"));
     }
 }
 

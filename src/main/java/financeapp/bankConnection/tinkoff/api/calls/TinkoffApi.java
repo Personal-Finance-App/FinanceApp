@@ -7,6 +7,7 @@ import financeapp.bankConnection.tinkoff.api.responseEntitys.WarmUpCache;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountsAnswer;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.afterConfirm.ConfirmSmsAnswer;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.pingConfirm.PingAnswer;
+import financeapp.bankConnection.tinkoff.api.responseEntitys.transaction.TransactionAnswer;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -157,10 +158,11 @@ public interface TinkoffApi {
      */
     @POST("/v1/operations")
     @FormUrlEncoded
-    Call<?> transactionList(@Query("deviceId") String deviceId,
-                            @Query("sessionid") String sessionid,
-                            @Query("account") String accountId,
-                            @Query("start") String start);
+    Call<TransactionAnswer> transactionList(@Field("deviceId") String deviceId,
+                                            @Field("oldDeviceId") String oldDeviceId,
+                                            @Query("sessionid") String sessionid,
+                                            @Field("account") String accountId,
+                                            @Field("start") String start);
 
 
     /**
