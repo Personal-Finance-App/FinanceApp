@@ -1,4 +1,4 @@
-package financeapp.accounts.models;
+package financeapp.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,5 +19,13 @@ public class Category {
     private UUID id;
 
     private String categoryName;
+
+    private String mccCode;
+
+    public Category(String categoryName, String mccCode) {
+        id = UUID.randomUUID();
+        this.categoryName = categoryName;
+        this.mccCode = mccCode;
+    }
 
 }
