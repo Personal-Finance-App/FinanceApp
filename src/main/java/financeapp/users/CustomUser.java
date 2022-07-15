@@ -1,6 +1,7 @@
 package financeapp.users;
 
 import financeapp.accounts.models.Account;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Setter
+@Getter
 public class CustomUser implements UserDetails {
     @Id
     @Column(name = "id", nullable = false)
@@ -26,6 +28,7 @@ public class CustomUser implements UserDetails {
     private String role;
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Account> accountList;
+
 
     private String email;
     private String password;
@@ -38,6 +41,10 @@ public class CustomUser implements UserDetails {
         this.role = "USER";
     }
 
+
+    public boolean addAccount(Account account) {
+        return this.accountList.add(account);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
