@@ -1,7 +1,11 @@
 package financeapp.bankConnection.tinkoff.services;
 
 
+import financeapp.accounts.AccountData;
 import financeapp.accounts.models.Account;
+import financeapp.accounts.models.variousAccount.CreditAccount;
+import financeapp.accounts.models.variousAccount.DebitAccount;
+import financeapp.accounts.models.variousAccount.SavingAccount;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.bankConnection.tinkoff.TinkoffConnection;
 import financeapp.bankConnection.tinkoff.TinkoffConnectionRepo;
@@ -27,10 +31,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TinkoffService {
@@ -309,10 +310,18 @@ public class TinkoffService {
             }
         });
 
-
         return result;
 
+    }
 
+    public Account createAccount(AccountData payload, CustomUser user) {
+        var provider = "Тинькоф";
+        var newAccount = switch (payload.getType().toLowerCase(Locale.ROOT)) {
+            case "дебетовые карты" -> new DebitAccount(payload.getId(), payload.getName(), user, provider);
+            case "накопительные счета" -> new SavingAccount(payload.getId(), payload.getName(), user, provider);
+            case "кредитные карты" -> new CreditAccount(payload.getId(), payload.getName(), user, provider);
+        };
+        return newAccount;
     }
 
 }

@@ -2,6 +2,7 @@ package financeapp.bankConnection.tinkoff.controller;
 
 import com.google.gson.Gson;
 import financeapp.accounts.AccountData;
+import financeapp.accounts.models.Account;
 import financeapp.accounts.services.AccountService;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountPayload;
 import financeapp.bankConnection.tinkoff.services.TinkoffService;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -101,8 +103,14 @@ public class TinkoffController {
                 accountPayload.getExternalAccountNumber(),
                 accountPayload.getAccountGroup())));
 
-        accountDataList.forEach(accountData -> accountService.CreateAccountFromPayload(accountData, user));
-        return ResponseEntity.ok().body(gson.toJson("{'message' : 'created'}"));
+        List<Account> result = accountDataList.stream()
+                .map(accountData -> tinkoffService.createAccount(accountData, user))
+                .collect(Collectors.toList());
+
+        var saved = accountService.CreateAccountFromPayload(result);
+
+
+        return ResponseEntity.ok().body(gson.toJson("{'message' : 'created', 'savedAccount' : " + saved + "}"));
     }
 
     @GetMapping("/accounts/sync")
