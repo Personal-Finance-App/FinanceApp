@@ -1,12 +1,9 @@
 package financeapp.bankConnection.Interface;
 
-import financeapp.accounts.models.Transaction;
 import financeapp.users.CustomUser;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,6 +30,5 @@ public abstract class BankConnection {
         this.user = user;
     }
 
-    public abstract List<Transaction> getTransactions(LocalDate fromDate);
 
 }
