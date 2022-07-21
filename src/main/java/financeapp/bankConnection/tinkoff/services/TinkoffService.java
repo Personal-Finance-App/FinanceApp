@@ -316,12 +316,13 @@ public class TinkoffService {
 
     public Account createAccount(AccountData payload, CustomUser user) {
         var provider = "Тинькоф";
-        var newAccount = switch (payload.getType().toLowerCase(Locale.ROOT)) {
+        return switch (payload.getType().toLowerCase(Locale.ROOT)) {
             case "дебетовые карты" -> new DebitAccount(payload.getId(), payload.getName(), user, provider);
             case "накопительные счета" -> new SavingAccount(payload.getId(), payload.getName(), user, provider);
             case "кредитные карты" -> new CreditAccount(payload.getId(), payload.getName(), user, provider);
+            default -> throw new RuntimeException("Don't now this type of card: " + payload.getType());
+
         };
-        return newAccount;
     }
 
 }
