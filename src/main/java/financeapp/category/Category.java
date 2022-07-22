@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.UUID;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -15,17 +12,18 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private Long id;
 
     private String categoryName;
 
-    private String mccCode;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Category(String categoryName, String mccCode) {
-        id = UUID.randomUUID();
+    public Category(String categoryName) {
         this.categoryName = categoryName;
-        this.mccCode = mccCode;
     }
 
 }
