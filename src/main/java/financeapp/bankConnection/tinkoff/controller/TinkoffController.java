@@ -121,7 +121,7 @@ public class TinkoffController {
         var savedCount = 0;
 
         accounts.forEach(account -> {
-            if (account.getProvider().equals("Тинькофф")) {
+            if (account.getProvider().equals("Тинькоф")) {
                 try {
                     var operations = tinkoffService.getOperations(user, account);
                     var saved = transactionService.saveTransactions(operations, account, LocalDateTime.now());
