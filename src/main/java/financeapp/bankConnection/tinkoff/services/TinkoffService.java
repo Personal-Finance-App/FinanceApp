@@ -270,7 +270,7 @@ public class TinkoffService {
         };
 
         //Определение категории
-        var category = categoryService.ConvertMcc(data.getMccString());
+        var category = categoryService.convertMcc(data.getMccString());
         newTransaction.setCategory(category);
 
         return newTransaction;
