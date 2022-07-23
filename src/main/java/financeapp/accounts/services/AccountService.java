@@ -2,7 +2,6 @@ package financeapp.accounts.services;
 
 import financeapp.accounts.models.Account;
 import financeapp.accounts.repositories.AccountRepo;
-import financeapp.transaction.TransactionRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.List;
 @Slf4j
 public class AccountService {
     private final AccountRepo accountRepo;
-    private final TransactionRepo transactionRepo;
 
     public int CreateAccountFromPayload(List<Account> accounts) {
 
