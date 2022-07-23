@@ -1,4 +1,4 @@
-package financeapp.category;
+package financeapp.category.entity;
 
 
 import lombok.AllArgsConstructor;
@@ -15,12 +15,19 @@ import javax.persistence.*;
 @Setter
 public class MccToCategory {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    private String code;
 
     @ManyToOne
     @JoinColumn(name = "link_category_id")
     private Category linkCategory;
+
+    public MccToCategory(String code) {
+        this.code = code;
+    }
 
     public Category getLinkCategory() {
         return linkCategory;

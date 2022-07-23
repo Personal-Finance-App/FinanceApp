@@ -1,4 +1,4 @@
-package financeapp.category;
+package financeapp.category.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
