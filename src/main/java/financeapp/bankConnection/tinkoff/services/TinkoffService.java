@@ -270,7 +270,7 @@ public class TinkoffService {
         };
 
         //Определение категории
-        var category = categoryService.GetOrCreateCategoryByMccCode(data.getMccString(), data.getCategoryName());
+        var category = categoryService.ConvertMcc(data.getMccString());
         newTransaction.setCategory(category);
 
         return newTransaction;
@@ -316,13 +316,15 @@ public class TinkoffService {
 
     public Account createAccount(AccountData payload, CustomUser user) {
         var provider = "Тинькоф";
-        return switch (payload.getType().toLowerCase(Locale.ROOT)) {
+        var account = switch (payload.getType().toLowerCase(Locale.ROOT)) {
             case "дебетовые карты" -> new DebitAccount(payload.getId(), payload.getName(), user, provider);
             case "накопительные счета" -> new SavingAccount(payload.getId(), payload.getName(), user, provider);
             case "кредитные карты" -> new CreditAccount(payload.getId(), payload.getName(), user, provider);
             default -> throw new RuntimeException("Don't now this type of card: " + payload.getType());
 
         };
+        user.addAccount(account);
+        return account;
     }
 
 }
