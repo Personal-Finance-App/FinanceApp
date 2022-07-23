@@ -27,11 +27,7 @@ public class TransactionService {
      * @return количество сохраненных операций
      */
     public int saveTransactions(List<AbstractTransaction> operations, Account account, LocalDateTime syncTime) {
-
-
         transactionRepo.saveAll(operations);
-
-
         account.setLastSync(syncTime);
         accountRepo.save(account);
         return operations.size();
