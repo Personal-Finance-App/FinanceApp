@@ -52,7 +52,7 @@ public class CategoryService {
 
     }
 
-    public Category ConvertMcc(String mccCode) {
+    public Category convertMcc(String mccCode) {
         var found = mccRepo.findMccToCategoryByCode(mccCode);
         if (found == null) {
             found = mccRepo.findMccToCategoryByCode("9999");
