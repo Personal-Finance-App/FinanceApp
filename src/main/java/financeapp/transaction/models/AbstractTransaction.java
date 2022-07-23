@@ -1,6 +1,6 @@
 package financeapp.transaction.models;
 
-import financeapp.category.Category;
+import financeapp.category.entity.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
