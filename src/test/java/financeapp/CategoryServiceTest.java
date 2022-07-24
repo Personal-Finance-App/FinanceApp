@@ -1,7 +1,7 @@
-package financeapp.category;
+package financeapp;
 
 
-import financeapp.FinanceAppApplication;
+import financeapp.category.CategoryService;
 import financeapp.category.entity.Category;
 import financeapp.category.repos.CategoryRepo;
 import financeapp.category.repos.MccRepo;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,18 +22,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FinanceAppApplication.class)
 @AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application.properties")
+@TestPropertySource("classpath:application-test.properties")
 public class CategoryServiceTest {
 
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
+    @SpyBean
     private MccRepo mccRepo;
 
-    @MockBean
+    @SpyBean
     private CategoryRepo categoryRepo;
+
 
 
     // Данные из InitializeCategory
@@ -41,7 +41,6 @@ public class CategoryServiceTest {
 
     @TestConfiguration
     class CategoryServiceTestContextConfiguration {
-
         @Bean
         public CategoryService categoryService() {
             return new CategoryService(categoryRepo, mccRepo);
@@ -52,11 +51,14 @@ public class CategoryServiceTest {
     public void setUp() {
         var category = new Category(1L, categoryName);
         Mockito.when(categoryRepo.findCategoryByCategoryName(categoryName)).thenReturn(category);
-
     }
 
+
     @Test
-    public void createCategory_notSaving() {
+    public void createCategory_notSave() {
+        // reset нужен для того, чтобы обнулить счетчик вызовов
+        // Поскольку при инициализации создаются категории, он неправильно их считает без этой строки
+        Mockito.reset(categoryRepo);
         var category = categoryService.getOrCreateCategory(categoryName);
         Assert.assertEquals(categoryName, category.getCategoryName());
         Mockito.verify(categoryRepo, Mockito.times(2)).findCategoryByCategoryName(categoryName);
@@ -65,6 +67,8 @@ public class CategoryServiceTest {
 
     @Test
     public void createCategory_save() {
+        // То же самое, что и наверху
+        Mockito.reset(categoryRepo);
         Mockito.when(categoryRepo.findCategoryByCategoryName(categoryName)).thenReturn(null);
         var category = categoryService.getOrCreateCategory(categoryName);
         Assert.assertEquals(categoryName, category.getCategoryName());
