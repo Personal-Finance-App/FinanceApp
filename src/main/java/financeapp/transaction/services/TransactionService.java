@@ -27,9 +27,14 @@ public class TransactionService {
      * @return количество сохраненных операций
      */
     public int saveTransactions(List<AbstractTransaction> operations, Account account, LocalDateTime syncTime) {
+        operations.forEach(transaction -> transaction.setAccount(account));
         transactionRepo.saveAll(operations);
         account.setLastSync(syncTime);
         accountRepo.save(account);
         return operations.size();
+    }
+
+    public List<AbstractTransaction> getTransaction(Account account, LocalDateTime after, LocalDateTime before) {
+        return transactionRepo.getAllByDateTimeAfterAndDateTimeBeforeAndAccount(after, before, account);
     }
 }

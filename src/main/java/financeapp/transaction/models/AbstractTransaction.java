@@ -1,5 +1,6 @@
 package financeapp.transaction.models;
 
+import financeapp.accounts.models.Account;
 import financeapp.category.entity.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,11 @@ public abstract class AbstractTransaction {
     @JoinColumn(name = "category_id")
     private Category category;
     private String merchant;
+
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public AbstractTransaction(double amount, String description, LocalDateTime dateTime, String merchant) {
         this.amount = amount;
