@@ -1,4 +1,4 @@
-package financeapp.transaction.services;
+package financeapp;
 
 import financeapp.accounts.models.variousAccount.DebitAccount;
 import financeapp.accounts.repositories.AccountRepo;
@@ -6,6 +6,7 @@ import financeapp.accounts.services.AccountService;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.models.AbstractTransaction;
 import financeapp.transaction.models.PayTransaction;
+import financeapp.transaction.services.TransactionService;
 import financeapp.users.CustomUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +27,7 @@ import java.util.LinkedList;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application.properties")
+@TestPropertySource("classpath:application-test.properties")
 public class TransactionServiceTest {
 
     @Autowired

@@ -1,10 +1,11 @@
-package financeapp.accounts.services;
+package financeapp;
 
 import financeapp.accounts.models.Account;
 import financeapp.accounts.models.variousAccount.CreditAccount;
 import financeapp.accounts.models.variousAccount.DebitAccount;
 import financeapp.accounts.models.variousAccount.SavingAccount;
 import financeapp.accounts.repositories.AccountRepo;
+import financeapp.accounts.services.AccountService;
 import financeapp.users.CustomUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +26,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application.properties")
+@TestPropertySource("classpath:application-test.properties")
 public class AccountServiceTest {
 
     @Autowired
