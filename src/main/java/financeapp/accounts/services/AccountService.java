@@ -17,12 +17,8 @@ public class AccountService {
     private final AccountRepo accountRepo;
 
     public int CreateAccountFromPayload(List<Account> accounts) {
-
-
         accountRepo.saveAll(accounts);
         return accounts.size();
-
-
     }
 
 //    public void GetTransactions(Account account) {
