@@ -2,12 +2,15 @@ package financeapp.transaction.models;
 
 import financeapp.accounts.models.Account;
 import financeapp.category.entity.Category;
+import financeapp.monthReport.entity.Label;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +31,9 @@ public abstract class AbstractTransaction {
     private String merchant;
 
 
+    @ManyToMany
+    private List<Label> labelList;
+
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
@@ -37,5 +43,10 @@ public abstract class AbstractTransaction {
         this.description = description;
         this.dateTime = dateTime;
         this.merchant = merchant;
+        this.labelList = new ArrayList<>();
+    }
+
+    public void addLabel(Label label) {
+        labelList.add(label);
     }
 }

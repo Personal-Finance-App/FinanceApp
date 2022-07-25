@@ -2,6 +2,7 @@ package financeapp.transaction.services;
 
 import financeapp.accounts.models.Account;
 import financeapp.accounts.repositories.AccountRepo;
+import financeapp.monthReport.services.LabelService;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.models.AbstractTransaction;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 public class TransactionService {
     private final TransactionRepo transactionRepo;
     private final AccountRepo accountRepo;
+    private final LabelService labelService;
 
     /**
      * Метод для сохранения транзакций <br>
@@ -27,10 +29,16 @@ public class TransactionService {
      * @return количество сохраненных операций
      */
     public int saveTransactions(List<AbstractTransaction> operations, Account account, LocalDateTime syncTime) {
-        operations.forEach(transaction -> transaction.setAccount(account));
+        operations.forEach(transaction ->
+        {
+            transaction.setAccount(account);
+            labelService.setLabels(transaction);
+        });
+
         transactionRepo.saveAll(operations);
         account.setLastSync(syncTime);
         accountRepo.save(account);
+
         return operations.size();
     }
 
