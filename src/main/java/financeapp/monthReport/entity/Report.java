@@ -28,11 +28,11 @@ public class Report {
     private Integer month;
 
     @OneToMany
-    private List<ReportPart> parts;
+    private List<ReportCategoryPart> parts;
 
     private LocalDateTime updated;
 
-    public Report(CustomUser user, Integer year, Integer month, List<ReportPart> parts, LocalDateTime sync) {
+    public Report(CustomUser user, Integer year, Integer month, List<ReportCategoryPart> parts, LocalDateTime sync) {
         this.linkedUser = user;
         this.year = year;
         this.month = month;

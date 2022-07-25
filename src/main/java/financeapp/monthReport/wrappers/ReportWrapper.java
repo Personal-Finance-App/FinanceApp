@@ -1,6 +1,6 @@
 package financeapp.monthReport.wrappers;
 
-import financeapp.monthReport.entity.ReportPart;
+import financeapp.monthReport.entity.ReportCategoryPart;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class ReportWrapper {
     private List<ReportPartWrapper> parts;
     private String categoryMaxName;
 
-    public ReportWrapper(Integer year, Integer month, LocalDateTime updated, List<ReportPart> parts) {
+    public ReportWrapper(Integer year, Integer month, LocalDateTime updated, List<ReportCategoryPart> parts) {
         this.year = year;
         this.month = month;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");

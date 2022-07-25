@@ -1,6 +1,6 @@
 package financeapp.monthReport.services;
 
-import financeapp.monthReport.entity.ReportPart;
+import financeapp.monthReport.entity.ReportCategoryPart;
 import financeapp.monthReport.repos.ReportPartRepo;
 import financeapp.transaction.models.AbstractTransaction;
 import financeapp.transaction.models.PayTransaction;
@@ -17,15 +17,15 @@ public class ReportPartService {
         this.reportPartRepo = reportPartRepo;
     }
 
-    public List<ReportPart> sortTransactions(List<AbstractTransaction> transactionList) {
-        var parts = new HashMap<Long, ReportPart>();
+    public List<ReportCategoryPart> sortTransactions(List<AbstractTransaction> transactionList) {
+        var parts = new HashMap<Long, ReportCategoryPart>();
 
         for (AbstractTransaction element : transactionList) {
             if (element instanceof PayTransaction) {
                 var category = element.getCategory();
                 var part = parts.get(category.getId());
                 if (part == null) {
-                    part = new ReportPart(category);
+                    part = new ReportCategoryPart(category);
                     parts.put(category.getId(), part);
                 }
                 part.AddTransaction(element);

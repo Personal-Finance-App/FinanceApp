@@ -12,11 +12,14 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Часть отчета, которая хранит в себе пару категорий - транзакции
+ */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReportPart {
+public class ReportCategoryPart {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,7 +32,7 @@ public class ReportPart {
     @OneToMany
     private List<AbstractTransaction> transactionList;
 
-    public ReportPart(Category category) {
+    public ReportCategoryPart(Category category) {
         this.category = category;
         transactionList = new ArrayList<>();
     }
