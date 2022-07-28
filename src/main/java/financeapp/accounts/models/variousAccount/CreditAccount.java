@@ -13,4 +13,10 @@ public class CreditAccount extends Account {
         super(id, name, user, provider);
     }
 
+    @Override
+    public String getName() {
+        return "Кредитный счет";
+    }
+
+
 }
