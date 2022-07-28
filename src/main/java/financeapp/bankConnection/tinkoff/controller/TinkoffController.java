@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @RestController
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
+@RequestMapping("/tinkof")
 public class TinkoffController {
     private final TinkoffService tinkoffService;
     private final UserRepo userRepo;
@@ -54,9 +55,9 @@ public class TinkoffController {
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
-            return ResponseEntity.ok().body(gson.toJson("{'error' : '" + e.getLocalizedMessage() + "'}"));
+            return ResponseEntity.internalServerError().body(gson.toJson("{'error' : '" + e.getLocalizedMessage() + "'}"));
         }
-        return ResponseEntity.ok().body(gson.toJson("{'operationTicketId' : '" + operationTicket + "'}"));
+        return ResponseEntity.ok().body(gson.toJson("{\"operationTicketId\" : \"" + operationTicket + "\"}"));
     }
 
     /**
@@ -72,8 +73,9 @@ public class TinkoffController {
             tinkoffService.RegisterFinal(data.getOperationTicket(), data.getSms(), data.getPassword(), user);
         } catch (IOException e) {
             e.printStackTrace();
+            return ResponseEntity.internalServerError().body(gson.toJson("{'error' : '" + e.getLocalizedMessage() + "'}"));
         }
-        return ResponseEntity.ok().body("OK");
+        return ResponseEntity.ok().body(data.getOperationTicket() + " " + data.getPassword() + " " + data.getSms());
     }
 
 
@@ -135,6 +137,7 @@ public class TinkoffController {
                 "'received' : " + receivedCount + "," +
                 "'saved': " + savedCount + "}"));
     }
+
 }
 
 @Data
