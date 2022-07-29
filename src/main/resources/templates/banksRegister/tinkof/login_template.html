@@ -87,8 +87,8 @@
                 operationTicket: operation_ticket,
             }),
             success: function (response) {
+                document.location.href = '/tinkof/requestAccount';
                 console.log("ВСЕ ОКЕЙ")
-                console.log(response)
             },
             error: function (response) {
                 console.log("Чето пошло не так...")

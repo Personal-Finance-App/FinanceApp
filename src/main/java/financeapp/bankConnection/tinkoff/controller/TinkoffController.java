@@ -97,12 +97,11 @@ public class TinkoffController {
                 .map(accountData -> tinkoffService.createAccount(accountData, user))
                 .collect(Collectors.toList());
 
-        var saved = accountService.CreateAccountFromPayload(result);
+        var saved = accountService.CreateAccountFromPayload(result, user);
 
 
         return ResponseEntity.ok().body(Collections
-                .singletonMap("message", "created")
-                .put("savedAccount", String.valueOf(saved)));
+                .singletonMap("savedAccount", saved));
     }
 
     @GetMapping("/accounts/sync")

@@ -8,7 +8,7 @@
 <!-- navbar-->
 <div th:insert="fragments/navbar.html :: navbar"></div>
 
-<!--Modal-->
+<!--Modal choose bank-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -19,15 +19,18 @@
       <div class="modal-body">
         <table class="table">
           <tbody>
+
           <tr>
             <td>logo</td>
-            <th scope="row">Tinkoff Bank</th>
+            <a href="/tinkof/requestAccount">
+              <th scope="row">Tinkoff Bank</th>
+            </a>
           </tr>
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Как все работает?</button>
       </div>
     </div>
   </div>
@@ -43,7 +46,10 @@
       <div class="col">
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
-          Добавить счет
+          Добавить счета
+        </button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Синхронизировать
         </button>
       </div>
     </div>
