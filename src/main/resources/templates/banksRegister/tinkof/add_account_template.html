@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:insert="fragments/head.html :: head"></div>
+    <title>Добавление счетов</title>
+    <link th:href="@{/css/login_style.css}" rel="stylesheet"/>
+
+</head>
+<body>
+<div class="box">
+    <div style="text-align: center;" class="my-3">
+        <img height="100vh" style="border-radius: 2px" th:src="@{/bank-logo/tinkoff-rectangle.png}">
+    </div>
+    <h2 class="mb-5">Название банка</h2>
+    <p>Мы нашли такие счета</p>
+
+    <div class="container">
+        <form onsubmit="sendData(event);" id="accountForm">
+
+        </form>
+
+    </div>
+</div>
+</body>
+</html>
+
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+    function createCheckBox(accountName, accountGroup, accountId, externalId) {
+        // language=HTML
+        let result = `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" friendlyName="${accountName}" value="" id="${accountId}"
+                       accountGroup="${accountGroup}" externalId="${externalId}">
+                <label class="form-check-label" for="flexCheckDefault">
+                    ${accountName}
+                </label>
+            </div>`
+        return result;
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/tinkof/accounts",
+            method: 'GET',
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response)
+                for (let i in response) {
+                    $('#accountForm').append(
+                        createCheckBox(response[i].name,
+                            response[i].accountGroup,
+                            response[i].id,
+                            response[i].externalAccountNumber))
+                }
+
+                $('#accountForm').append(
+                    "<input type=\"submit\" id=\"submitButton\" value=\"Подключить\">"
+                )
+            },
+            error: function (response) {
+                console.log("Чето пошло не так...")
+            }
+        })
+    })
+
+    function sendData(e) {
+        e.preventDefault(); // don not refresh the page
+        let data = [];
+        $("#accountForm input:checked").each(function () {
+            data.push({
+                externalAccountNumber: $(this).attr('externalId'),
+                accountGroup: $(this).attr('accountGroup'),
+                name: $(this).attr('friendlyName'),
+                id: $(this).attr('id'),
+            })
+        })
+
+        console.log(data)
+
+
+        $.ajax({
+            url: "/tinkof/accounts/confirm",
+            method: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                document.location.href = '/accounts';
+                console.log("ВСЕ ОКЕЙ")
+            },
+            error: function (response) {
+                console.log("Чето пошло не так...")
+            }
+        })
+
+    }
+</script>
