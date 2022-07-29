@@ -1,7 +1,6 @@
 package financeapp.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,13 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Arrays;
 
 @ControllerAdvice
+@Slf4j
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseBody
     public ResponseEntity<AppError> catchAllException(Exception e) {
-        Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
-        logger.error(e.getLocalizedMessage());
-        logger.error(Arrays.toString(e.getStackTrace()));
+        log.error(e.getLocalizedMessage());
+        log.error(Arrays.toString(e.getStackTrace()));
         return ResponseEntity
                 .internalServerError()
                 .contentType(MediaType.APPLICATION_JSON)
