@@ -58,7 +58,7 @@ public class TransactionServiceTest {
         var account = new DebitAccount("1", "debit", user, "test");
         accountService.CreateAccountFromPayload(new LinkedList<>() {{
             add(account);
-        }});
+        }}, user);
         var transaction = new LinkedList<AbstractTransaction>() {{
             add(new PayTransaction(1000, "ha", LocalDateTime.now(), "bla"));
         }};

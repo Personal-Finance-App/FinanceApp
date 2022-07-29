@@ -54,7 +54,7 @@ public class AccountServiceTest {
             add(new SavingAccount("3", "saving", user, "test"));
         }};
 
-        accountService.CreateAccountFromPayload(accounts);
+        accountService.CreateAccountFromPayload(accounts, user);
         verify(accountRepo).saveAll(Mockito.any());
 
     }
