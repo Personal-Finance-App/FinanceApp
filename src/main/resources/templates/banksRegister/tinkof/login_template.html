@@ -61,10 +61,13 @@
                 contentType: "application/json",
                 data: JSON.stringify({phone: $('#telephone').val()}),
                 success: function (response) {
-                    operation_ticket = JSON.parse(response).operationTicketId;
+                    operation_ticket = response.operationTicketId;
                     $('#bank-passport').css('visibility', 'visible');
                     $('#smsCode').css('visibility', 'visible');
                     $('#submitButton').prop('disabled', false);
+                },
+                error: function (response) {
+                    console.log(response);
                 }
             });
         }

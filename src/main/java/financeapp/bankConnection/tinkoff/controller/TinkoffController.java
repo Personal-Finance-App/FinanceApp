@@ -10,8 +10,6 @@ import financeapp.transaction.services.TransactionService;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -21,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,18 +44,14 @@ public class TinkoffController {
      */
     @PostMapping(path = "/auth/initregister", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<?> Register(@RequestBody PhoneData phoneData, Authentication authentication) {
+    public ResponseEntity<?> Register(@RequestBody PhoneData phoneData, Authentication authentication) throws IOException {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
-        Logger logger = LoggerFactory.getLogger(TinkoffController.class);
-        String operationTicket;
-        try {
-            operationTicket = tinkoffService.RegisterSendSms(phoneData.getPhone(), user);
-        } catch (Exception e) {
-            logger.error(e.getLocalizedMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            return ResponseEntity.internalServerError().body(gson.toJson("{'error' : '" + e.getLocalizedMessage() + "'}"));
-        }
-        return ResponseEntity.ok().body(gson.toJson("{\"operationTicketId\" : \"" + operationTicket + "\"}"));
+        String operationTicket = tinkoffService.RegisterSendSms(phoneData.getPhone(), user);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("operationTicketId", operationTicket));
+
+
     }
 
     /**
@@ -67,15 +61,12 @@ public class TinkoffController {
      * @return OK или не ок(
      */
     @PostMapping("/auth/finalregister")
-    public ResponseEntity<?> FinalRegister(@RequestBody FinalRegisterData data, Authentication authentication) {
+    @ResponseBody
+    public ResponseEntity<?> FinalRegister(@RequestBody FinalRegisterData data, Authentication authentication) throws IOException {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
-        try {
-            tinkoffService.RegisterFinal(data.getOperationTicket(), data.getSms(), data.getPassword(), user);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body(gson.toJson("{'error' : '" + e.getLocalizedMessage() + "'}"));
-        }
-        return ResponseEntity.ok().body(data.getOperationTicket() + " " + data.getPassword() + " " + data.getSms());
+        tinkoffService.RegisterFinal(data.getOperationTicket(), data.getSms(), data.getPassword(), user);
+        return ResponseEntity.ok().body("OK");
+
     }
 
 
@@ -85,18 +76,15 @@ public class TinkoffController {
      * @return список счетов пользователей
      */
     @GetMapping("/accounts")
-    public ResponseEntity<?> RequestAccount(Authentication authentication) {
+    @ResponseBody
+    public ResponseEntity<?> RequestAccount(Authentication authentication) throws IOException {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
-        List<AccountPayload> accounts = new ArrayList<>();
-        try {
-            accounts = tinkoffService.getAccounts(user);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok().body(gson.toJson(accounts));
+        List<AccountPayload> accounts = tinkoffService.getAccounts(user);
+        return ResponseEntity.ok().body(accounts);
     }
 
     @PostMapping("/accounts/confirm")
+    @ResponseBody
     public ResponseEntity<?> ConfirmAccount(@RequestBody List<AccountPayload> accounts, Authentication authentication) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         List<AccountData> accountDataList = new ArrayList<>();
@@ -112,26 +100,27 @@ public class TinkoffController {
         var saved = accountService.CreateAccountFromPayload(result);
 
 
-        return ResponseEntity.ok().body(gson.toJson("{'message' : 'created', 'savedAccount' : " + saved + "}"));
+        return ResponseEntity.ok().body(Collections
+                .singletonMap("message", "created")
+                .put("savedAccount", String.valueOf(saved)));
     }
 
     @GetMapping("/accounts/sync")
-    public ResponseEntity<?> SyncAccount(Authentication authentication) {
+    public ResponseEntity<?> SyncAccount(Authentication authentication) throws IOException {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         var accounts = user.getAccountList();
         var receivedCount = 0;
         var savedCount = 0;
 
-        accounts.forEach(account -> {
+        for (Account account : accounts) {
             if (account.getProvider().equals("Тинькоф")) {
-                try {
-                    var operations = tinkoffService.getOperations(user, account);
-                    var saved = transactionService.saveTransactions(operations, account, LocalDateTime.now());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                var operations = tinkoffService.getOperations(user, account);
+                receivedCount += operations.size();
+                var saved = transactionService.saveTransactions(operations, account, LocalDateTime.now());
+                savedCount += saved;
             }
-        });
+        }
+
 
         return ResponseEntity.ok().body(gson.toJson("{'message' : 'synced', " +
                 "'received' : " + receivedCount + "," +
