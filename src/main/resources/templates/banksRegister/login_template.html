@@ -1,0 +1,52 @@
+<!--Для того чтобы использовать этот шаблон-->
+<!--Нужно вызвать его следующим образом-->
+<!--th:replace="/banksRegister/login_template.html :: loginTemplate(@{/bank-logo/tinkoff-rectangle.png}, 'Тинькоф Банк', ~{::form}-->
+<!--Первый аргумент - путь к изображению-->
+<!--Второй аргумент - название банка-->
+<!--Третий - форма-->
+<!--Пример использования есть в тинькоф банке-->
+
+<block th:fragment="loginTemplate (bankImage, bankName, form)">
+    <html lang="ru" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <div th:insert="fragments/head.html :: head"></div>
+        <title>Подключение банка</title>
+        <link th:href="@{/css/login_style.css}" rel="stylesheet"/>
+
+    </head>
+
+    <body>
+    <div class="box">
+        <block th:insert="/banksRegister/bankHeader :: bankHeader(${bankImage}, ${bankName})"></block>
+        <div class="container">
+            <form class="mt-4" th:replace="${form}">
+                <div class="inputBox">
+                    <input type="tel" name="telephone" id="telephone"
+                           pattern="^((\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$" value="+7" required
+                           onkeyup="this.setAttribute('value', this.value);">
+                    <label>Номер телефона</label>
+                </div>
+
+                <div class="inputBox" style="visibility: hidden">
+                    <input type="password" name="telephone" id="bank-passport" value="" required
+                           onkeyup="this.setAttribute('value', this.value);">
+                    <label>Пароль от интернет-банка</label>
+                </div>
+
+                <div class="inputBox" style="visibility: hidden">
+                    <input type="text" name="telephone" id="smsCode" value=""
+                           pattern="^[\d]{4}$"
+                           required onkeyup="this.setAttribute('value', this.value);">
+                    <label>СМС-Код</label>
+                </div>
+
+                <input type="submit" name="sign-in" id="submitButton" value="Подключить" disabled>
+            </form>
+
+        </div>
+    </div>
+    </body>
+    </html>
+    <div th:insert="fragments/baseScripts.html :: baseScript"></div>
+</block>
+

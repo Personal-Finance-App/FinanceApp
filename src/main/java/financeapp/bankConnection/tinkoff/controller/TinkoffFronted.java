@@ -17,7 +17,7 @@ public class TinkoffFronted {
 
     @GetMapping("/tinkof/login")
     public String accounts(Model model, Authentication authentication) {
-        return "/banksRegister/tinkof/login_template";
+        return "/banksRegister/tinkof/tinkofLogin.html";
     }
 
     @GetMapping("/tinkof/requestAccount")
@@ -26,6 +26,6 @@ public class TinkoffFronted {
         var connection = tinkoffConnectionRepo.findTinkoffConnectionByUser(user);
         if (connection == null)
             return accounts(model, authentication);
-        return "/banksRegister/tinkof/add_account_template";
+        return "/banksRegister/tinkof/tinkoffAddAccount.html";
     }
 }
