@@ -13,4 +13,9 @@ public class DebitAccount extends Account {
     public DebitAccount(String id, String name, CustomUser user, String provider) {
         super(id, name, user, provider);
     }
+
+    @Override
+    public String getName() {
+        return "Дебетовый счет";
+    }
 }

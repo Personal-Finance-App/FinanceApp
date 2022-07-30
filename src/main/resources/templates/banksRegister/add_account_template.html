@@ -1,0 +1,24 @@
+<block th:fragment="addAccountTemplate (bankImage, bankName)">
+    <html lang="ru" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <div th:insert="fragments/head.html :: head"></div>
+        <title>Добавление счетов</title>
+        <link th:href="@{/css/login_style.css}" rel="stylesheet"/>
+
+    </head>
+    <body>
+    <div class="box">
+        <block th:insert="/banksRegister/bankHeader :: bankHeader(${bankImage}, ${bankName})"></block>
+        <p>Мы нашли такие счета</p>
+
+        <div class="container">
+            <form onsubmit="sendData(event);" id="accountForm">
+
+            </form>
+
+        </div>
+    </div>
+    </body>
+    </html>
+    <div th:insert="fragments/baseScripts.html :: baseScript"></div>
+</block>

@@ -14,4 +14,9 @@ public class SavingAccount extends Account {
         super(id, name, user, provider);
     }
 
+    @Override
+    public String getName() {
+        return "Накопительный счет";
+    }
+
 }

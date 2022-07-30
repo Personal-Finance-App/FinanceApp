@@ -322,7 +322,6 @@ public class TinkoffService {
             default -> throw new RuntimeException("Don't now this type of card: " + payload.getType());
 
         };
-        user.addAccount(account);
         return account;
     }
 

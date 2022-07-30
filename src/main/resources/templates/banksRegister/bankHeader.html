@@ -1,0 +1,6 @@
+<block th:fragment="bankHeader (bankImage, bankName)">
+    <div style="text-align: center;" class="my-3">
+        <img th:src="${bankImage}" height="100vh" style="border-radius: 2px">
+    </div>
+    <h2 class="mb-5" th:text="${bankName}">Название банка</h2>
+</block>
