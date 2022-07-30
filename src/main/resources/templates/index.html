@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Finance App</title>
+    <div th:insert="fragments/head.html :: head"></div>
+
+</head>
+<body id="page-top">
+<!-- navbar-->
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+
+<!-- content-->
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Avatar Image-->
+        <img class="masthead-avatar mb-5" th:src="@{/money-icon.svg}" alt="Money Icon Svg"/>
+        <!-- Masthead Heading-->
+        <h1 class="masthead-heading text-uppercase mb-0">Finance App</h1>
+        <!-- Icon Divider-->
+        <!--                <div class="divider-custom divider-light">-->
+        <!--                    <div class="divider-custom-line"></div>-->
+        <!--                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>-->
+        <!--                    <div class="divider-custom-line"></div>-->
+        <!--                </div>-->
+
+        <p class="masthead-subheading font-weight-light mb-0">Пам-пам</p>
+    </div>
+</header>
+
+
+<!--Footer-->
+<div th:insert="fragments/footer.html :: footer"></div>
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<block th:replace="/banksRegister/add_account_template.html :: addAccountTemplate(@{/bank-logo/tinkoff-rectangle.png}, 'Тинькоф Банк' )">
+</block>
+
+
+
+<script>
+    function createCheckBox(accountName, accountGroup, accountId, externalId) {
+        // language=HTML
+        return `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" friendlyName="${accountName}" value="" id="${accountId}"
+                       accountGroup="${accountGroup}" externalId="${externalId}">
+                <label class="form-check-label" for="flexCheckDefault">
+                    ${accountName}
+                </label>
+            </div>`;
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/tinkof/accounts",
+            method: 'GET',
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response)
+                for (let i in response) {
+                    $('#accountForm').append(
+                        createCheckBox(response[i].name,
+                            response[i].accountGroup,
+                            response[i].id,
+                            response[i].externalAccountNumber))
+                }
+
+                $('#accountForm').append(
+                    "<input type=\"submit\" id=\"submitButton\" value=\"Подключить\">"
+                )
+            },
+            error: function (response) {
+                console.log("Чето пошло не так...")
+            }
+        })
+    })
+
+    function sendData(e) {
+        e.preventDefault(); // don not refresh the page
+        let data = [];
+        $("#accountForm input:checked").each(function () {
+            data.push({
+                externalAccountNumber: $(this).attr('externalId'),
+                accountGroup: $(this).attr('accountGroup'),
+                name: $(this).attr('friendlyName'),
+                id: $(this).attr('id'),
+            })
+        })
+
+        console.log(data)
+
+
+        $.ajax({
+            url: "/tinkof/accounts/confirm",
+            method: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                document.location.href = '/accounts';
+                console.log("ВСЕ ОКЕЙ")
+            },
+            error: function (response) {
+                console.log("Чето пошло не так...")
+            }
+        })
+
+    }
+</script>

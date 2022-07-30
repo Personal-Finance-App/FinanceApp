@@ -54,4 +54,13 @@ public abstract class Account {
         return transactionList.add(transaction);
     }
 
+
+    public abstract String getName();
+
+    public String getImageProviderUrl() {
+        return switch (this.provider) {
+            case "Тинькоф" -> "bank-logo/tinkoff.png";
+            default -> "";
+        };
+    }
 }

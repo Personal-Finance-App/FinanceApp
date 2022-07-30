@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Счета</title>
+  <div th:insert="fragments/head.html :: head"></div>
+</head>
+<body id="page-top">
+<!-- navbar-->
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+<!--Modal choose bank-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Выберите банк</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <tbody>
+
+          <tr style="cursor: pointer;" onclick="window.location='/tinkof/requestAccount';">
+            <td><img th:src="@{/bank-logo/tinkoff-rectangle.png}" width="100px"></td>
+            <a href="/tinkof/requestAccount">
+              <th scope="row">Tinkoff Bank</th>
+            </a>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Как все работает?</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- content-->
+<section class="page-section portfolio" id="portfolio">
+  <div class="container mt-lg-5">
+    <div class="row">
+      <div class="col">
+        <h2>Ваши счета</h2>
+      </div>
+      <div class="col">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Добавить счета
+        </button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Синхронизировать
+        </button>
+      </div>
+    </div>
+
+
+    <div th:if="${accounts.empty}">
+      <h2>У вас еще нет подключенных счетов</h2>
+    </div>
+
+
+    <!--    todo: нужно сделать так, чтобы было по 3 счета в строке. А также подогнать размеры -->
+
+    <div class="row">
+
+      <div th:each="account : ${accounts}" class="col">
+        <div class="account-card">
+          <div class="card" style="width: 25rem;">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <div class="bank-logo-div">
+                    <img class="bank-logo round" th:src="@{${account.getImageProviderUrl()}}">
+                  </div>
+                </div>
+                <div class="col">
+                  <h5 class="card-title" th:text="${account.getFriendlyName()}"></h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    Баланс: [[${account.getBalance()}]]₽
+                  </h6>
+                  <h6 class="card-subtitle mb-2 text-muted" th:text="${account.getName()}">Дебетовый счет</h6>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+<!--Footer-->
+<div th:insert="fragments/footer.html :: footer"></div>
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+
+</body>
+</html>

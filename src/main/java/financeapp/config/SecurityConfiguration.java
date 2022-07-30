@@ -45,6 +45,8 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/user/**").permitAll()
+                .antMatchers("/accounts").fullyAuthenticated()
+                .antMatchers("/tinkof/*").fullyAuthenticated()
                 .and().formLogin();
         return http.build();
     }

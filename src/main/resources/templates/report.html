@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!--<html lang="ru" xmlns:th="http://www.thymeleaf.org">-->
+<html lang="en">
+
+<head>
+  <style>
+    .report-card {
+      border-radius: 10px;
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s;
+      background: radial-gradient(#bbf8ad, #ecf693);
+    }
+
+    .report-card:hover {
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
+      transform: scale(1.01);
+    }
+
+    .card__icon {
+      grid-row: 2/3;
+      font-size: 30px;
+    }
+
+
+  </style>
+  <title>Отчет</title>
+  <!--  <div th:insert="fragments/head.html :: head"></div>-->
+  <meta charset="utf-8"/>
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+</head>
+<body id="page-top">
+<!-- navbar-->
+<!--<div th:insert="fragments/navbar.html :: navbar"></div>-->
+
+
+<!-- content-->
+<div class="container mt-2 d-flex flex-column">
+  <div class="card report-card">
+    <!--    Icon-->
+    <!--    <div class="card__icon"><i class="fas fa-bolt"></i></div>-->
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Отчет <br> Август 2022</div>
+    </div>
+  </div>
+
+
+  <div class="row d-flex align-items-stretch flex-wrap" style="flex-shrink: 0;">
+    <div class="col d-flex">
+      <div class="card report-card mt-4 flex-fill">
+        <div class="card-body">
+
+          <table class="table">
+            <tbody>
+            <tr>
+              <th scope="row">Обязательные платежи</th>
+              <td>56 ₽</td>
+              <td>30%</td>
+            </tr>
+            <tr>
+              <th scope="row">Отложено</th>
+              <td>564 ₽</td>
+              <td>20%</td>
+            </tr>
+            <tr>
+              <th scope="row">Остальное</th>
+              <td>562 ₽</td>
+              <td>10%</td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+    <div class="col d-flex">
+      <div class="card report-card mt-4 flex-fill">
+        <div class="card-body">
+          <div style="text-align: center; font-weight: bold">Статистика</div>
+          <table class="table">
+            <tbody>
+            <tr>
+              <th>Самая большая трата</th>
+              <td>56 ₽</td>
+            </tr>
+            <tr>
+              <th>Потрачено в среднем в день</th>
+              <td>564 ₽</td>
+            </tr>
+            <tr>
+              <th>еще что-то</th>
+              <td>562 ₽</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card report-card mt-4">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Распределение трат</div>
+
+      <div class="row">
+        <div class="col">
+          <canvas id="myChart" width="100" height="100"></canvas>
+        </div>
+        <div class="col">
+          <div class="row">
+            <p>Вы можете нажать на категорию, чтобы узнать больше</p>
+            <div class="col">
+              <p>пам</p>
+              <p>пам</p>
+              <p>пам</p>
+              <p>пам</p>
+            </div>
+            <div class="col">
+              <p>пам</p>
+              <p>пам</p>
+              <p>пам</p>
+              <p>пам</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card report-card mt-4">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Место для анализа или комментария</div>
+      <input type="text-area">
+    </div>
+  </div>
+
+
+</div>
+
+
+<!--Footer-->
+<!--<div th:insert="fragments/baseScripts.html :: baseScript"></div>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
+        integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="pallete.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  let spend_in_category = [300, 50, 100];
+  let spend_in_category_labels = ['Продукты', 'Транспорт', 'Развлечения'];
+
+  const data = {
+    labels: spend_in_category_labels,
+    datasets: [{
+      data: spend_in_category,
+      backgroundColor: palette('tol', spend_in_category.length).map(function (hex) {
+        return '#' + hex;
+      }),
+      hoverOffset: 4
+    }]
+  };
+
+  const config = {
+    type: 'doughnut',
+    data: data,
+  };
+  const myChart = new Chart(ctx, config);
+</script>
+</body>
+</html>
+
+
