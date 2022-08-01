@@ -29,16 +29,19 @@ public class ReportCategoryPart {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    private Double sum;
     @OneToMany
     private List<AbstractTransaction> transactionList;
 
     public ReportCategoryPart(Category category) {
         this.category = category;
         transactionList = new ArrayList<>();
+        sum = Double.valueOf(0);
     }
 
 
     public void AddTransaction(AbstractTransaction transaction) {
+        sum += transaction.getAmount();
         transactionList.add(transaction);
     }
 

@@ -30,6 +30,10 @@ public class Report {
     @OneToMany
     private List<ReportCategoryPart> parts;
 
+    @OneToOne
+    @JoinColumn(name = "analysis_id")
+    private Analysis analysis;
+
     private LocalDateTime updated;
 
     public Report(CustomUser user, Integer year, Integer month, List<ReportCategoryPart> parts, LocalDateTime sync) {
