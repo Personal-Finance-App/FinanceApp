@@ -41,7 +41,7 @@
     <div class="col d-flex">
       <div class="card report-card mt-4 flex-fill">
         <div class="card-body">
-          Income:
+          Income: [[${analysis.income}]] ₽
         </div>
       </div>
     </div>
@@ -62,10 +62,10 @@
 
           <table class="table">
             <tbody>
-            <tr>
+            <tr th:if="${analysis.requirePayments} > 0">
               <th scope="row">Обязательные платежи</th>
-              <td>56 ₽</td>
-              <td>30%</td>
+              <td> [[${analysis.requirePayments} ]] ₽</td>
+              <td> [[${analysis.requirePayments} / ${totalSpend}]]</td>
             </tr>
             <tr>
               <th scope="row">Отложено</th>
@@ -117,24 +117,22 @@
           <canvas id="myChart" width="100" height="100"></canvas>
         </div>
         <div class="col">
-          <div class="row">
-            <p>Вы можете нажать на категорию, чтобы узнать больше</p>
-            <div class="col">
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-            </div>
-            <div class="col">
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-            </div>
+          <p>Вы можете нажать на категорию, чтобы узнать больше</p>
+          <div class="d-flex">
+            <!--            <div th:each="{name} : ${categoryNames}">-->
+            <!--              <li> [[name]] </li>-->
+            <!--            </div>-->
           </div>
 
+          <table class="table">
+            <tbody>
+            <tr th:each="part : ${categoryParts}">
+              <th>[[${part.category.categoryName}]]</th>
+              <td>[[${part.sum}]] ₽</td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
 
     </div>
   </div>
@@ -193,6 +191,13 @@
   const config = {
     type: 'doughnut',
     data: data,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        }
+      }
+    }
   };
   const myChart = new Chart(ctx, config);
 </script>
