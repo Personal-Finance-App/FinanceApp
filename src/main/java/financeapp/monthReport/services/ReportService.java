@@ -36,12 +36,9 @@ public class ReportService {
         var analysis = analysisService.startAnalysis(transactionList);
         newReport.setAnalysis(analysis);
         reportRepo.save(newReport);
-
-
         return newReport;
     }
 
-    ;
 
     public Report findReport(CustomUser user, Integer month, Integer year) throws Exception {
         var report = reportRepo.findReportByLinkedUserAndMonthAndYear(user, month, year);

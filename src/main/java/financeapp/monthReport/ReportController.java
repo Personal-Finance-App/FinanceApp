@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @RestController()
 @RequestMapping("/report")
@@ -25,7 +28,29 @@ public class ReportController {
 
     }
 
-    ;
+    @PostMapping("/createReport")
+    public ResponseEntity<?> createReport(Authentication authentication, Integer month, Integer year) {
+        var dateInfo = new TimeSpanData();
+
+        var startDate = LocalDateTime.of(year, month, 1, 0, 0);
+
+        var endDate = LocalDateTime.of(year, month, 1, 23, 59)
+                .plusDays(startDate.toLocalDate().lengthOfMonth() - 1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
+
+        dateInfo.setStart(startDate.format(formatter));
+        dateInfo.setEnd(endDate.format(formatter));
+        return createReport(authentication, dateInfo);
+
+    }
+
+    @PostMapping("/createReport")
+    public ResponseEntity<?> createReport(Authentication authentication) {
+        return createReport(authentication, LocalDateTime.now().getMonthValue(), LocalDateTime.now().getYear());
+
+    }
+
 
     @PostMapping("/get")
     public ResponseEntity<?> getReport(Authentication authentication,
