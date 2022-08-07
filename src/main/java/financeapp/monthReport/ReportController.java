@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import financeapp.monthReport.services.ReportService;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 
 @RestController()
@@ -29,25 +29,15 @@ public class ReportController {
     }
 
     @PostMapping(value = "/createReport/monthYear")
-    public ResponseEntity<?> createReport(Authentication authentication, Integer month, Integer year) {
-        var dateInfo = new TimeSpanData();
-
-        var startDate = LocalDateTime.of(year, month, 1, 0, 0);
-
-        var endDate = LocalDateTime.of(year, month, 1, 23, 59)
-                .plusDays(startDate.toLocalDate().lengthOfMonth() - 1);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
-
-        dateInfo.setStart(startDate.format(formatter));
-        dateInfo.setEnd(endDate.format(formatter));
+    public ResponseEntity<?> createReport(Authentication authentication, @RequestBody MonthYear data) {
+        var dateInfo = new TimeSpanData(data.getMonth(), data.getYear());
         return createReport(authentication, dateInfo);
 
     }
 
     @PostMapping("/createReport/auto")
     public ResponseEntity<?> createReport(Authentication authentication) {
-        return createReport(authentication, LocalDateTime.now().getMonthValue(), LocalDateTime.now().getYear());
+        return createReport(authentication, new MonthYear(LocalDateTime.now().getMonthValue(), LocalDateTime.now().getYear()));
 
     }
 
@@ -66,7 +56,11 @@ public class ReportController {
         }
     }
 
-    ;
+}
 
-
+@Data
+@AllArgsConstructor
+class MonthYear {
+    private Integer month;
+    private Integer year;
 }
