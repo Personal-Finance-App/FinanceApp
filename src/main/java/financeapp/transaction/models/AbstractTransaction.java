@@ -49,4 +49,6 @@ public abstract class AbstractTransaction {
     public void addLabel(Label label) {
         labelList.add(label);
     }
+
+    public abstract String friendName();
 }
