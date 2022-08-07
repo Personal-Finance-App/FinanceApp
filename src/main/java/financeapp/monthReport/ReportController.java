@@ -20,7 +20,7 @@ public class ReportController {
     private final UserRepo userRepo;
     private final ReportService reportService;
 
-    @PostMapping("/createReport")
+    @PostMapping(value = "/createReport/startend")
     public ResponseEntity<?> createReport(Authentication authentication, @RequestBody TimeSpanData timeSpanData) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         reportService.create(user, timeSpanData.getTimeStart(), timeSpanData.getTimeEnd());
@@ -28,7 +28,7 @@ public class ReportController {
 
     }
 
-    @PostMapping("/createReport")
+    @PostMapping(value = "/createReport/monthYear")
     public ResponseEntity<?> createReport(Authentication authentication, Integer month, Integer year) {
         var dateInfo = new TimeSpanData();
 
@@ -45,7 +45,7 @@ public class ReportController {
 
     }
 
-    @PostMapping("/createReport")
+    @PostMapping("/createReport/auto")
     public ResponseEntity<?> createReport(Authentication authentication) {
         return createReport(authentication, LocalDateTime.now().getMonthValue(), LocalDateTime.now().getYear());
 
