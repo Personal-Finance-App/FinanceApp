@@ -20,9 +20,10 @@ public class CountIncomeHandler extends AnalysisHandler {
         if (!transaction.getLabelList().contains(getLabel()) &&
                 transaction instanceof IncomeTransaction) {
             analysis.setIncome(analysis.getIncome() + transaction.getAmount());
-
-            if (getNextHandler() != null)
-                getNextHandler().Handle(transaction, analysis);
+            return;
         }
+
+        if (getNextHandler() != null)
+            getNextHandler().Handle(transaction, analysis);
     }
 }

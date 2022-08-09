@@ -36,7 +36,7 @@ public class LabelService {
 
         labels.forEach(num -> {
             var found = labelRepo.findLabelByName(
-                    InitializeLabel.getLabels().get(num)
+                    InitializeLabel.getLabels().get(num - 1)
             );
             transaction.addLabel(found);
         });

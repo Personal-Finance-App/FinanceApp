@@ -41,14 +41,14 @@
     <div class="col d-flex">
       <div class="card report-card mt-4 flex-fill">
         <div class="card-body">
-          Income: [[${analysis.income}]] ₽
+          Income: <span id="income"></span>  </td>
         </div>
       </div>
     </div>
     <div class="col d-flex">
       <div class="card report-card mt-4 flex-fill">
         <div class="card-body">
-          Spend: [[${totalSpend}]] ₽
+          Spend: <span id="spend"></span>
         </div>
       </div>
     </div>
@@ -62,20 +62,25 @@
 
           <table class="table">
             <tbody>
-            <tr th:if="${analysis.requirePayments} > 0">
+            <tr>
               <th scope="row">Обязательные платежи</th>
-              <td> [[${analysis.requirePayments} ]] ₽</td>
-              <td> [[${analysis.requirePayments} / ${totalSpend}]]</td>
+              <td><span id="requirePayments">считаю...</span></td>
+              <td><span id="requirePaymentsPercent">считаю...</span></td>
             </tr>
             <tr>
               <th scope="row">Отложено</th>
-              <td>564 ₽</td>
-              <td>20%</td>
+              <td>
+                <span id="saved">считаю...</span>
+              <td><span id="savedPercent">считаю...</span></td>
+              </td>
+
             </tr>
             <tr>
               <th scope="row">Остальное</th>
-              <td>562 ₽</td>
-              <td>10%</td>
+              <td>
+                <span id="other">считаю...</span>
+              </td>
+              <td><span id="otherPercent">считаю...</span></td>
             </tr>
             </tbody>
           </table>
@@ -91,15 +96,15 @@
             <tbody>
             <tr>
               <th>Самая большая трата</th>
-              <td>56 ₽</td>
+              <td>
+                <span id="biggestPayment">считаю...</span>
+              </td>
             </tr>
             <tr>
               <th>Потрачено в среднем в день</th>
-              <td>564 ₽</td>
-            </tr>
-            <tr>
-              <th>еще что-то</th>
-              <td>562 ₽</td>
+              <td>
+                <span id="averagePerDay">считаю...</span>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -125,11 +130,7 @@
           </div>
 
           <table class="table">
-            <tbody>
-            <tr th:each="part : ${categoryParts}">
-              <th>[[${part.category.categoryName}]]</th>
-              <td>[[${part.sum}]] ₽</td>
-            </tr>
+            <tbody id="categoryTable">
             </tbody>
           </table>
         </div>
@@ -137,12 +138,12 @@
     </div>
   </div>
 
-  <div class="card report-card mt-4">
-    <div class="card-body">
-      <div style="text-align: center; font-weight: bold;">Место для анализа или комментария</div>
-      <input type="text-area">
-    </div>
-  </div>
+    <!--  <div class="card report-card mt-4">-->
+    <!--    <div class="card-body">-->
+    <!--      <div style="text-align: center; font-weight: bold;">Место для анализа или комментария</div>-->
+    <!--      <input type="text-area">-->
+    <!--    </div>-->
+    <!--  </div>-->
 
 
 </div>
@@ -166,26 +167,83 @@
   /*]]>*/
 </script>
 
+  <script>
+    function showPercentage(analysisPercentage) {
+      for (let [key, value] of Object.entries(analysisPercentage)) {
+        let result = `${value.toFixed(4) * 100}%`;
+        $(`#${key}`).html(result);
+      }
+    }
 
-<script th:inline="javascript">
-  const ctx = document.getElementById('myChart');
+    function createRow(categoryName, amount) {
+      let percent = (amount / analysis.spend) * 100;
+      return `<tr>
+              <th>${categoryName}</th>
+              <td>${toCurrency(amount, "RUB", 'Ru-ru')}</td>
+              <td>${percent.toFixed(2)}%</td>
+            </tr>`
+    }
+
+  </script>
 
 
-  /*<![CDATA[*/
-  let spend_in_category = [[${categoryAmounts}]];
+  <script th:inline="javascript">
+
+    const toCurrency = (n, curr, LanguageFormat = undefined) =>
+
+            Intl.NumberFormat(LanguageFormat, {style: 'currency', currency: curr}).format(n);
+
+    let analysis = {
+      income: [[${analysis.income}]],
+      spend: [[${totalSpend}]],
+      requirePayments: [[${analysis.requirePayments}]],
+      saved: [[${analysis.saved}]],
+      other: [[${analysis.other}]],
+      biggestPayment: {
+        amount: [[${analysis.biggestPayment.amount}]],
+        name: [[${analysis.biggestPayment.description}]],
+      },
+      averagePerDay: [[${analysis.averagePerDay}]]
+    };
+
+    for (let [key, value] of Object.entries(analysis)) {
+      let result = '';
+      if (key == "biggestPayment") {
+        result = `${toCurrency(value.amount, "RUB", 'Ru-ru')}, ${value.name}`;
+      } else {
+        result = toCurrency(value, "RUB", 'Ru-ru')
+      }
+      $(`#${key}`).html(result);
+    }
+
+    let analysisPercentage = {
+      requirePaymentsPercent: analysis.requirePayments / analysis.spend,
+      savedPercent: analysis.saved / analysis.spend,
+      otherPercent: analysis.other / analysis.spend,
+    }
+    showPercentage(analysisPercentage);
 
 
-  /*]]>*/
+    const ctx = document.getElementById('myChart');
 
-  const data = {
-    labels: spend_in_category_labels,
-    datasets: [{
-      data: spend_in_category,
-      backgroundColor: palette('tol', spend_in_category.length).map(function (hex) {
-        return '#' + hex;
-      }),
-      hoverOffset: 4
-    }]
+
+    /*<![CDATA[*/
+    let spend_in_category = [[${categoryAmounts}]];
+    /*]]>*/
+
+    for (let i = 0; i < spend_in_category_labels.length; i++) {
+      $('#categoryTable').append(createRow(spend_in_category_labels[i], spend_in_category[i]));
+    }
+
+    const data = {
+      labels: spend_in_category_labels,
+      datasets: [{
+        data: spend_in_category,
+        backgroundColor: palette('tol', spend_in_category.length).map(function (hex) {
+          return '#' + hex;
+        }),
+        hoverOffset: 4
+      }]
   };
 
   const config = {

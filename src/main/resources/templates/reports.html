@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Счета</title>
+    <title>Отчеты</title>
     <div th:insert="fragments/head.html :: head"></div>
 </head>
 <body id="page-top">
@@ -17,16 +17,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form onsubmit="sendData(event);">
                     <div class="form-group">
                         <label for="month">Месяц</label>
-                        <input class="form-control" id="month" aria-describedby="monthHelp" placeholder="Месяц" required
+                        <input type="number" class="form-control" id="month" aria-describedby="monthHelp"
+                               placeholder="Месяц" required
                                pattern="^[\d]{1,2}$">
                         <small id="monthHelp" class="form-text text-muted">Укажите номер месяц</small>
                     </div>
                     <div class="form-group">
                         <label for="year">Год</label>
-                        <input class="form-control" id="year" placeholder="Год" required
+                        <input type="number" class="form-control" id="year" placeholder="Год" required
                                pattern="^[\d]{4}$" aria-describedby="yearHelp">
                         <small id="yearHelp" class="form-text text-muted">Например, 2022</small>
                     </div>
@@ -43,7 +44,7 @@
     <div class="container mt-lg-5">
         <div class="row">
             <div class="col">
-                <h2>Ваши счета</h2>
+                <h2>Отчеты</h2>
             </div>
             <div class="col">
                 <!-- Button trigger modal -->
@@ -61,7 +62,8 @@
         <div class="d-flex flex-wrap">
 
             <div th:each="report : ${reports}">
-                <div class="account-card m-2" onclick="window.location='/';">
+                <div class="account-card m-2"
+                     th:onclick="'window.location.href = \'' + @{/report/{year}/{month}(year=${report.year}, month=${report.month})} + '\''">
                     <div class="card" style="width: 25rem;">
                         <div class="card-body">
                             <div class="row">
@@ -88,23 +90,10 @@
     function sendData(e) {
         e.preventDefault(); // don not refresh the page
 
-        $.ajax({
-            url: "/tinkof/auth/finalregister",
-            method: 'POST',
-            contentType: "application/json",
-            data: JSON.stringify({
-                sms: $('#smsCode').val(),
-                password: $('#bank-passport').val(),
-                operationTicket: operation_ticket,
-            }),
-            success: function (response) {
-                document.location.href = '/tinkof/requestAccount';
-                console.log("ВСЕ ОКЕЙ")
-            },
-            error: function (response) {
-                console.log("Чето пошло не так...")
-            }
-        })
+        let month = $('#month').val();
+        let year = $('#year').val();
+        let toPage = `/monthTransaction/${year}/${month}`
+        document.location.href = toPage;
 
     }
 </script>
