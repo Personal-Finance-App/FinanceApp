@@ -29,10 +29,12 @@ public class ReportFront {
                             @PathVariable(value = "year") Integer year,
                             @PathVariable(value = "month") Integer month,
                             Authentication authentication) {
+        String[] monthNames = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
 
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         var report = reportRepo.findReportByLinkedUserAndMonthAndYear(user, month, year);
-        model.addAttribute("month", "Теест");
+
+        model.addAttribute("month", monthNames[month - 1]);
         model.addAttribute("year", year);
         if (report == null)
             throw new RuntimeException("Отчет еще не создан");
