@@ -47,6 +47,9 @@ public class SecurityConfiguration {
                 .antMatchers("/api/user/**").permitAll()
                 .antMatchers("/accounts").fullyAuthenticated()
                 .antMatchers("/tinkof/*").fullyAuthenticated()
+                .antMatchers("/reports").fullyAuthenticated()
+                .antMatchers("/report/*").fullyAuthenticated()
+                .antMatchers("/monthTransaction/*").fullyAuthenticated()
                 .and().formLogin();
         return http.build();
     }
