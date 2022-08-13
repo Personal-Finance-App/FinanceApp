@@ -16,7 +16,7 @@ public class SelfTransferLabel extends Handler {
     @Override
     public void Handle(AbstractTransaction transaction, List<Integer> labels) {
         // todo: realize
-        if (false) {
+        if (transaction.getDescription().equals("Перевод между счетами")) {
             labels.add(3);
         }
 

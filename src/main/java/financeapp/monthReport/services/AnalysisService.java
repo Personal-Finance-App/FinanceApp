@@ -30,6 +30,7 @@ public class AnalysisService {
         var savedAmount = new SavedAmountHandler();
         var other = new OtherHandler(); // ВСЕГДА ПОСЛЕДНИМ ИДЕТ
         var skipLabel = labelRepo.findLabelByName("Не учитывать");
+        var selfTransfer = labelRepo.findLabelByName("Перевод самому себе");
         var analysis = new Analysis();
 
         // цепочка обработки
@@ -37,7 +38,7 @@ public class AnalysisService {
 
         for (AbstractTransaction transaction :
                 transactionList) {
-            if (!transaction.getLabelList().contains(skipLabel)) {
+            if (!transaction.getLabelList().contains(skipLabel) && !transaction.getLabelList().contains(selfTransfer)) {
                 income.Handle(transaction, analysis);
             }
         }

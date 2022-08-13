@@ -35,6 +35,8 @@ public class Report {
     private Analysis analysis;
 
     private LocalDateTime updated;
+    @Column(length = 600)
+    private String comment;
 
     public Report(CustomUser user, Integer year, Integer month, List<ReportCategoryPart> parts, LocalDateTime sync) {
         this.linkedUser = user;
@@ -42,6 +44,7 @@ public class Report {
         this.month = month;
         this.parts = parts;
         this.updated = sync;
+        this.comment = "";
     }
 
     public ReportWrapper toWrapper() {
