@@ -57,7 +57,7 @@ public class FakeConnectionService {
             abstractTransaction.setAmount(getRandomNumberForMoneyTransaction());
             abstractTransaction.setDateTime(getRandomLocalDateTime());
             abstractTransaction.setDescription("test transaction");
-            abstractTransaction.setMerchant("none");
+            abstractTransaction.setMerchant(getRandomNameForMerchant());
             abstractTransaction.setCategory(getRandomCategory());
             abstractTransactions.add(abstractTransaction);
         }
