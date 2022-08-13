@@ -5,6 +5,7 @@ import financeapp.monthReport.services.ReportService;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,20 @@ public class ReportController {
         }
     }
 
+    @PostMapping("/save-comment/{year}/{month}")
+    @ResponseBody
+    public ResponseEntity<?> saveComments(Authentication authentication,
+                                          @RequestBody CommentData data,
+                                          @PathVariable Integer month,
+                                          @PathVariable Integer year) throws Exception {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        var report = reportService.findReport(user, month, year);
+
+        if (reportService.setComment(report, data.getComment()))
+            return ResponseEntity.ok().body("saved");
+        return ResponseEntity.internalServerError().body("Error");
+    }
+
 }
 
 @Data
@@ -64,3 +79,11 @@ class MonthYear {
     private Integer month;
     private Integer year;
 }
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class CommentData {
+    private String comment;
+}
+

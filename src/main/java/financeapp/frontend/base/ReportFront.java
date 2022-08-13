@@ -35,6 +35,7 @@ public class ReportFront {
         var report = reportRepo.findReportByLinkedUserAndMonthAndYear(user, month, year);
 
         model.addAttribute("month", monthNames[month - 1]);
+        model.addAttribute("monthNum", month);
         model.addAttribute("year", year);
         if (report == null)
             throw new RuntimeException("Отчет еще не создан");
@@ -52,6 +53,7 @@ public class ReportFront {
 
         model.addAttribute("categoryParts", parts);
         model.addAttribute("analysis", report.getAnalysis());
+        model.addAttribute("comment", report.getComment());
 
 
         return "report.html";

@@ -135,19 +135,22 @@
           </table>
         </div>
 
+      </div>
     </div>
   </div>
 
-    <!--  <div class="card report-card mt-4">-->
-    <!--    <div class="card-body">-->
-    <!--      <div style="text-align: center; font-weight: bold;">Место для анализа или комментария</div>-->
-    <!--      <input type="text-area">-->
-    <!--    </div>-->
-    <!--  </div>-->
-
+  <div class="card report-card mt-4">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Место для анализа или комментария</div>
+      <div class="form-group">
+        <textarea class="form-control" id="comment" rows="4">[[${comment}]]</textarea>
+        <span style="font-weight: lighter"
+              id="commentStatus">Чтобы сохранить комментарий, кликните в другую область</span>
+      </div>
+    </div>
+  </div>
 
 </div>
-
 
 <div th:insert="fragments/baseScripts.html :: baseScript"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
@@ -167,17 +170,34 @@
   /*]]>*/
 </script>
 
-  <script>
-    function showPercentage(analysisPercentage) {
-      for (let [key, value] of Object.entries(analysisPercentage)) {
-        let result = `${value.toFixed(4) * 100}%`;
-        $(`#${key}`).html(result);
+<script th:inline="javascript">
+  $('#comment').blur(function () {
+    $.ajax({
+      url: '/report/save-comment/[[${year}]]/[[${monthNum}]]',
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify({comment: $(this).val()}),
+      success: function (response) {
+        $('#commentStatus').html("Сохранено")
+      },
+      error: function (response) {
+        $('#commentStatus').html("Что-то пошло не так")
       }
-    }
+    });
+  });
+</script>
 
-    function createRow(categoryName, amount) {
-      let percent = (amount / analysis.spend) * 100;
-      return `<tr>
+<script>
+  function showPercentage(analysisPercentage) {
+    for (let [key, value] of Object.entries(analysisPercentage)) {
+      let result = `${value.toFixed(4) * 100}%`;
+      $(`#${key}`).html(result);
+    }
+  }
+
+  function createRow(categoryName, amount) {
+    let percent = (amount / analysis.spend) * 100;
+    return `<tr>
               <th>${categoryName}</th>
               <td>${toCurrency(amount, "RUB", 'Ru-ru')}</td>
               <td>${percent.toFixed(2)}%</td>

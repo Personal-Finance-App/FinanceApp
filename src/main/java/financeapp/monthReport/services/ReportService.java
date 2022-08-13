@@ -47,5 +47,11 @@ public class ReportService {
         return report;
     }
 
+    public boolean setComment(Report report, String comment) {
+        report.setComment(comment);
+        reportRepo.save(report);
+        return true;
+    }
+
 
 }
