@@ -129,6 +129,7 @@ public class SberbankService {
             default -> throw new RuntimeException("Don't now this type of card: " + payload.getType());
 
         };
+        account.setBalance(payload.getBalance());
         return account;
     }
 
