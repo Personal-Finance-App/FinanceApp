@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<block th:replace="/banksRegister/login_template.html :: loginTemplate(@{/bank-logo/sberbank-rectangle.png}, 'Сбербанк', ~{::form} )">
+
+  <!--    Форма для обработки данных, передается в шаблон-->
+  <form class="mt-4" onsubmit="sendData(event);">
+    <div class="inputBox">
+      <input type="text" name="login" id="login"
+             value="" required
+             onkeyup="this.setAttribute('value', this.value);">
+      <label>Логин</label>
+    </div>
+
+    <div class="inputBox" style="visibility: hidden">
+      <input type="password" name="pinCode" id="pinCode" value="" required
+             pattern="^[\d]{5}$"
+             onkeyup="this.setAttribute('value', this.value);">
+      <label>Пин-код от приложения</label>
+    </div>
+
+    <div class="inputBox" style="visibility: hidden">
+      <input type="text" name="smsCode" id="smsCode" value=""
+             pattern="^[\d]{5}$"
+             required onkeyup="this.setAttribute('value', this.value);">
+      <label>СМС-Код</label>
+    </div>
+
+    <input type="submit" name="sign-in" id="submitButton" value="Подключить" disabled>
+  </form>
+</block>
+
+
+<!--Обработка формы-->
+<script>
+  let mGUID = "";
+  // $('#login').bind('input', function(){
+  $('#login').blur(function () {
+
+      $('#login').prop('disabled', true);
+      $.ajax({
+        url: '/sberbank/auth/initregister',
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({login: $('#login').val()}),
+        success: function (response) {
+          mGUID = response.mGUID;
+          $('.inputBox').css('visibility', 'visible');
+          $('#submitButton').prop('disabled', false);
+        },
+        error: function (response) {
+          console.log(response);
+        }
+      });
+  });
+
+
+  function sendData(e) {
+    e.preventDefault(); // don not refresh the page
+
+    $.ajax({
+      url: "/sberbank/auth/finalregister",
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify({
+        mguid: mGUID,
+        smsCode: $('#smsCode').val(),
+        pinCode: $('#pinCode').val(),
+      }),
+      success: function (response) {
+        document.location.href = '/sberbank/requestAccount';
+        console.log("ВСЕ ОКЕЙ")
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+      }
+    })
+
+  }
+</script>
