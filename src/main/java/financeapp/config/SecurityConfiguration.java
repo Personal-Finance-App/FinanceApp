@@ -49,6 +49,9 @@ public class SecurityConfiguration {
                 .antMatchers("/tinkof/*").fullyAuthenticated()
                 .antMatchers("/sberbank/*").fullyAuthenticated()
                 .antMatchers("/sberbank/**").fullyAuthenticated()
+                .antMatchers("/reports").fullyAuthenticated()
+                .antMatchers("/report/**").fullyAuthenticated()
+                .antMatchers("/monthTransaction/*").fullyAuthenticated()
                 .and().formLogin();
         return http.build();
     }

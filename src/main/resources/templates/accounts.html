@@ -55,7 +55,7 @@
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
           Добавить счета
         </button>
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="">
           Синхронизировать
         </button>
       </div>
@@ -66,13 +66,10 @@
       <h2>У вас еще нет подключенных счетов</h2>
     </div>
 
+    <div class="d-flex flex-wrap">
 
-    <!--    todo: нужно сделать так, чтобы было по 3 счета в строке. А также подогнать размеры -->
-
-    <div class="row">
-
-      <div th:each="account : ${accounts}" class="col">
-        <div class="account-card">
+      <div th:each="account : ${accounts}">
+        <div class="account-card m-2">
           <div class="card" style="width: 25rem;">
             <div class="card-body">
               <div class="row">

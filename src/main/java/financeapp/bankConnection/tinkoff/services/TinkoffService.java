@@ -22,7 +22,6 @@ import financeapp.transaction.services.TransactionService;
 import financeapp.users.CustomUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -37,20 +36,20 @@ import java.util.*;
 public class TinkoffService {
 
 
-    @Autowired
-    TinkoffConnectionRepo tinkoffConnectionRepo;
-
-    @Autowired
-    AccountRepo accountRepo;
-
-    @Autowired
-    TransactionService transactionService;
-
-    @Autowired
-    CategoryService categoryService;
+    private final TinkoffConnectionRepo tinkoffConnectionRepo;
+    private final AccountRepo accountRepo;
+    private final TransactionService transactionService;
+    private final CategoryService categoryService;
 
     TinkoffApi api = TinkoffApiFactory.getService();
     Logger logger = LoggerFactory.getLogger(TinkoffService.class);
+
+    public TinkoffService(TinkoffConnectionRepo tinkoffConnectionRepo, AccountRepo accountRepo, TransactionService transactionService, CategoryService categoryService) {
+        this.tinkoffConnectionRepo = tinkoffConnectionRepo;
+        this.accountRepo = accountRepo;
+        this.transactionService = transactionService;
+        this.categoryService = categoryService;
+    }
 
     /**
      * Функция, которая запрашивает новую сессию.
