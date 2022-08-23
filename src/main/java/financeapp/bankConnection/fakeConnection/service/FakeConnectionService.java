@@ -1,147 +1,110 @@
 package financeapp.bankConnection.fakeConnection.service;
 
-import financeapp.accounts.AccountData;
 import financeapp.accounts.models.Account;
-import financeapp.accounts.models.variousAccount.CreditAccount;
-import financeapp.accounts.models.variousAccount.DebitAccount;
-import financeapp.accounts.models.variousAccount.SavingAccount;
-import financeapp.category.entity.Category;
-import financeapp.category.repos.CategoryRepo;
+import financeapp.accounts.repositories.AccountRepo;
+import financeapp.accounts.services.AccountService;
+import financeapp.bankConnection.fakeConnection.abstractFactory.FactoryAccountManager;
+import financeapp.bankConnection.fakeConnection.abstractFactory.FakeAccountManager;
+import financeapp.bankConnection.fakeConnection.factoryMethod.FakeAccountFactory;
+import financeapp.bankConnection.fakeConnection.factoryMethod.FakeCreditAccount;
+import financeapp.bankConnection.fakeConnection.factoryMethod.FakeDebitAccount;
+import financeapp.bankConnection.fakeConnection.tools.RandomUtility;
+import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.models.AbstractTransaction;
 import financeapp.transaction.models.IncomeTransaction;
 import financeapp.transaction.models.PayTransaction;
 import financeapp.transaction.models.TransferTransaction;
 import financeapp.users.CustomUser;
+import financeapp.users.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
+@Service
 public class FakeConnectionService {
     private final int countTransaction;
-    private final CategoryRepo categoryRepo;
+    private final RandomUtility randomizer;
+    private final AccountRepo accountRepo;
+    private final UserRepo userRepo;
+    private FakeAccountFactory factory;
+    private final TransactionRepo transactionRepo;
+    @Autowired
+    private AccountService accountService;
 
-    public FakeConnectionService(CategoryRepo categoryRepo) {
-        this.categoryRepo = categoryRepo;
+    public FakeConnectionService(RandomUtility randomizer, AccountRepo accountRepo, UserRepo userRepo,
+                                 TransactionRepo transactionRepo) {
+        this.randomizer = randomizer;
+        this.accountRepo = accountRepo;
+        this.userRepo = userRepo;
         this.countTransaction = 50;
+        this.transactionRepo = transactionRepo;
     }
 
-    public Account createDebitAccount(CustomUser user){
-        String provider = null;
-        UUID id = UUID.randomUUID();
-        DebitAccount debitAccount = new DebitAccount(id.toString(), getRandomNameForUser(), user, provider);
-        return debitAccount;
+    public List<Account> CreateAccounts(String email){
+        CustomUser user = userRepo.findCustomUserByEmail(email);
+        FakeAccountManager factory = new FakeAccountManager();
+        List<Account> accounts = new ArrayList<>();
+        accounts.add(factory.getCreditAccount(user));
+        accounts.add(factory.getDebitAccount(user));
+        accounts.add(factory.getSavingAccount(user));
+        List<Account> accountList = addTransactionOnAccount(accounts);
+        accountRepo.saveAll(accountList);
+        return accountList;
     }
 
-    public Account createSavingAccount(CustomUser user){
-        String provider = null;
-        UUID id = UUID.randomUUID();
-        SavingAccount savingAccount = new SavingAccount(id.toString(), getRandomNameForUser(), user, provider);
-        return savingAccount;
+    public Account CreateAccount(String type, String email){
+        CustomUser user = userRepo.findCustomUserByEmail(email);
+        if(type.equalsIgnoreCase("debit")){
+            factory = new FakeDebitAccount();
+            return saveAccount(user);
+        } else if(type.equalsIgnoreCase("credit")){
+            factory = new FakeCreditAccount();
+            return saveAccount(user);
+        } else if(type.equalsIgnoreCase("saving")){
+            return saveAccount(user);
+        }
+        throw new IllegalStateException("Unexpected value: " + RandomUtility.getRandomNumberForTypeTransaction());
     }
 
-    public Account createCreditAccount(CustomUser user){
-        String provider = null;
-        UUID id = UUID.randomUUID();
-        CreditAccount creditAccount = new CreditAccount(id.toString(), getRandomNameForUser(), user, provider);
-        return creditAccount;
-    }
 
-
-    public List<AbstractTransaction> addTransactions(){
+    public List<AbstractTransaction> addTransactions(String id){
+        Account account = accountRepo.findAccountByIdInSystem(id);
         List<AbstractTransaction> abstractTransactions = new ArrayList<AbstractTransaction>();
+        List<AbstractTransaction> abstractTransactionList = account.getTransactionList();
         for(int i = countTransaction; i > 0; i--){
             AbstractTransaction abstractTransaction = choiceTypeTransaction();
-            abstractTransaction.setAmount(getRandomNumberForMoneyTransaction());
-            abstractTransaction.setDateTime(getRandomLocalDateTime());
+            abstractTransaction.setAmount(RandomUtility.getRandomNumberForMoneyTransaction());
+            abstractTransaction.setDateTime(RandomUtility.getRandomLocalDateTime());
             abstractTransaction.setDescription("test transaction");
-            abstractTransaction.setMerchant(getRandomNameForMerchant());
-            abstractTransaction.setCategory(getRandomCategory());
+            abstractTransaction.setMerchant(RandomUtility.getRandomNameForMerchant());
+            abstractTransaction.setCategory(randomizer.getRandomCategory());
             abstractTransactions.add(abstractTransaction);
+            abstractTransactionList.add(abstractTransaction);
         }
+        transactionRepo.saveAll(abstractTransactions);
+        account.setTransactionList(abstractTransactionList);
         return abstractTransactions;
     }
 
     public AbstractTransaction choiceTypeTransaction(){
-        var transaction = switch (getRandomNumberForTypeTransaction()){
+        var transaction = switch (RandomUtility.getRandomNumberForTypeTransaction()){
             case 0 -> new IncomeTransaction();
             case 1 -> new PayTransaction();
             case 2 -> new TransferTransaction();
-            default -> throw new IllegalStateException("Unexpected value: " + getRandomNumberForTypeTransaction());
+            default -> throw new IllegalStateException("Unexpected value: " + RandomUtility.getRandomNumberForTypeTransaction());
         };
         return transaction;
     }
-    public static String getRandomNameForMerchant(){ // выглядит ущербно, но это единственное, что мне пришло в голову
-        List<String> names = new ArrayList<String>();
-        names.add("OZON4");
-        names.add("SHERLOCK SHOP");
-        names.add("AO ATK YAMAL");
-        names.add("TABAKOFF");
-        names.add("KRASNOE&BELOE");
-        names.add("BURGER KING 0028");
-        names.add("PAPIROSKA.RF");
-        int random = new Random().nextInt(names.size());
-        String name = names.get(random);
-        return name;
+    public List<Account> addTransactionOnAccount(List<Account> accounts){
+        for(Account account : accounts){
+            addTransactions(account.getIdInSystem());
+        }
+        return accounts;
     }
-
-    public static String getRandomNameForUser(){
-        List<String> names = new ArrayList<String>();
-        names.add("Vasya");
-        names.add("Dima");
-        names.add("Nikita");
-        names.add("Misha");
-        names.add("Lesha");
-        names.add("Rustam");
-        int random = new Random().nextInt(names.size());
-        String name = names.get(random);
-        return name;
+    public Account saveAccount(CustomUser user){
+        Account account = factory.CreateAccount(user);
+        accountRepo.save(account);
+        return account;
     }
-
-    public static int getRandomNumberForTypeTransaction()
-    {
-        return (int) (Math.random() * 3);
-    }
-
-    public static double  getRandomNumberForMoneyTransaction()
-    {
-        return (100 + Math.random() * 10000);
-    }
-
-    public Category getRandomCategory(){
-        List<Category> categories = categoryRepo.findAll();
-        int random = new Random().nextInt(categories.size());
-        return categories.get(random);
-    }
-
-    public static LocalDate getRandomLocalDate(){
-        LocalDate start = LocalDate.now().minusMonths(1);
-        LocalDate end = LocalDate.now();
-        long startEpochDay = start.toEpochDay();
-        long endEpochDay = end.toEpochDay();
-        long randomEpochDay = ThreadLocalRandom
-                .current()
-                .nextLong(startEpochDay, endEpochDay);
-        return LocalDate.ofEpochDay(randomEpochDay);
-    }
-
-    public static LocalTime getRandomLocalTime(){
-        LocalTime start = LocalTime.now().minusHours(1);
-        LocalTime end = LocalTime.now();
-        long startEpochDay = start.toSecondOfDay();
-        long endEpochDay = end.toSecondOfDay();
-        long randomEpochDay = ThreadLocalRandom
-                .current()
-                .nextLong(startEpochDay, endEpochDay);
-        return LocalTime.ofSecondOfDay(randomEpochDay);
-    }
-
-    public static LocalDateTime getRandomLocalDateTime(){
-        LocalDate localDate = getRandomLocalDate();
-        LocalTime localTime = getRandomLocalTime();
-        return localDate.atTime(localTime);
-    }
-
 }
