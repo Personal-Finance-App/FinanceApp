@@ -38,6 +38,10 @@ public class AccountService {
 
     }
 
+    public Account getById(String id){
+        return accountRepo.findAccountByIdInSystem(id);
+    }
+
 //    public void GetTransactions(Account account) {
 //        List<Transaction> transactionList = account.getBankConnection().getTransactions(account.getLastSync());
 //        transactionRepo.saveAll(transactionList);
