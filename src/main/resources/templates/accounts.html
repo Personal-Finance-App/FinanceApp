@@ -58,6 +58,9 @@
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
           Синхронизировать
         </button>
+        <button type="button" class="btn btn-success" onclick="toggleBalance();">
+          Показать баланс
+        </button>
       </div>
     </div>
 
@@ -84,7 +87,7 @@
                 <div class="col">
                   <h5 class="card-title" th:text="${account.getFriendlyName()}"></h5>
                   <h6 class="card-subtitle mb-2 text-muted">
-                    Баланс: [[${#numbers.formatDecimal(account.getBalance(), 0, 'COMMA', 2, 'POINT')}]]₽
+                    Баланс: <span class="balance" th:data="${account.getBalance()}"> ***.** ₽ </span>
                   </h6>
                   <h6 class="card-subtitle mb-2 text-muted" th:text="${account.getName()}">Дебетовый счет</h6>
 
@@ -106,3 +109,25 @@
 
 </body>
 </html>
+<script>
+  const toCurrency = (n, curr, LanguageFormat = undefined) =>
+          Intl.NumberFormat(LanguageFormat, {style: 'currency', currency: curr}).format(n);
+
+  let showed = 0;
+
+  function toggleBalance() {
+    let elemnts = $('.balance');
+    if (showed === 0) {
+      elemnts.each(function( elem ) {
+        $(this).html(toCurrency($(this).attr("data"), "RUB", 'Ru-ru'));
+      })
+      showed = 1;
+    } else
+    {
+      elemnts.each(function( elem ) {
+        $(this).html("***.** ₽");
+      })
+      showed = 0;
+    }
+  }
+</script>
