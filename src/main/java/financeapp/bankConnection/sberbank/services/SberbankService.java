@@ -203,12 +203,15 @@ public class SberbankService {
         assert transaction.body() != null;
         // todo: add filter to state
 
+        var buf = transaction.body().getOperations();
 
-        return transaction.body().getOperations()
+        if (buf != null)
+            return buf
                 .getOperation()
                 .stream()
                 .map(this::createTransactionFromPayload)
                 .toList();
+        return new ArrayList<AbstractTransaction>();
     }
 
     public void updateCardsBalance(CustomUser user) throws IOException {
