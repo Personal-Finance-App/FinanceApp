@@ -323,7 +323,26 @@ public class TinkoffService {
             default -> throw new RuntimeException("Don't now this type of card: " + payload.getType());
 
         };
+        account.setBalance(payload.getBalance());
         return account;
+    }
+
+    public void updateCardsBalance(CustomUser user) throws IOException {
+        var accounts = getAccounts(user);
+        accounts.forEach(accountPayload ->
+                {
+                    var balance = 0D;
+                    if (accountPayload.getAccountBalance() != null)
+                        balance = accountPayload.getAccountBalance().getValue();
+                    var acc = accountRepo.findAccountByIdInSystem(accountPayload.getId());
+                    if (acc != null){
+                        acc.setBalance(balance);
+                        accountRepo.save(acc);
+                    }
+
+                }
+
+        );
     }
 
 }
