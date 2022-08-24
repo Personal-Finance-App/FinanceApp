@@ -4,8 +4,10 @@ import financeapp.bankConnection.Interface.BankConnection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.ResponseEntity;
 
 import javax.persistence.Entity;
+import java.io.IOException;
 import java.util.UUID;
 
 @Entity
