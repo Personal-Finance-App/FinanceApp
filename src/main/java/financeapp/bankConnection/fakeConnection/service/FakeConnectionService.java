@@ -3,11 +3,11 @@ package financeapp.bankConnection.fakeConnection.service;
 import financeapp.accounts.models.Account;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
-import financeapp.bankConnection.fakeConnection.abstractFactory.FactoryAccountManager;
 import financeapp.bankConnection.fakeConnection.abstractFactory.FakeAccountManager;
 import financeapp.bankConnection.fakeConnection.factoryMethod.FakeAccountFactory;
 import financeapp.bankConnection.fakeConnection.factoryMethod.FakeCreditAccount;
 import financeapp.bankConnection.fakeConnection.factoryMethod.FakeDebitAccount;
+import financeapp.bankConnection.fakeConnection.factoryMethod.FakeSavingAccount;
 import financeapp.bankConnection.fakeConnection.tools.RandomUtility;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.models.AbstractTransaction;
@@ -29,8 +29,6 @@ public class FakeConnectionService {
     private final UserRepo userRepo;
     private FakeAccountFactory factory;
     private final TransactionRepo transactionRepo;
-    @Autowired
-    private AccountService accountService;
 
     public FakeConnectionService(RandomUtility randomizer, AccountRepo accountRepo, UserRepo userRepo,
                                  TransactionRepo transactionRepo) {
@@ -46,10 +44,10 @@ public class FakeConnectionService {
         FakeAccountManager factory = new FakeAccountManager();
         List<Account> accounts = new ArrayList<>();
         accounts.add(factory.getCreditAccount(user));
-        accounts.add(factory.getDebitAccount(user));
         accounts.add(factory.getSavingAccount(user));
+        accounts.add(factory.getDebitAccount(user));
+        accountRepo.saveAll(accounts);
         List<Account> accountList = addTransactionOnAccount(accounts);
-        accountRepo.saveAll(accountList);
         return accountList;
     }
 
@@ -62,16 +60,16 @@ public class FakeConnectionService {
             factory = new FakeCreditAccount();
             return saveAccount(user);
         } else if(type.equalsIgnoreCase("saving")){
+            factory = new FakeSavingAccount();
             return saveAccount(user);
         }
         throw new IllegalStateException("Unexpected value: " + RandomUtility.getRandomNumberForTypeTransaction());
     }
 
 
-    public List<AbstractTransaction> addTransactions(String id){
+    public List<AbstractTransaction> AddTransactions(String id){
         Account account = accountRepo.findAccountByIdInSystem(id);
         List<AbstractTransaction> abstractTransactions = new ArrayList<AbstractTransaction>();
-        List<AbstractTransaction> abstractTransactionList = account.getTransactionList();
         for(int i = countTransaction; i > 0; i--){
             AbstractTransaction abstractTransaction = choiceTypeTransaction();
             abstractTransaction.setAmount(RandomUtility.getRandomNumberForMoneyTransaction());
@@ -80,10 +78,9 @@ public class FakeConnectionService {
             abstractTransaction.setMerchant(RandomUtility.getRandomNameForMerchant());
             abstractTransaction.setCategory(randomizer.getRandomCategory());
             abstractTransactions.add(abstractTransaction);
-            abstractTransactionList.add(abstractTransaction);
         }
         transactionRepo.saveAll(abstractTransactions);
-        account.setTransactionList(abstractTransactionList);
+        account.setTransactionList(abstractTransactions);
         return abstractTransactions;
     }
 
@@ -98,7 +95,7 @@ public class FakeConnectionService {
     }
     public List<Account> addTransactionOnAccount(List<Account> accounts){
         for(Account account : accounts){
-            addTransactions(account.getIdInSystem());
+            AddTransactions(account.getIdInSystem());
         }
         return accounts;
     }
