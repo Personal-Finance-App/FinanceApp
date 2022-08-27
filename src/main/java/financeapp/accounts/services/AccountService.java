@@ -49,4 +49,7 @@ public class AccountService {
 //        //TODO: Установить категорию для транзакции
 //        account.setLastSync(LocalDate.now());
 //    }
+    public List<Account> getAll(){
+        return accountRepo.findAll();
+    }
 }
