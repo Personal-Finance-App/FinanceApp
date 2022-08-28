@@ -37,12 +37,6 @@ public class FakeConnectionServiceTest {
 
     @TestConfiguration
     class FakeConnectionServiceTestContextConfiguration {
-
-        @Bean
-        public AccountService accountService() {
-            return new AccountService(accountRepo);
-        }
-
         @Bean
         public TransactionService transactionService() {
             return new TransactionService(transactionRepo, accountRepo);
