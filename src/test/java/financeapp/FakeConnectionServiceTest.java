@@ -43,14 +43,14 @@ public class FakeConnectionServiceTest {
             return new AccountService(accountRepo);
         }
     }
-//    @TestConfiguration
-//    class TransactionServiceTestContextConfiguration {
-//
-//        @Bean
-//        public TransactionService transactionService() {
-//            return new TransactionService(transactionRepo, accountRepo);
-//        }
-//    }
+    @TestConfiguration
+    class FakeConnectionServiceTestContextConfiguration {
+
+        @Bean
+        public TransactionService transactionService() {
+            return new TransactionService(transactionRepo, accountRepo);
+        }
+    }
 
     @Test
     public void CreateFakeAccount(){
