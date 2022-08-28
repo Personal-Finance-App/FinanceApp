@@ -4,6 +4,7 @@ import financeapp.accounts.models.Account;
 import financeapp.accounts.models.variousAccount.CreditAccount;
 import financeapp.accounts.models.variousAccount.DebitAccount;
 import financeapp.accounts.models.variousAccount.SavingAccount;
+import financeapp.accounts.repositories.AccountRepo;
 import financeapp.bankConnection.sberbank.SberbankConnectionRepo;
 import financeapp.bankConnection.sberbank.api.calls.SberbankApi;
 import financeapp.bankConnection.sberbank.api.calls.SberbankApiFactory;
@@ -41,6 +42,7 @@ public class SberbankService {
 
     private final SberbankConnectionRepo sberbankConnectionRepo;
     private final CategoryService categoryService;
+    private final AccountRepo accountRepo;
 
     private DataForConnect privateLogin(CustomUser user) throws IOException {
         var result = new DataForConnect();
@@ -201,12 +203,27 @@ public class SberbankService {
         assert transaction.body() != null;
         // todo: add filter to state
 
+        var buf = transaction.body().getOperations();
 
-        return transaction.body().getOperations()
+        if (buf != null)
+            return buf
                 .getOperation()
                 .stream()
                 .map(this::createTransactionFromPayload)
                 .toList();
+        return new ArrayList<AbstractTransaction>();
+    }
+
+    public void updateCardsBalance(CustomUser user) throws IOException {
+        var accounts = getAccounts(user);
+        accounts.forEach(account -> {
+                    var acc = accountRepo.findAccountByIdInSystem(account.getId());
+                    if (acc != null)
+                    {
+                        acc.setBalance(account.getBalance());
+                        accountRepo.save(acc);
+                    }
+                });
     }
 }
 

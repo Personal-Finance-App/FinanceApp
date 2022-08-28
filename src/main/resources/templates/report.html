@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<!--<html lang="ru" xmlns:th="http://www.thymeleaf.org">-->
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <style>
@@ -21,19 +20,12 @@
       font-size: 30px;
     }
 
-
   </style>
   <title>Отчет</title>
-  <!--  <div th:insert="fragments/head.html :: head"></div>-->
-  <meta charset="utf-8"/>
-  <!-- CSS only -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <div th:insert="fragments/head.html :: head"></div>
 </head>
-<body id="page-top">
-<!-- navbar-->
-<!--<div th:insert="fragments/navbar.html :: navbar"></div>-->
 
+<body id="page-top">
 
 <!-- content-->
 <div class="container mt-2 d-flex flex-column">
@@ -41,7 +33,24 @@
     <!--    Icon-->
     <!--    <div class="card__icon"><i class="fas fa-bolt"></i></div>-->
     <div class="card-body">
-      <div style="text-align: center; font-weight: bold;">Отчет <br> Август 2022</div>
+      <div style="text-align: center; font-weight: bold;">Отчет <br> [[${month}]] [[ ${year} ]]</div>
+    </div>
+  </div>
+
+  <div class="row d-flex align-items-stretch flex-wrap" style="flex-shrink: 0;">
+    <div class="col d-flex">
+      <div class="card report-card mt-4 flex-fill">
+        <div class="card-body">
+          Income: <span id="income"></span>  </td>
+        </div>
+      </div>
+    </div>
+    <div class="col d-flex">
+      <div class="card report-card mt-4 flex-fill">
+        <div class="card-body">
+          Spend: <span id="spend"></span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -55,18 +64,23 @@
             <tbody>
             <tr>
               <th scope="row">Обязательные платежи</th>
-              <td>56 ₽</td>
-              <td>30%</td>
+              <td><span id="requirePayments">считаю...</span></td>
+              <td><span id="requirePaymentsPercent">считаю...</span></td>
             </tr>
             <tr>
               <th scope="row">Отложено</th>
-              <td>564 ₽</td>
-              <td>20%</td>
+              <td>
+                <span id="saved">считаю...</span>
+              <td><span id="savedPercent">считаю...</span></td>
+              </td>
+
             </tr>
             <tr>
               <th scope="row">Остальное</th>
-              <td>562 ₽</td>
-              <td>10%</td>
+              <td>
+                <span id="other">считаю...</span>
+              </td>
+              <td><span id="otherPercent">считаю...</span></td>
             </tr>
             </tbody>
           </table>
@@ -82,15 +96,15 @@
             <tbody>
             <tr>
               <th>Самая большая трата</th>
-              <td>56 ₽</td>
+              <td>
+                <span id="biggestPayment">считаю...</span>
+              </td>
             </tr>
             <tr>
               <th>Потрачено в среднем в день</th>
-              <td>564 ₽</td>
-            </tr>
-            <tr>
-              <th>еще что-то</th>
-              <td>562 ₽</td>
+              <td>
+                <span id="averagePerDay">считаю...</span>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -108,66 +122,160 @@
           <canvas id="myChart" width="100" height="100"></canvas>
         </div>
         <div class="col">
-          <div class="row">
-            <p>Вы можете нажать на категорию, чтобы узнать больше</p>
-            <div class="col">
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-            </div>
-            <div class="col">
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-              <p>пам</p>
-            </div>
+          <p>Вы можете нажать на категорию, чтобы узнать больше</p>
+          <div class="d-flex">
+            <!--            <div th:each="{name} : ${categoryNames}">-->
+            <!--              <li> [[name]] </li>-->
+            <!--            </div>-->
           </div>
 
+          <table class="table">
+            <tbody id="categoryTable">
+            </tbody>
+          </table>
         </div>
-      </div>
 
+      </div>
     </div>
   </div>
 
   <div class="card report-card mt-4">
     <div class="card-body">
       <div style="text-align: center; font-weight: bold;">Место для анализа или комментария</div>
-      <input type="text-area">
+      <div class="form-group">
+        <textarea class="form-control" id="comment" rows="4">[[${comment}]]</textarea>
+        <span style="font-weight: lighter"
+              id="commentStatus">Чтобы сохранить комментарий, кликните в другую область</span>
+      </div>
     </div>
   </div>
 
-
 </div>
 
-
-<!--Footer-->
-<!--<div th:insert="fragments/baseScripts.html :: baseScript"></div>-->
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
         integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="pallete.js"></script>
+<script th:src="@{/js/pallete.js}"></script>
+
+
+<script th:inline="javascript">
+  let spend_in_category_labels = []
+  /*<![CDATA[*/
+
+  /*[# th:each="item : ${categoryNames}"]*/
+  spend_in_category_labels.push(/*[[${item}]]*/);
+  /*[/]*/
+
+  /*]]>*/
+</script>
+
+<script th:inline="javascript">
+  $('#comment').blur(function () {
+    $.ajax({
+      url: '/report/save-comment/[[${year}]]/[[${monthNum}]]',
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify({comment: $(this).val()}),
+      success: function (response) {
+        $('#commentStatus').html("Сохранено")
+      },
+      error: function (response) {
+        $('#commentStatus').html("Что-то пошло не так")
+      }
+    });
+  });
+</script>
 
 <script>
-  const ctx = document.getElementById('myChart');
+  function showPercentage(analysisPercentage) {
+    for (let [key, value] of Object.entries(analysisPercentage)) {
+      let result = `${value.toFixed(4) * 100}%`;
+      $(`#${key}`).html(result);
+    }
+  }
 
-  let spend_in_category = [300, 50, 100];
-  let spend_in_category_labels = ['Продукты', 'Транспорт', 'Развлечения'];
+  function createRow(categoryName, amount) {
+    let percent = (amount / analysis.spend) * 100;
+    return `<tr>
+              <th>${categoryName}</th>
+              <td>${toCurrency(amount, "RUB", 'Ru-ru')}</td>
+              <td>${percent.toFixed(2)}%</td>
+            </tr>`
+    }
 
-  const data = {
-    labels: spend_in_category_labels,
-    datasets: [{
-      data: spend_in_category,
-      backgroundColor: palette('tol', spend_in_category.length).map(function (hex) {
-        return '#' + hex;
-      }),
-      hoverOffset: 4
-    }]
+  </script>
+
+
+  <script th:inline="javascript">
+
+    const toCurrency = (n, curr, LanguageFormat = undefined) =>
+
+            Intl.NumberFormat(LanguageFormat, {style: 'currency', currency: curr}).format(n);
+
+    let analysis = {
+      income: [[${analysis.income}]],
+      spend: [[${totalSpend}]],
+      requirePayments: [[${analysis.requirePayments}]],
+      saved: [[${analysis.saved}]],
+      other: [[${analysis.other}]],
+      biggestPayment: {
+        amount: [[${analysis.biggestPayment.amount}]],
+        name: [[${analysis.biggestPayment.description}]],
+      },
+      averagePerDay: [[${analysis.averagePerDay}]]
+    };
+
+    for (let [key, value] of Object.entries(analysis)) {
+      let result = '';
+      if (key == "biggestPayment") {
+        result = `${toCurrency(value.amount, "RUB", 'Ru-ru')}, ${value.name}`;
+      } else {
+        result = toCurrency(value, "RUB", 'Ru-ru')
+      }
+      $(`#${key}`).html(result);
+    }
+
+    let analysisPercentage = {
+      requirePaymentsPercent: analysis.requirePayments / analysis.spend,
+      savedPercent: analysis.saved / analysis.spend,
+      otherPercent: analysis.other / analysis.spend,
+    }
+    showPercentage(analysisPercentage);
+
+
+    const ctx = document.getElementById('myChart');
+
+
+    /*<![CDATA[*/
+    let spend_in_category = [[${categoryAmounts}]];
+    /*]]>*/
+
+    for (let i = 0; i < spend_in_category_labels.length; i++) {
+      $('#categoryTable').append(createRow(spend_in_category_labels[i], spend_in_category[i]));
+    }
+
+    const data = {
+      labels: spend_in_category_labels,
+      datasets: [{
+        data: spend_in_category,
+        backgroundColor: palette('tol', spend_in_category.length).map(function (hex) {
+          return '#' + hex;
+        }),
+        hoverOffset: 4
+      }]
   };
 
   const config = {
     type: 'doughnut',
     data: data,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        }
+      }
+    }
   };
   const myChart = new Chart(ctx, config);
 </script>

@@ -8,6 +8,7 @@ import financeapp.bankConnection.sberbank.api.responseEntitys.AccountPayload;
 import financeapp.bankConnection.sberbank.services.SberbankService;
 
 import financeapp.transaction.services.TransactionService;
+import financeapp.users.CustomUser;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -57,9 +58,7 @@ public class SberbankController {
                 .singletonMap("savedAccount", saved));
     }
 
-    @GetMapping("/accounts/sync")
-    public ResponseEntity<?> SyncAccount(Authentication authentication) throws IOException {
-        var user = userRepo.findCustomUserByEmail(authentication.getName());
+    public ResponseEntity<?> SyncAccountUser(CustomUser user) throws IOException {
         var accounts = user.getAccountList();
         var receivedCount = 0;
         var savedCount = 0;
@@ -73,8 +72,17 @@ public class SberbankController {
             }
         }
 
+        sberbankService.updateCardsBalance(user);
+
         return ResponseEntity.ok().body(gson.toJson("{'message' : 'synced', " +
                 "'received' : " + receivedCount + "," +
                 "'saved': " + savedCount + "}"));
+    }
+
+
+    @GetMapping("/accounts/sync")
+    public ResponseEntity<?> SyncAccount(Authentication authentication) throws IOException {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        return SyncAccountUser(user);
     }
 }

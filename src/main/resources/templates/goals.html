@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Финасовые Цели</title>
+  <div th:insert="fragments/head.html :: head"></div>
+</head>
+<body id="page-top">
+<!-- navbar-->
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+<!--Modal choose bank-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Добавление цели</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="my-1">
+          <div class="form-group">
+            <label for="name">Название цели</label>
+            <input type="text" class="form-control" id="name" aria-describedby="name">
+          </div>
+          <div class="form-group">
+            <label for="amount">Сумма</label>
+            <input type="number" class="form-control" id="amount" aria-describedby="amount">
+          </div>
+
+          <div class="form-group">
+            <label for="account">Накопительный счет</label>
+            <select id="account" class="form-select" aria-label="Выберите">
+              <option th:each="acc : ${accounts}" th:value="${acc.getId()}" th:text="${acc.getFriendlyName()}">
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="date">Дата  <i class="fas fa-calendar input-prefix"></i></label>
+            <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" inline="true">
+              <input placeholder="Select date" type="date" id="date" class="form-control"
+                     aria-describedby="dateHelp">
+            </div>
+            <small id="dateHelp" class="form-text text-muted">К какому времени нужно выполнить цель</small>
+          </div>
+
+          <div class="form-group">
+            <label for="imgUrl">Ссылка на картинку</label>
+            <input type="text" class="form-control" id="imgUrl">
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" id="create" class="btn btn-primary my-2">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- content-->
+<section class="page-section portfolio" id="portfolio">
+  <div class="container mt-lg-5">
+    <div class="row">
+      <div class="col">
+        <h2>Финансовые Цели</h2>
+      </div>
+      <div class="col">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Новая Цель +
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <span class="me-auto  text-muted" id="saved">Всего накоплено: [[${saved}]]</span>
+      <span class="text-muted" id="totalMonthlyFee">Откладывать минимум в месяц: [[${totalMonthlyFee}]]</span>
+    </div>
+
+
+    <div th:if="${goals.empty}">
+      <h2>У вас еще нет целей</h2>
+    </div>
+
+    <div class="d-flex flex-column ">
+
+      <div th:each="goal : ${goals}">
+        <div class="account-card m-2" th:id="'goal_' + ${goal.id}">
+          <div class="card">
+            <button type="button" class="btn-close"  aria-label="delete"
+            style="position: absolute; top: 0; right: 0;"
+            th:onclick="'deleteGoal(' + ${goal.id} +')'"></button>
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <div class="bank-logo-div">
+                      <img class="bank-logo round" th:src="${goal.getImageUrl()}">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <h5 class="card-title" th:text="${goal.friendlyName}"></h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    Цель: <span class="balance" th:data="${goal.goalAmount}"> [[${goal.goalAmount}]] ₽ </span>
+                  </h6>
+                  <h6 class="card-subtitle mb-2 text-muted" >До [[${goal.getAchieveDate()}]]</h6>
+                  <h6 class="card-subtitle mb-2" >Ежемесячно откладывать [[${goal.MonthlyFee()}]] ₽</h6>
+
+                  <div class="progress">
+                    <div class="progress-bar bg-warning" role="progressbar" th:style="'width:' + ${goal.linkedAccount.getBalance() / goal.goalAmount * 100} + '%'"
+                         aria-valuemin="0" aria-valuemax="100">[[${goal.linkedAccount.getBalance()}]]</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+<!--Footer-->
+<div th:insert="fragments/footer.html :: footer"></div>
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+
+</body>
+</html>
+<script>
+
+  $('#create').click(function () {
+    $(this)
+            .prop("disabled", true)
+            .html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Создание...`);
+
+    $.ajax({
+      url: "/goals/create",
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify({
+        friendlyName: $('#name').val(),
+        goalAmount: $('#amount').val(),
+        date: $('#date').val(),
+        accountId: $('#account').val(),
+        url: $("#imgUrl").val(),
+      }),
+      success: function (response) {
+        document.location.href = '/goals';
+        console.log("ВСЕ ОКЕЙ")
+      },
+      error: function (response) {
+        $(this)
+                .prop("disabled", true)
+                .html(`Ошибка...`);
+        console.log("Чето пошло не так...")
+      }
+    })
+  });
+</script>
+
+<script>
+  function deleteGoal(id) {
+    $("#goal_"+id).remove();
+
+    $.ajax({
+      url: "/goals/delete",
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify({
+        goalId: id,
+      }),
+      success: function (response) {
+        document.location.href = '/goals';
+        console.log("ВСЕ ОКЕЙ")
+      },
+      error: function (response) {
+        $(this)
+                .prop("disabled", true)
+                .html(`Ошибка...`);
+        console.log("Чето пошло не так...")
+      }
+    })
+
+  }
+</script>

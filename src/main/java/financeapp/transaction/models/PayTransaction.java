@@ -9,6 +9,11 @@ public class PayTransaction extends AbstractTransaction {
         super(amount, description, dateTime, merchant);
     }
 
+    @Override
+    public String friendName() {
+        return "Расход";
+    }
+
     public PayTransaction() {
         super();
     }
