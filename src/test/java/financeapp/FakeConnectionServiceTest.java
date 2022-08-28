@@ -7,7 +7,7 @@ import financeapp.bankConnection.fakeConnection.service.FakeConnectionService;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.services.TransactionService;
 import org.junit.Assert;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
