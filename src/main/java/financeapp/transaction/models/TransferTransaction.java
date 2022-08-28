@@ -15,4 +15,9 @@ public class TransferTransaction extends AbstractTransaction {
     public TransferTransaction() {
 
     }
+
+    @Override
+    public String friendName() {
+        return "Перевод";
+    }
 }

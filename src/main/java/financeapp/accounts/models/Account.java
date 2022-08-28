@@ -60,6 +60,7 @@ public abstract class Account {
     public String getImageProviderUrl() {
         return switch (this.provider) {
             case "Тинькоф" -> "bank-logo/tinkoff.png";
+            case "Сбербанк" -> "bank-logo/sberbank.png";
             default -> "";
         };
     }

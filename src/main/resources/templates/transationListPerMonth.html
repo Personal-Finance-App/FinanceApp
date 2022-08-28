@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Счета</title>
+    <div th:insert="fragments/head.html :: head"></div>
+</head>
+<body id="page-top">
+<!-- navbar-->
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+
+<!-- content-->
+<section class="page-section portfolio" id="portfolio">
+    <div class="container mt-lg-5">
+        <div class="row">
+            <div class="col">
+                <h2>Список транзакций за месяц</h2>
+                <p>На данном этапе вы можете проверить то, как система промаркировала ваши траты и дополнить
+                    самостоятельно</p>
+            </div>
+        </div>
+
+
+        <div class="d-flex flex-wrap">
+
+            <div th:each="item : ${transactions}">
+                <div class="account-card m-2">
+                    <div class="card" style="width: 40rem;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <span style="font-weight: bold; text-align: center">[[${item.description}]]  </span><br>
+                                    <span style="font-style: italic">[[${item.account.friendlyName}]]  </span><br>
+                                    <span style="font-weight: lighter">[[ ${item.dateTime} ]]</span>
+                                    <div class="row">
+                                        <div class="col">
+                                            [[ ${item.friendName()} ]]
+                                        </div>
+                                        <div class="col" style="font-weight: bold">
+                                            [[ ${item.amount} ]] ₽
+                                        </div>
+                                    </div>
+                                    <span style="font-style: italic"> [[ ${item.category.categoryName} ]]</span>
+                                    <div th:each="label : ${item.labelList}">
+                                        <h5><span style="background-color: #0d5a4b" class="badge badge-secondary">[[ ${label.name }]]</span>
+                                        </h5>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <button id="create" type="submit" class="btn btn-primary my-2">Создать отчет</button>
+    </div>
+
+</section>
+
+<!--Footer-->
+<div th:insert="fragments/footer.html :: footer"></div>
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+
+<script>
+
+    $('#create').click(function () {
+        $(this)
+            .prop("disabled", true)
+            .html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Создание...`);
+
+
+        $.ajax({
+            url: "/report/createReport/monthYear",
+            method: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({
+                month: [[ ${month}]],
+                year: [[ ${year}]],
+            }),
+            success: function (response) {
+                document.location.href = '/reports';
+                console.log("ВСЕ ОКЕЙ")
+            },
+            error: function (response) {
+                $(this).html('Произошла ошибка =(')
+            }
+        })
+    });
+
+</script>
+</body>
+</html>

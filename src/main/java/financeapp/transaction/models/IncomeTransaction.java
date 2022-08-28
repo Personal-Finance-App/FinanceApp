@@ -16,4 +16,9 @@ public class IncomeTransaction extends AbstractTransaction {
     public IncomeTransaction() {
 
     }
+
+    @Override
+    public String friendName() {
+        return "Доход";
+    }
 }

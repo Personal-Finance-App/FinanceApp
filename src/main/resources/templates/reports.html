@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Отчеты</title>
+    <div th:insert="fragments/head.html :: head"></div>
+</head>
+<body id="page-top">
+<!-- navbar-->
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+<!--Modal input data-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Укажите месяц и год</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="sendData(event);">
+                    <div class="form-group">
+                        <label for="month">Месяц</label>
+                        <input type="number" class="form-control" id="month" aria-describedby="monthHelp"
+                               placeholder="Месяц" required
+                               pattern="^[\d]{1,2}$">
+                        <small id="monthHelp" class="form-text text-muted">Укажите номер месяц</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Год</label>
+                        <input type="number" class="form-control" id="year" placeholder="Год" required
+                               pattern="^[\d]{4}$" aria-describedby="yearHelp">
+                        <small id="yearHelp" class="form-text text-muted">Например, 2022</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary my-2">Создать</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- content-->
+<section class="page-section portfolio" id="portfolio">
+    <div class="container mt-lg-5">
+        <div class="row">
+            <div class="col">
+                <h2>Отчеты</h2>
+            </div>
+            <div class="col">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Создать отчет
+                </button>
+            </div>
+        </div>
+
+
+        <div th:if="${reports.empty}">
+            <h2>У вас еще нет отчетов</h2>
+        </div>
+
+        <div class="d-flex flex-wrap">
+
+            <div th:each="report : ${reports}">
+                <div class="account-card m-2"
+                     th:onclick="'window.location.href = \'' + @{/report/{year}/{month}(year=${report.year}, month=${report.month})} + '\''">
+                    <div class="card" style="width: 25rem;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <span style="font-weight: bold; text-align: center">[[${report.month}]] [[ ${report.year} ]] </span><br>
+                                    updated: [[ ${report.updated} ]]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+<!--Footer-->
+<div th:insert="fragments/footer.html :: footer"></div>
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+
+<script>
+    function sendData(e) {
+        e.preventDefault(); // don not refresh the page
+
+        let month = $('#month').val();
+        let year = $('#year').val();
+        let toPage = `/monthTransaction/${year}/${month}`
+        document.location.href = toPage;
+
+    }
+</script>
+
+</body>
+</html>

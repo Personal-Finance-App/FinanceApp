@@ -3,6 +3,7 @@ package financeapp;
 import financeapp.accounts.models.variousAccount.DebitAccount;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
+import financeapp.monthReport.services.LabelService;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.models.AbstractTransaction;
 import financeapp.transaction.models.PayTransaction;
@@ -42,12 +43,15 @@ public class TransactionServiceTest {
     @MockBean
     private AccountRepo accountRepo;
 
+    @Autowired
+    private LabelService labelService;
+
 
     @TestConfiguration
     class TransactionServiceTestContextConfiguration {
         @Bean
         public TransactionService transactionService() {
-            return new TransactionService(transactionRepo, accountRepo);
+            return new TransactionService(transactionRepo, accountRepo, labelService);
         }
     }
 

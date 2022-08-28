@@ -24,5 +24,9 @@ public class AccountPayload {
     @Expose
     private String id;
 
+    @SerializedName("accountBalance")
+    @Expose
+    private AccountBalance accountBalance;
+
 
 }

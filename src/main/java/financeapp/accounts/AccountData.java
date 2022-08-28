@@ -10,4 +10,5 @@ public class AccountData {
     private String id;
     private String AccountNumber;
     private String type;
+    private Double balance;
 }
