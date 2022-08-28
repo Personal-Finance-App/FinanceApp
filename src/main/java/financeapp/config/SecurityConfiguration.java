@@ -51,6 +51,8 @@ public class SecurityConfiguration {
                 .antMatchers("/sberbank/**").fullyAuthenticated()
                 .antMatchers("/reports").fullyAuthenticated()
                 .antMatchers("/report/**").fullyAuthenticated()
+                .antMatchers("/goals/**").fullyAuthenticated()
+                .antMatchers("/goals").fullyAuthenticated()
                 .antMatchers("/monthTransaction/*").fullyAuthenticated()
                 .and().formLogin();
         return http.build();
