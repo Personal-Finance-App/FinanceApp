@@ -55,7 +55,7 @@
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
           Добавить счета
         </button>
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="">
+        <button type="button" class="btn btn-success" id="sync">
           Синхронизировать
         </button>
         <button type="button" class="btn btn-success" onclick="toggleBalance();">
@@ -127,4 +127,31 @@
       showed = 0;
     }
   }
+</script>
+
+<script>
+  $('#sync').click(function () {
+    $(this)
+            .prop("disabled", true)
+            .html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...`);
+
+    $.ajax({
+      url: "/acc/sync-all",
+      method: 'get',
+      contentType: "application/json",
+      success: function (response) {
+        $("#sync")
+                .prop("disabled", false)
+                .html(`Синхронизировать`);
+
+        console.log("ВСЕ ОКЕЙ")
+      },
+      error: function (response) {
+        $("#sync")
+                .prop("disabled", true)
+                .html(`Ошибка`);
+      }
+    })
+  });
+
 </script>
