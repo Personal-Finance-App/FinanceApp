@@ -14,11 +14,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class MccToCategory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
+    @Id
     private String code;
 
     @ManyToOne
