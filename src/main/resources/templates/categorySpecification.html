@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Уточнение категорий</title>
+  <div th:insert="fragments/head.html :: head"></div>
+</head>
+<body id="page-top">
+<!-- navbar-->
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+
+<!-- content-->
+<section class="page-section portfolio" id="portfolio">
+  <div class="container mt-lg-5">
+    <div class="row">
+      <div class="col">
+        <h2>Уточнение Категорий</h2>
+      </div>
+      <div class="col">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Новая Цель +
+        </button>
+      </div>
+    </div>
+
+
+    <div th:if="${toSpecification.empty}">
+      <h2>Ничего делать не надо!</h2>
+    </div>
+
+    <div class="d-flex flex-column ">
+
+      <div th:each="item : ${toSpecification}">
+        <div class="account-card m-2">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <select th:id="'for_' + ${item.id}" th:data="${item.id}" class="form-select category-select" aria-label="Выберите">
+                      <option value="" selected disabled hidden>Выбрать</option>
+                      <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}">
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <h5 class="card-title" th:text="${item.getDescription()}"></h5>
+                  <h6 class="card-subtitle mb-2 text-muted" th:text="${item.merchant}"></h6>
+                  <h6 class="card-subtitle mb-2 text-muted" th:text="${item.getDateTime()}"></h6>
+                  <h6 class="card-subtitle mb-2" th:text="${item.getAmount()}"></h6>
+                  <h6 class="card-subtitle mb-2" th:text="${item.getAccount().friendlyName}"></h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+<!--Footer-->
+<div th:insert="fragments/footer.html :: footer"></div>
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+
+</body>
+</html>
+<script>
+  $('select').on('change', function (e) {
+    var valueSelected = this.value;
+    var transactionId = $(this).attr("data");
+
+
+    $.ajax({
+      url: "/category/set",
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify({
+        transactionId: transactionId,
+        categoryId: valueSelected,
+      }),
+      success: function (response) {
+        $("#for_" + response.transactionId).css("background-color", "#8ddece")
+        console.log("ВСЕ ОКЕЙ")
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+        console.log(response)
+      }
+    })
+  });
+</script>

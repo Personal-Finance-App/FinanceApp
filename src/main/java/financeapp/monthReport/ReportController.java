@@ -6,11 +6,13 @@ import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 
 @RestController()
@@ -22,10 +24,12 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping(value = "/createReport/startend")
+    @ResponseBody
     public ResponseEntity<?> createReport(Authentication authentication, @RequestBody TimeSpanData timeSpanData) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         reportService.create(user, timeSpanData.getTimeStart(), timeSpanData.getTimeEnd());
-        return ResponseEntity.ok().body("OK");
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("status", "ok"));
 
     }
 
@@ -67,8 +71,10 @@ public class ReportController {
         var report = reportService.findReport(user, month, year);
 
         if (reportService.setComment(report, data.getComment()))
-            return ResponseEntity.ok().body("saved");
-        return ResponseEntity.internalServerError().body("Error");
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                    .body(Collections.singletonMap("status", "saved"));
+        return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("status", "error"));
     }
 
 }

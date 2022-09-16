@@ -1,7 +1,9 @@
 package financeapp.frontend.base;
 
 import financeapp.monthReport.TimeSpanData;
+import financeapp.monthReport.entity.Label;
 import financeapp.monthReport.entity.ReportCategoryPart;
+import financeapp.monthReport.repos.LabelRepo;
 import financeapp.monthReport.repos.ReportRepo;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.models.AbstractTransaction;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -23,6 +26,7 @@ public class ReportFront {
     private final UserRepo userRepo;
     private final ReportRepo reportRepo;
     private final TransactionRepo transactionRepo;
+    private final LabelRepo labelRepo;
 
     @GetMapping("/report/{year}/{month}")
     public String reportSee(Model model,
@@ -81,9 +85,12 @@ public class ReportFront {
                                     time.getTimeStart(), time.getTimeEnd(), account));
         });
 
+        List<Label> labelList = labelRepo.findAll();
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("month", month);
         model.addAttribute("year", year);
+        model.addAttribute("labels", labelList);
 
         return "transationListPerMonth.html";
     }
