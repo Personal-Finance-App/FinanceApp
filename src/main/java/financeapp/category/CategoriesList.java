@@ -37,7 +37,8 @@ public enum CategoriesList {
     SUPERMARKETY("Супермаркеты"),
     AVTOUSLUGI("Автоуслуги"),
     PEREVODY("Переводы"),
-    ZHILISCHNO_KOMUNALNYE_USLUGI("Жилищно комунальные услуги");
+    ZHILISCHNO_KOMUNALNYE_USLUGI("Жилищно комунальные услуги"),
+    DEFAULT("Без Категории");
 
     public final String label;
 

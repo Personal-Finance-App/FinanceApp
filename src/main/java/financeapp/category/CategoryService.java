@@ -76,5 +76,9 @@ public class CategoryService {
         return categoryRepo.findAll();
     }
 
+    public Category getCategory(Long id) {
+        return categoryRepo.getById(id);
+    }
+
 
 }

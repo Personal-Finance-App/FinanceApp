@@ -51,4 +51,12 @@ public abstract class AbstractTransaction {
     }
 
     public abstract String friendName();
+
+    public List<Long> getLabelsIds() {
+        return labelList.stream().map(Label::getId).toList();
+    }
+    public void rewriteLabels(List<Label> labelList) {
+        this.labelList = null;
+        this.labelList = labelList;
+    }
 }

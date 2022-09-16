@@ -1158,6 +1158,10 @@ public class InitializeCategory {
             add("4900");
         }});
 
+        put(CategoriesList.DEFAULT.label, new ArrayList<>() {{
+            add("9999");
+        }});
+
     }};
 
     public InitializeCategory(CategoryService categoryService) {
