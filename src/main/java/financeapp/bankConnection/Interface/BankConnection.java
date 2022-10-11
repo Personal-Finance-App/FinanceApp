@@ -2,8 +2,10 @@ package financeapp.bankConnection.Interface;
 
 import financeapp.users.CustomUser;
 import lombok.Getter;
+import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -29,6 +31,7 @@ public abstract class BankConnection {
     public void setUser(CustomUser user) {
         this.user = user;
     }
+
 
 
 }

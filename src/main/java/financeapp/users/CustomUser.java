@@ -27,7 +27,7 @@ public class CustomUser implements UserDetails {
     @Column(name = "id", nullable = false)
     private UUID id;
     private String role;
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private List<Account> accountList;
 
 

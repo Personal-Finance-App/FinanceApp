@@ -7,6 +7,7 @@ import financeapp.accounts.services.AccountService;
 import financeapp.bankConnection.tinkoff.api.responseEntitys.accountsList.AccountPayload;
 import financeapp.bankConnection.tinkoff.services.TinkoffService;
 import financeapp.transaction.services.TransactionService;
+import financeapp.users.CustomUser;
 import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -91,7 +92,8 @@ public class TinkoffController {
         accounts.forEach(accountPayload -> accountDataList.add(new AccountData(accountPayload.getName(),
                 accountPayload.getId(),
                 accountPayload.getExternalAccountNumber(),
-                accountPayload.getAccountGroup())));
+                accountPayload.getAccountGroup(),
+                accountPayload.getAccountBalance().getValue())));
 
         List<Account> result = accountDataList.stream()
                 .map(accountData -> tinkoffService.createAccount(accountData, user))
@@ -107,6 +109,10 @@ public class TinkoffController {
     @GetMapping("/accounts/sync")
     public ResponseEntity<?> SyncAccount(Authentication authentication) throws IOException {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
+        return SyncAccountUser(user);
+    }
+
+    public ResponseEntity<?> SyncAccountUser(CustomUser user) throws IOException {
         var accounts = user.getAccountList();
         var receivedCount = 0;
         var savedCount = 0;
@@ -119,6 +125,8 @@ public class TinkoffController {
                 savedCount += saved;
             }
         }
+
+        tinkoffService.updateCardsBalance(user);
 
 
         return ResponseEntity.ok().body(gson.toJson("{'message' : 'synced', " +

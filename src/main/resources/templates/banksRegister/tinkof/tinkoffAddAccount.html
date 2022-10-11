@@ -5,15 +5,17 @@
 
 
 <script>
-    function createCheckBox(accountName, accountGroup, accountId, externalId) {
+    function createCheckBox(accountName, accountGroup, accountId, externalId, balance) {
+        if (balance == null)
+            balance = 0
         // language=HTML
         return `
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" friendlyName="${accountName}" value="" id="${accountId}"
-                       accountGroup="${accountGroup}" externalId="${externalId}">
-                <label class="form-check-label" for="flexCheckDefault">
-                    ${accountName}
-                </label>
+                <input class="form-check-input" type="checkbox" friendlyName="${accountName}" id="${accountId}"
+                       accountGroup="${accountGroup}" externalId="${externalId}" balance=${balance}>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        ${accountName}
+                    </label>
             </div>`;
     }
 
@@ -24,12 +26,17 @@
             contentType: "application/json",
             success: function (response) {
                 console.log(response)
+                var balance;
                 for (let i in response) {
+                    let balance = 0;
+                    if (response[i].accountBalance != null)
+                        balance = response[i].accountBalance.value
                     $('#accountForm').append(
                         createCheckBox(response[i].name,
                             response[i].accountGroup,
                             response[i].id,
-                            response[i].externalAccountNumber))
+                            response[i].externalAccountNumber),
+                            balance)
                 }
 
                 $('#accountForm').append(
@@ -51,6 +58,9 @@
                 accountGroup: $(this).attr('accountGroup'),
                 name: $(this).attr('friendlyName'),
                 id: $(this).attr('id'),
+                accountBalance: {
+                    value: $(this).attr('balance'),
+                },
             })
         })
 

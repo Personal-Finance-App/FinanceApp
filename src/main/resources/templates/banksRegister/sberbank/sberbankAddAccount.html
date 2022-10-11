@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<block th:replace="/banksRegister/add_account_template.html :: addAccountTemplate(@{/bank-logo/sberbank-rectangle.png}, 'Сбербанк')">
+</block>
+
+
+
+<script>
+    function createCheckBox(friendlyName, type, balance, id) {
+        // language=HTML
+        return `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" friendlyName="${friendlyName}" value="" balance="${balance}"
+                       typeAcc="${type}" id="${id}">
+                <label class="form-check-label" for="flexCheckDefault">
+                    ${friendlyName}
+                </label>
+            </div>`;
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/sberbank/accounts",
+            method: 'GET',
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response)
+                for (let i in response) {
+                    $('#accountForm').append(
+                        createCheckBox(response[i].friendlyName,
+                            response[i].type,
+                            response[i].balance,
+                            response[i].id))
+                }
+
+                $('#accountForm').append(
+                    "<input type=\"submit\" id=\"submitButton\" value=\"Подключить\">"
+                )
+            },
+            error: function (response) {
+                console.log("Чето пошло не так...")
+            }
+        })
+    })
+
+    function sendData(e) {
+        e.preventDefault(); // don not refresh the page
+        let data = [];
+        $("#accountForm input:checked").each(function () {
+            data.push({
+                friendlyName: $(this).attr('friendlyName'),
+                type: $(this).attr('typeAcc'),
+                balance: $(this).attr('balance'),
+                id: $(this).attr('id'),
+            })
+        })
+
+        console.log(data)
+
+
+        $.ajax({
+            url: "/sberbank/accounts/confirm",
+            method: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                document.location.href = '/accounts';
+                console.log("ВСЕ ОКЕЙ")
+            },
+            error: function (response) {
+                console.log("Чето пошло не так...")
+            }
+        })
+
+    }
+</script>
