@@ -3,7 +3,6 @@ package financeapp.bankConnection.tinkoff.api.responseEntitys.PinConfirm;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-
 import javax.annotation.Generated;
 
 @Generated("jsonschema2pojo")
