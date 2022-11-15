@@ -4,6 +4,7 @@ import financeapp.accounts.models.Account;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
 import financeapp.bankConnection.fakeConnection.service.FakeConnectionService;
+import financeapp.monthReport.services.LabelService;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.services.TransactionService;
 import org.junit.Assert;
@@ -35,22 +36,16 @@ public class FakeConnectionServiceTest {
     @SpyBean
     private TransactionRepo transactionRepo;
 
-    @TestConfiguration
-    class AccountServiceTestContextConfiguration {
+    @Autowired
+    private LabelService labelService;
 
+    @TestConfiguration
+    class FakeConnectionServiceTestContextConfiguration {
         @Bean
-        public AccountService accountService() {
-            return new AccountService(accountRepo);
+        public TransactionService transactionService() {
+            return new TransactionService(transactionRepo, accountRepo, labelService);
         }
     }
-//    @TestConfiguration
-//    class TransactionServiceTestContextConfiguration {
-//
-//        @Bean
-//        public TransactionService transactionService() {
-//            return new TransactionService(transactionRepo, accountRepo);
-//        }
-//    }
 
     @Test
     public void CreateFakeAccount(){
