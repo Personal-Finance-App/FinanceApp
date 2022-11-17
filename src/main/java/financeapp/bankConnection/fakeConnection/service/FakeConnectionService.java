@@ -8,6 +8,7 @@ import financeapp.bankConnection.fakeConnection.factoryMethod.FakeCreditAccount;
 import financeapp.bankConnection.fakeConnection.factoryMethod.FakeDebitAccount;
 import financeapp.bankConnection.fakeConnection.factoryMethod.FakeSavingAccount;
 import financeapp.bankConnection.fakeConnection.tools.RandomUtility;
+import financeapp.monthReport.entity.Label;
 import financeapp.transaction.models.AbstractTransaction;
 import financeapp.transaction.models.IncomeTransaction;
 import financeapp.transaction.models.PayTransaction;
@@ -18,7 +19,8 @@ import financeapp.users.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FakeConnectionService {
@@ -31,7 +33,7 @@ public class FakeConnectionService {
 
     public FakeConnectionService(RandomUtility randomizer,
                                  AccountService accountService, UserService userService,
-                                TransactionService transactionService) {
+                                 TransactionService transactionService) {
         this.randomizer = randomizer;
         this.userService = userService;
         this.accountService = accountService;
@@ -39,7 +41,7 @@ public class FakeConnectionService {
         this.transactionService = transactionService;
     }
 
-    public List<Account> CreateAccounts(String email){
+    public List<Account> CreateAccounts(String email) {
         CustomUser user = userService.findUserByEmail(email);
         FakeAccountManager factory = new FakeAccountManager();
         List<Account> accounts = new ArrayList<>();
@@ -51,15 +53,15 @@ public class FakeConnectionService {
         return accountList;
     }
 
-    public Account CreateAccount(String type, String email){
+    public Account CreateAccount(String type, String email) {
         CustomUser user = userService.findUserByEmail(email);
-        if(type.equalsIgnoreCase("debit")){
+        if (type.equalsIgnoreCase("debit")) {
             factory = new FakeDebitAccount();
             return saveAccount(user);
-        } else if(type.equalsIgnoreCase("credit")){
+        } else if (type.equalsIgnoreCase("credit")) {
             factory = new FakeCreditAccount();
             return saveAccount(user);
-        } else if(type.equalsIgnoreCase("saving")){
+        } else if (type.equalsIgnoreCase("saving")) {
             factory = new FakeSavingAccount();
             return saveAccount(user);
         }
@@ -67,16 +69,18 @@ public class FakeConnectionService {
     }
 
 
-    public List<AbstractTransaction> AddTransactions(String id){
+    public List<AbstractTransaction> AddTransactions(String id) {
         Account account = accountService.getById(id);
+        List<Label> labels = new ArrayList<>();
         List<AbstractTransaction> abstractTransactions = new ArrayList<AbstractTransaction>();
-        for(int i = countTransaction; i > 0; i--){
+        for (int i = countTransaction; i > 0; i--) {
             AbstractTransaction abstractTransaction = choiceTypeTransaction();
             abstractTransaction.setAmount(RandomUtility.getRandomNumberForMoneyTransaction());
             abstractTransaction.setDateTime(RandomUtility.getRandomLocalDateTime());
             abstractTransaction.setDescription("test transaction");
             abstractTransaction.setMerchant(RandomUtility.getRandomNameForMerchant());
             abstractTransaction.setCategory(randomizer.getRandomCategory());
+            abstractTransaction.setLabelList(labels);
 //            abstractTransaction.setAccount(account);
             abstractTransactions.add(abstractTransaction);
         }
@@ -85,8 +89,8 @@ public class FakeConnectionService {
         return abstractTransactions;
     }
 
-    public AbstractTransaction choiceTypeTransaction(){
-        var transaction = switch (RandomUtility.getRandomNumberForTypeTransaction()){
+    public AbstractTransaction choiceTypeTransaction() {
+        var transaction = switch (RandomUtility.getRandomNumberForTypeTransaction()) {
             case 0 -> new IncomeTransaction();
             case 1 -> new PayTransaction();
             case 2 -> new TransferTransaction();
@@ -94,13 +98,15 @@ public class FakeConnectionService {
         };
         return transaction;
     }
-    public List<Account> addTransactionOnAccount(List<Account> accounts){
-        for(Account account : accounts){
+
+    public List<Account> addTransactionOnAccount(List<Account> accounts) {
+        for (Account account : accounts) {
             AddTransactions(account.getIdInSystem());
         }
         return accounts;
     }
-    public Account saveAccount(CustomUser user){
+
+    public Account saveAccount(CustomUser user) {
         Account account = factory.CreateAccount(user);
         List<Account> accounts = new ArrayList<>();
         accounts.add(account);

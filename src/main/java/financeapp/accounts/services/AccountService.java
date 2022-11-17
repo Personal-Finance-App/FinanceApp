@@ -4,6 +4,8 @@ import financeapp.accounts.AccountData;
 import financeapp.accounts.models.Account;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.users.CustomUser;
+import financeapp.users.UserRepo;
+import financeapp.users.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Slf4j
 public class AccountService {
     private final AccountRepo accountRepo;
+    private final UserService userService;
 
     public int CreateAccountFromPayload(List<Account> accounts, CustomUser user) {
         var accountToSave = new LinkedList<Account>();
@@ -32,7 +35,7 @@ public class AccountService {
             }
 
         });
-
+        userService.saveUser(user);
         if (accountToSave.size() > 0)
             accountRepo.saveAll(accountToSave);
         return accountToSave.size();

@@ -7,6 +7,7 @@ import financeapp.accounts.models.variousAccount.SavingAccount;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
 import financeapp.users.CustomUser;
+import financeapp.users.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -35,12 +36,15 @@ public class AccountServiceTest {
     @MockBean
     private AccountRepo accountRepo;
 
+    @MockBean
+    private UserService userService;
+
     @TestConfiguration
     class AccountServiceTestContextConfiguration {
 
         @Bean
         public AccountService accountService() {
-            return new AccountService(accountRepo);
+            return new AccountService(accountRepo, userService);
         }
     }
 
