@@ -4,6 +4,7 @@ import financeapp.accounts.models.Account;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
 import financeapp.bankConnection.fakeConnection.service.FakeConnectionService;
+import financeapp.bankConnection.fakeConnection.tools.RandomUtility;
 import financeapp.monthReport.services.LabelService;
 import financeapp.transaction.TransactionRepo;
 import financeapp.transaction.services.TransactionService;
@@ -34,42 +35,33 @@ public class FakeConnectionServiceTest {
     @Autowired
     private FakeConnectionService fakeConnectionService;
 
-//    @Autowired
-//    private AccountRepo accountRepo;
-
     @Autowired
     private UserService userService;
 
-    @Autowired
+    @SpyBean
     private AccountService accountService;
 
-//    @SpyBean
-//    private TransactionRepo transactionRepo;
+    @Autowired
+    private RandomUtility randomUtility;
 
-//    @SpyBean
-//    private LabelService labelService;
+    @Autowired
+    private TransactionService transactionService;
 
+    @TestConfiguration
+    class FakeConnectionServiceContextConfiguration {
 
-//    @TestConfiguration
-//    class TransactionServiceTestContextConfiguration {
-//
-//        @Bean
-//        public TransactionService transactionService() {
-//            return new TransactionService(transactionRepo, accountRepo, labelService);
-//        }
-//    }
+        @Bean
+        public FakeConnectionService fakeConnectionService() {
+            return new FakeConnectionService(randomUtility, accountService, userService, transactionService);
+        }
+    }
 
     @Test
     public void CreateFakeAccount(){
         CustomUser user = new CustomUser("vasya@gmail.com", "12345");
         userService.saveUser(user);
         Account account = fakeConnectionService.CreateAccount("credit", user.getEmail());
-//        CustomUser userFromDB = userService.findUserByEmail(user.getEmail());
-//        Assert.assertEquals(userFromDB.getId(), user.getId());
-        Account accountFromDB = accountService.getById(account.getId());
-        Assert.assertEquals(account.getId(), accountFromDB.getId());
-//        Assert.assertEquals("Fake", account.getProvider());
-//        Mockito.verify(accountRepo).save(account);
+        Mockito.verify(accountService).CreateAccountFromPayload(Mockito.any(), Mockito.any());
     }
 
     @Test
