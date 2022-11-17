@@ -29,7 +29,7 @@ public class CustomUser implements UserDetails {
     @Column(name = "id", nullable = false)
     private UUID id;
     private String role;
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE}, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.ALL}, fetch=FetchType.EAGER)
     private List<Account> accountList;
 
 
