@@ -25,11 +25,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestPropertySource("classpath:application-test.properties")
-public class TransactionServiceTest {
+public class TransactionServiceTest extends AbstractTest{
 
     @Autowired
     private TransactionService transactionService;
