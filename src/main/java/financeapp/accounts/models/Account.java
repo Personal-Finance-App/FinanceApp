@@ -45,10 +45,7 @@ public abstract class Account {
 
 //    @OneToOne
 //    @JoinColumn(name = "user_id")
-    @ManyToOne(cascade = {CascadeType.DETACH
-            , CascadeType.MERGE
-            , CascadeType.PERSIST
-            , CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "customer_id")
     private CustomUser user;
 

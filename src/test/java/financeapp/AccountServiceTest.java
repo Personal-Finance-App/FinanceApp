@@ -24,11 +24,8 @@ import java.util.LinkedList;
 
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestPropertySource("classpath:application-test.properties")
-public class AccountServiceTest {
+
+public class AccountServiceTest extends AbstractTest{
 
     @Autowired
     private AccountService accountService;

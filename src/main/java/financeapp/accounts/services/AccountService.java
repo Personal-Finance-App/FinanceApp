@@ -33,7 +33,6 @@ public class AccountService {
                 accountToSave.add(account);
                 user.addAccount(account);
             }
-
         });
         userService.saveUser(user);
         if (accountToSave.size() > 0)
