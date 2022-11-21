@@ -1,17 +1,17 @@
 package financeapp;
 
 import financeapp.accounts.models.Account;
-import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
 import financeapp.bankConnection.fakeConnection.service.FakeConnectionService;
-import financeapp.monthReport.services.LabelService;
-import financeapp.transaction.TransactionRepo;
+import financeapp.bankConnection.fakeConnection.tools.RandomUtility;
 import financeapp.transaction.services.TransactionService;
 import financeapp.users.CustomUser;
 import financeapp.users.UserService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -34,58 +33,54 @@ public class FakeConnectionServiceTest {
     @Autowired
     private FakeConnectionService fakeConnectionService;
 
-//    @Autowired
-//    private AccountRepo accountRepo;
-
     @Autowired
     private UserService userService;
 
-    @Autowired
+    @SpyBean
     private AccountService accountService;
 
-//    @SpyBean
-//    private TransactionRepo transactionRepo;
+    @Autowired
+    private RandomUtility randomUtility;
 
-//    @SpyBean
-//    private LabelService labelService;
+    @MockBean
+    private TransactionService transactionService;
 
 
-//    @TestConfiguration
-//    class TransactionServiceTestContextConfiguration {
-//
-//        @Bean
-//        public TransactionService transactionService() {
-//            return new TransactionService(transactionRepo, accountRepo, labelService);
-//        }
-//    }
+    @TestConfiguration
+    class FakeConnectionServiceContextConfiguration {
 
-    @Test
-    public void CreateFakeAccount(){
-        CustomUser user = new CustomUser("vasya@gmail.com", "12345");
+        @Bean
+        public FakeConnectionService fakeConnectionService() {
+            return new FakeConnectionService(randomUtility, accountService, userService, transactionService);
+        }
+    }
+
+    private CustomUser user;
+
+    @Before
+    public void setUp() throws Exception {
+        user = new CustomUser("vasya@gmail.com", "12345");
         userService.saveUser(user);
-        Account account = fakeConnectionService.CreateAccount("credit", user.getEmail());
-//        CustomUser userFromDB = userService.findUserByEmail(user.getEmail());
-//        Assert.assertEquals(userFromDB.getId(), user.getId());
-        Account accountFromDB = accountService.getById(account.getId());
-        Assert.assertEquals(account.getId(), accountFromDB.getId());
-//        Assert.assertEquals("Fake", account.getProvider());
-//        Mockito.verify(accountRepo).save(account);
     }
 
     @Test
-    public void CreateFakeAccounts() {
-        List<Account> accountList = new ArrayList<>();
-        CustomUser user = new CustomUser("vasya@gmail.com", "12345");
-        userService.saveUser(user);
-        List<Account> accounts = fakeConnectionService.CreateAccounts("vasya@gmail.com");
-        CustomUser userFromDB = userService.findUserByEmail("vasya@gmail.com");
-        Assert.assertEquals(userFromDB.getId(), user.getId());
-        for(Account account : accounts){
-            Account account1 = accountService.getById(account.getId());
-            accountList.add(account1);
+    public void CreateFakeAccount() {
+        Account account = fakeConnectionService.CreateAccount("credit", user.getEmail());
+        ArgumentCaptor<CustomUser> argument = ArgumentCaptor.forClass(CustomUser.class);
+        Mockito.verify(accountService).CreateAccountFromPayload(Mockito.any(), argument.capture());
+        Assert.assertEquals(user.getEmail(), argument.getValue().getEmail());
+    }
 
+
+    @Test
+    public void CreateFakeAccounts() {
+        List<Account> accounts = fakeConnectionService.CreateAccounts("vasya@gmail.com");
+        Mockito.verify(accountService).CreateAccountFromPayload(Mockito.any(), Mockito.any());
+        Mockito.verify(transactionService, Mockito.times(3))
+                .saveTransactions(Mockito.any(), Mockito.any(), Mockito.any());
+
+        for (var acc : accounts) {
+            Mockito.verify(transactionService).saveTransactions(Mockito.any(), Mockito.eq(acc), Mockito.any());
         }
-        Assert.assertEquals(accountList.size(), 3);
-//        Mockito.verify(accountRepo).saveAll(accounts);
     }
 }
