@@ -63,4 +63,8 @@ public class AccountService {
     public List<Account> getAll(){
         return accountRepo.findAll();
     }
+
+    public void deleteAccount(UUID id) {
+        accountRepo.deleteById(id);
+    }
 }

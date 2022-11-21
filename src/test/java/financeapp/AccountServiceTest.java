@@ -8,6 +8,8 @@ import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
 import financeapp.users.CustomUser;
 import financeapp.users.UserService;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.LinkedList;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 
@@ -33,7 +36,7 @@ public class AccountServiceTest extends AbstractTest{
     @MockBean
     private AccountRepo accountRepo;
 
-    @MockBean
+    @Autowired
     private UserService userService;
 
     @TestConfiguration
@@ -45,18 +48,37 @@ public class AccountServiceTest extends AbstractTest{
         }
     }
 
+    private CustomUser user;
+
+    @Before
+    public void setUp() throws Exception {
+        user = new CustomUser("bla", "bla");
+        userService.saveUser(user);
+    }
 
     @Test
     public void CreateAccounts_repositoryCalls() {
-        var user = new CustomUser("bla", "bla");
         var accounts = new LinkedList<Account>() {{
             add(new DebitAccount("1", "debit", user, "test"));
             add(new CreditAccount("2", "credit", user, "test"));
             add(new SavingAccount("3", "saving", user, "test"));
         }};
-
         accountService.CreateAccountFromPayload(accounts, user);
-        verify(accountRepo).saveAll(Mockito.any());
+    }
+
+    @Test
+    public void DeleteAccounts_repositoryCalls() {
+        var accToDel = new DebitAccount("1", "debit", user, "test");
+        var accounts = new LinkedList<Account>() {{
+            add(accToDel);
+            add(new CreditAccount("2", "credit", user, "test"));
+            add(new SavingAccount("3", "saving", user, "test"));
+        }};
+
+        accountService.deleteAccount(accToDel.getId());
+        Mockito.verify(accountRepo).deleteById(Mockito.any());
+        var userByEmail = userService.findUserByEmail(user.getEmail());
+        Assert.assertEquals(user.getId(), userByEmail.getId());
 
     }
 }
