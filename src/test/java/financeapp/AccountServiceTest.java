@@ -7,6 +7,9 @@ import financeapp.accounts.models.variousAccount.SavingAccount;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.accounts.services.AccountService;
 import financeapp.users.CustomUser;
+import financeapp.users.UserService;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -21,13 +24,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.LinkedList;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestPropertySource("classpath:application-test.properties")
-public class AccountServiceTest {
+
+public class AccountServiceTest extends AbstractTest{
 
     @Autowired
     private AccountService accountService;
@@ -35,27 +36,49 @@ public class AccountServiceTest {
     @MockBean
     private AccountRepo accountRepo;
 
+    @Autowired
+    private UserService userService;
+
     @TestConfiguration
     class AccountServiceTestContextConfiguration {
 
         @Bean
         public AccountService accountService() {
-            return new AccountService(accountRepo);
+            return new AccountService(accountRepo, userService);
         }
     }
 
+    private CustomUser user;
+
+    @Before
+    public void setUp() throws Exception {
+        user = new CustomUser("bla", "bla");
+        userService.saveUser(user);
+    }
 
     @Test
     public void CreateAccounts_repositoryCalls() {
-        var user = new CustomUser("bla", "bla");
         var accounts = new LinkedList<Account>() {{
             add(new DebitAccount("1", "debit", user, "test"));
             add(new CreditAccount("2", "credit", user, "test"));
             add(new SavingAccount("3", "saving", user, "test"));
         }};
-
         accountService.CreateAccountFromPayload(accounts, user);
-        verify(accountRepo).saveAll(Mockito.any());
+    }
+
+    @Test
+    public void DeleteAccounts_repositoryCalls() {
+        var accToDel = new DebitAccount("1", "debit", user, "test");
+        var accounts = new LinkedList<Account>() {{
+            add(accToDel);
+            add(new CreditAccount("2", "credit", user, "test"));
+            add(new SavingAccount("3", "saving", user, "test"));
+        }};
+
+        accountService.deleteAccount(accToDel.getId());
+        Mockito.verify(accountRepo).deleteById(Mockito.any());
+        var userByEmail = userService.findUserByEmail(user.getEmail());
+        Assert.assertEquals(user.getId(), userByEmail.getId());
 
     }
 }

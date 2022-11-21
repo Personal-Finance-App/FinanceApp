@@ -36,11 +36,7 @@ import java.util.LinkedList;
 
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestPropertySource("classpath:application-test.properties")
-public class FinanceGoalTest {
+public class FinanceGoalTest extends AbstractTest{
 
     @Autowired
     private UserService userService;

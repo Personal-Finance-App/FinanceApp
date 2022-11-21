@@ -4,6 +4,8 @@ import financeapp.accounts.AccountData;
 import financeapp.accounts.models.Account;
 import financeapp.accounts.repositories.AccountRepo;
 import financeapp.users.CustomUser;
+import financeapp.users.UserRepo;
+import financeapp.users.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Slf4j
 public class AccountService {
     private final AccountRepo accountRepo;
+    private final UserService userService;
 
     public int CreateAccountFromPayload(List<Account> accounts, CustomUser user) {
         var accountToSave = new LinkedList<Account>();
@@ -30,9 +33,8 @@ public class AccountService {
                 accountToSave.add(account);
                 user.addAccount(account);
             }
-
         });
-
+        userService.saveUser(user);
         if (accountToSave.size() > 0)
             accountRepo.saveAll(accountToSave);
         return accountToSave.size();
@@ -47,6 +49,10 @@ public class AccountService {
     }
     
 
+    public Account getById(String id){
+        return accountRepo.findAccountByIdInSystem(id);
+    }
+
 //    public void GetTransactions(Account account) {
 //        List<Transaction> transactionList = account.getBankConnection().getTransactions(account.getLastSync());
 //        transactionRepo.saveAll(transactionList);
@@ -54,4 +60,11 @@ public class AccountService {
 //        //TODO: Установить категорию для транзакции
 //        account.setLastSync(LocalDate.now());
 //    }
+    public List<Account> getAll(){
+        return accountRepo.findAll();
+    }
+
+    public void deleteAccount(UUID id) {
+        accountRepo.deleteById(id);
+    }
 }
