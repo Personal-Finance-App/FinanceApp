@@ -24,7 +24,8 @@ public class FakeConnectionController {
     }
     @PostMapping("/fake/addTransaction")
     public ResponseEntity<Collection<AbstractTransaction>> addTransaction(@RequestParam (value = "IdAccount") String id) {
-        return ResponseEntity.ok().body(fakeConnectionService.AddTransactions(id));
+        var acc = accountService.getById(id);
+        return ResponseEntity.ok().body(fakeConnectionService.AddTransactions(acc));
     }
 
     @PostMapping("/fake/createAccount")

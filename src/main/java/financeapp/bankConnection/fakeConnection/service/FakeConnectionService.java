@@ -69,8 +69,7 @@ public class FakeConnectionService {
     }
 
 
-    public List<AbstractTransaction> AddTransactions(String id) {
-        Account account = accountService.getById(id);
+    public List<AbstractTransaction> AddTransactions(Account account) {
         List<Label> labels = new ArrayList<>();
         List<AbstractTransaction> abstractTransactions = new ArrayList<AbstractTransaction>();
         for (int i = countTransaction; i > 0; i--) {
@@ -101,7 +100,7 @@ public class FakeConnectionService {
 
     public List<Account> addTransactionOnAccount(List<Account> accounts) {
         for (Account account : accounts) {
-            AddTransactions(account.getIdInSystem());
+            AddTransactions(account);
         }
         return accounts;
     }
