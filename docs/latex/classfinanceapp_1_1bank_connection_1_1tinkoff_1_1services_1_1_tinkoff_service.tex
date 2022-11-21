@@ -1,0 +1,122 @@
+\hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service}{}\doxysection{Класс financeapp.\+bank\+Connection.\+tinkoff.\+services.\+Tinkoff\+Service}
+\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service}\index{financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}}
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_ac029ce41b331174fee13eb30336462a8}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_ac029ce41b331174fee13eb30336462a8}} 
+{\bfseries Tinkoff\+Service} (\mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1_tinkoff_connection_repo}{Tinkoff\+Connection\+Repo}} tinkoff\+Connection\+Repo, \mbox{\hyperlink{interfacefinanceapp_1_1accounts_1_1repositories_1_1_account_repo}{Account\+Repo}} account\+Repo, \mbox{\hyperlink{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service}{Transaction\+Service}} transaction\+Service, \mbox{\hyperlink{classfinanceapp_1_1category_1_1_category_service}{Category\+Service}} category\+Service)
+\item 
+String \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_aa6e6eb26d0a02b109faeb99a9d2f07d7}{Get\+Session}} (\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)  throws IOException, Runtime\+Exception 
+\begin{DoxyCompactList}\small\item\em Функция, которая запрашивает новую сессию. \end{DoxyCompactList}\item 
+String \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_ad2f8d14f834deeb48d3836ed85906f4e}{Register\+Send\+Sms}} (String phone, \mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)  throws IOException, Runtime\+Exception 
+\begin{DoxyCompactList}\small\item\em Запрос регистрации ~\newline
+ На этом этапе отправляется код на номер телефона \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a148be723d94e85749fb80d5a06069b08}{Register\+Final}} (String operation\+Ticket, String sms, String password, \mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)  throws IOException 
+\begin{DoxyCompactList}\small\item\em Завершение регистрации сессии \end{DoxyCompactList}\item 
+String \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a80b52c9f8826349290a970dd53c2fb55}{Auth\+With\+Pin}} (\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)  throws IOException 
+\begin{DoxyCompactList}\small\item\em Аутенфикация с помощью пин-\/кода ~\newline
+ \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a238797ce37abeaaaab02d2388df3fb95}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a238797ce37abeaaaab02d2388df3fb95}} 
+List$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1accounts_list_1_1_account_payload}{Account\+Payload}} $>$ {\bfseries get\+Accounts} (\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)  throws IOException 
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a6848cecdd06388b5cc57469cedd4ff71}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a6848cecdd06388b5cc57469cedd4ff71}} 
+\mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} {\bfseries create\+Transaction} (\mbox{\hyperlink{classfinanceapp_1_1transaction_1_1services_1_1_transaction_pattern}{Transaction\+Pattern}} data)
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_af08ac9ad217a476a29ec041bba243d28}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_af08ac9ad217a476a29ec041bba243d28}} 
+List$<$ \mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} $>$ {\bfseries get\+Operations} (\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user, \mbox{\hyperlink{classfinanceapp_1_1accounts_1_1models_1_1_account}{Account}} account)  throws IOException 
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a72e00b7bd6f5a104420599fc2fced41e}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a72e00b7bd6f5a104420599fc2fced41e}} 
+\mbox{\hyperlink{classfinanceapp_1_1accounts_1_1models_1_1_account}{Account}} {\bfseries create\+Account} (\mbox{\hyperlink{classfinanceapp_1_1accounts_1_1_account_data}{Account\+Data}} payload, \mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_ae6eeb9bbe1da6df180c903c97a1ee71a}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_ae6eeb9bbe1da6df180c903c97a1ee71a}} 
+void {\bfseries update\+Cards\+Balance} (\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)  throws IOException 
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Методы}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a80b52c9f8826349290a970dd53c2fb55}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a80b52c9f8826349290a970dd53c2fb55}} 
+\index{financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}!AuthWithPin@{AuthWithPin}}
+\index{AuthWithPin@{AuthWithPin}!financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}}
+\doxysubsubsection{\texorpdfstring{AuthWithPin()}{AuthWithPin()}}
+{\footnotesize\ttfamily String financeapp.\+bank\+Connection.\+tinkoff.\+services.\+Tinkoff\+Service.\+Auth\+With\+Pin (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}}}]{user }\end{DoxyParamCaption}) throws IOException}
+
+
+
+Аутенфикация с помощью пин-\/кода ~\newline
+ 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em user} & Пользователь \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+ID новой сессии 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_aa6e6eb26d0a02b109faeb99a9d2f07d7}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_aa6e6eb26d0a02b109faeb99a9d2f07d7}} 
+\index{financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}!GetSession@{GetSession}}
+\index{GetSession@{GetSession}!financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}}
+\doxysubsubsection{\texorpdfstring{GetSession()}{GetSession()}}
+{\footnotesize\ttfamily String financeapp.\+bank\+Connection.\+tinkoff.\+services.\+Tinkoff\+Service.\+Get\+Session (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}}}]{user }\end{DoxyParamCaption}) throws IOException, Runtime\+Exception}
+
+
+
+Функция, которая запрашивает новую сессию. 
+
+Я так понимаю, ей лучше не злоупотреблять, и если она остается не незавершенной то мб банят
+
+
+\begin{DoxyParams}{Аргументы}
+{\em user} & Пользователь \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+ID сессии 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a148be723d94e85749fb80d5a06069b08}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_a148be723d94e85749fb80d5a06069b08}} 
+\index{financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}!RegisterFinal@{RegisterFinal}}
+\index{RegisterFinal@{RegisterFinal}!financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}}
+\doxysubsubsection{\texorpdfstring{RegisterFinal()}{RegisterFinal()}}
+{\footnotesize\ttfamily void financeapp.\+bank\+Connection.\+tinkoff.\+services.\+Tinkoff\+Service.\+Register\+Final (\begin{DoxyParamCaption}\item[{String}]{operation\+Ticket,  }\item[{String}]{sms,  }\item[{String}]{password,  }\item[{\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}}}]{user }\end{DoxyParamCaption}) throws IOException}
+
+
+
+Завершение регистрации сессии 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em operation\+Ticket} & ID запроса, на который нужно ответить \\
+\hline
+{\em sms} & смс код от пользотваеля \\
+\hline
+{\em password} & пароль от онлайн банка \\
+\hline
+{\em user} & Пользотваель \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_ad2f8d14f834deeb48d3836ed85906f4e}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1services_1_1_tinkoff_service_ad2f8d14f834deeb48d3836ed85906f4e}} 
+\index{financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}!RegisterSendSms@{RegisterSendSms}}
+\index{RegisterSendSms@{RegisterSendSms}!financeapp.bankConnection.tinkoff.services.TinkoffService@{financeapp.bankConnection.tinkoff.services.TinkoffService}}
+\doxysubsubsection{\texorpdfstring{RegisterSendSms()}{RegisterSendSms()}}
+{\footnotesize\ttfamily String financeapp.\+bank\+Connection.\+tinkoff.\+services.\+Tinkoff\+Service.\+Register\+Send\+Sms (\begin{DoxyParamCaption}\item[{String}]{phone,  }\item[{\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}}}]{user }\end{DoxyParamCaption}) throws IOException, Runtime\+Exception}
+
+
+
+Запрос регистрации ~\newline
+ На этом этапе отправляется код на номер телефона 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em phone} & номер телефона в формате +7$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$ \\
+\hline
+{\em user} & Пользьватель \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+Operation\+Ticket\+Id -\/ ID запроса, на который нужено будет ответить 
+\end{DoxyReturn}
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/financeapp/bank\+Connection/tinkoff/services/Tinkoff\+Service.\+java\end{DoxyCompactItemize}

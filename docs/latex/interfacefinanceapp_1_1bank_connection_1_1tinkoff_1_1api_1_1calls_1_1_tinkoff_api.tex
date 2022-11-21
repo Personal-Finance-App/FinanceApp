@@ -1,0 +1,250 @@
+\hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api}{}\doxysection{Интерфейс financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api}
+\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api}\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+
+
+Интерфейс, позволяющий отправлять запросы на сервер тинькова со стандартными значениями (они имитируют запросы с телефона) Значения указаны на фабрике Использование\+: Tinkoff\+Api\+Factory.\+get\+Service().\+\_\+\+\_\+название\+\_\+метода\+\_\+\+\_\+.\+execute()  
+
+
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ae2a26162f2c91085685c317e909a07d5}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ae2a26162f2c91085685c317e909a07d5}} 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1_session}{Session}} $>$ {\bfseries get\+Session} (@Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id)
+\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1_sms_request}{Sms\+Request}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a74aa3ba77c38d76bb96e1e2524f41d0d}{request\+Sms}} ( @Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}phone\char`\"{}) String phone, @Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Devicde\+Id)
+\begin{DoxyCompactList}\small\item\em Запрос, отправляя который, пользователь получает смс-\/код \end{DoxyCompactList}\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1_warm_up_cache}{Warm\+Up\+Cache}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_aedaf97da8e178f1c584b41e999e62504}{warm\+Up\+Cache}} (@Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id)
+\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1after_confirm_1_1_confirm_sms_answer}{Confirm\+Sms\+Answer}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ad683955d0249a44d6c2a5f5042721f41}{confirm\+Sms}} (@Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id, @Field(\char`\"{}initial\+Operation\+Ticket\char`\"{}) String initial\+Operation\+Ticket, @Field(\char`\"{}initial\+Operation\char`\"{}) String initial\+Operation, @Field(\char`\"{}confirmation\+Data\char`\"{}) String confirmation\+Data)
+\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1after_confirm_1_1_confirm_sms_answer}{Confirm\+Sms\+Answer}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ae00fdbfb43aea506c62cfc93d4fb631b}{confirm\+Password}} (@Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id, @Field(\char`\"{}password\char`\"{}) String password)
+\begin{DoxyCompactList}\small\item\em Как я понял, нужно отправлять пароль от онлайн банка, для того, чтобы выполнять расширенный набор вызовов функций Но может получать список счетов и транзакций этого не требует \end{DoxyCompactList}\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1_pin_confirm_1_1_set_up_pin_answer}{Set\+Up\+Pin\+Answer}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a25fd049a077a400ca2e2909733488d7e}{set\+Up\+Pin}} (@Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id, @Field(\char`\"{}pin\+Hash\char`\"{}) String pin\+Hash, @Field(\char`\"{}auth\+\_\+type\+\_\+set\+\_\+date\char`\"{}) String auth\+Type\+Set\+Date)
+\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1after_confirm_1_1_confirm_sms_answer}{Confirm\+Sms\+Answer}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_acbf2e12f4edee7b7a9d5c64da439b6f1}{login\+By\+Pin\+Code}} (@Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id, @Field(\char`\"{}old\+Session\+Id\char`\"{}) String old\+Session\+Id, @Field(\char`\"{}pin\+Hash\char`\"{}) String pin\+Hash, @Field(\char`\"{}auth\+\_\+type\+\_\+set\+\_\+date\char`\"{}) String set\+Date, @Field(\char`\"{}auth\+\_\+type\char`\"{}) String auth\+Type)
+\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1accounts_list_1_1_accounts_answer}{Accounts\+Answer}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a0d174f5dde3c0d1186b0d74494c6530f}{accounts\+List}} (@Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Query(\char`\"{}old\+Device\+Id\char`\"{}) String olds\+Device\+Id)
+\begin{DoxyCompactList}\small\item\em Получить список всех доступных счетов \end{DoxyCompactList}\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1transaction_1_1_transaction_answer}{Transaction\+Answer}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a7171f3896ae174156c2a6ad262c00e77}{transaction\+List}} (@Field(\char`\"{}device\+Id\char`\"{}) String device\+Id, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id, @Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}account\char`\"{}) String account\+Id, @Field(\char`\"{}start\char`\"{}) String start)
+\begin{DoxyCompactList}\small\item\em Получить список транзакций для счета, начиная с даты \end{DoxyCompactList}\item 
+Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1ping_confirm_1_1_ping_answer}{Ping\+Answer}} $>$ \mbox{\hyperlink{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a5cfcf92bc1f0f516ac7e948e83cfc334}{ping\+Session}} (@Query(\char`\"{}sessionid\char`\"{}) String sessionid, @Field(\char`\"{}device\+Id\char`\"{}) String deviceid, @Field(\char`\"{}old\+Device\+Id\char`\"{}) String old\+Device\+Id)
+\begin{DoxyCompactList}\small\item\em Функция, которая может вернуть состояние сессии \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Интерфейс, позволяющий отправлять запросы на сервер тинькова со стандартными значениями (они имитируют запросы с телефона) Значения указаны на фабрике Использование\+: Tinkoff\+Api\+Factory.\+get\+Service().\+\_\+\+\_\+название\+\_\+метода\+\_\+\+\_\+.\+execute() 
+
+\begin{DoxySeeAlso}{См. также}
+\mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_factory}{Tinkoff\+Api\+Factory}} 
+\end{DoxySeeAlso}
+
+
+\doxysubsection{Методы}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a0d174f5dde3c0d1186b0d74494c6530f}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a0d174f5dde3c0d1186b0d74494c6530f}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!accountsList@{accountsList}}
+\index{accountsList@{accountsList}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{accountsList()}{accountsList()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1accounts_list_1_1_accounts_answer}{Accounts\+Answer}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+accounts\+List (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Query(\char`\"{}old\+Device\+Id\char`\"{}) String}]{olds\+Device\+Id }\end{DoxyParamCaption})}
+
+
+
+Получить список всех доступных счетов 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em device\+Id} & информация об устройстве \\
+\hline
+{\em sessionid} & идентификатор сессии \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+список счетов 
+\end{DoxyReturn}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ae00fdbfb43aea506c62cfc93d4fb631b}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ae00fdbfb43aea506c62cfc93d4fb631b}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!confirmPassword@{confirmPassword}}
+\index{confirmPassword@{confirmPassword}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{confirmPassword()}{confirmPassword()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1after_confirm_1_1_confirm_sms_answer}{Confirm\+Sms\+Answer}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+confirm\+Password (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Device\+Id,  }\item[{@Field(\char`\"{}password\char`\"{}) String}]{password }\end{DoxyParamCaption})}
+
+
+
+Как я понял, нужно отправлять пароль от онлайн банка, для того, чтобы выполнять расширенный набор вызовов функций Но может получать список счетов и транзакций этого не требует 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em sessionid} & идентификатор сессии \\
+\hline
+{\em device\+Id} & -\/ информация об устройстве ~\newline
+ \\
+\hline
+{\em password} & -\/ пароль от онлайн банка ~\newline
+ \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+TODO\+: понять что вернет 
+\end{DoxyReturn}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ad683955d0249a44d6c2a5f5042721f41}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_ad683955d0249a44d6c2a5f5042721f41}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!confirmSms@{confirmSms}}
+\index{confirmSms@{confirmSms}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{confirmSms()}{confirmSms()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1after_confirm_1_1_confirm_sms_answer}{Confirm\+Sms\+Answer}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+confirm\+Sms (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Device\+Id,  }\item[{@Field(\char`\"{}initial\+Operation\+Ticket\char`\"{}) String}]{initial\+Operation\+Ticket,  }\item[{@Field(\char`\"{}initial\+Operation\char`\"{}) String}]{initial\+Operation,  }\item[{@Field(\char`\"{}confirmation\+Data\char`\"{}) String}]{confirmation\+Data }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Аргументы}
+{\em sessionid} & идентификатор сессии \\
+\hline
+{\em initial\+Operation\+Ticket} & какой-\/то идентификатор, который получаем из функции request\+Sms \\
+\hline
+{\em initial\+Operation} & изначальная операция например auth/by/phone \\
+\hline
+{\em confirmation\+Data} & строчка с смс-\/кодом \\
+\hline
+{\em device\+Id} & информация об устройстве \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+... 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{См. также}
+Confirm\+Sms\+Answer 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_acbf2e12f4edee7b7a9d5c64da439b6f1}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_acbf2e12f4edee7b7a9d5c64da439b6f1}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!loginByPinCode@{loginByPinCode}}
+\index{loginByPinCode@{loginByPinCode}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{loginByPinCode()}{loginByPinCode()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1after_confirm_1_1_confirm_sms_answer}{Confirm\+Sms\+Answer}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+login\+By\+Pin\+Code (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Device\+Id,  }\item[{@Field(\char`\"{}old\+Session\+Id\char`\"{}) String}]{old\+Session\+Id,  }\item[{@Field(\char`\"{}pin\+Hash\char`\"{}) String}]{pin\+Hash,  }\item[{@Field(\char`\"{}auth\+\_\+type\+\_\+set\+\_\+date\char`\"{}) String}]{set\+Date,  }\item[{@Field(\char`\"{}auth\+\_\+type\char`\"{}) String}]{auth\+Type }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Аргументы}
+{\em sessionid} & идентификатор сессии \\
+\hline
+{\em device\+Id} & информация об устройстве \\
+\hline
+{\em old\+Session\+Id} & идентификатор старой сессий \\
+\hline
+{\em pin\+Hash} & пин код \\
+\hline
+{\em set\+Date} & дата установки пин кода \\
+\hline
+{\em auth\+Type} & всегда значение равно pin \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+TODO\+: новые какие-\/то данные (?) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a5cfcf92bc1f0f516ac7e948e83cfc334}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a5cfcf92bc1f0f516ac7e948e83cfc334}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!pingSession@{pingSession}}
+\index{pingSession@{pingSession}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{pingSession()}{pingSession()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1ping_confirm_1_1_ping_answer}{Ping\+Answer}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+ping\+Session (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{deviceid,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Device\+Id }\end{DoxyParamCaption})}
+
+
+
+Функция, которая может вернуть состояние сессии 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em sessionid} & идентификатор сессии-\/ \\
+\hline
+{\em deviceid} & информация об устройстве \\
+\hline
+{\em old\+Device\+Id} & информация об устройстве \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+\char`\"{}access\+Level\char`\"{}\+: \char`\"{}\+ANONYMOUS\char`\"{} / \char`\"{}\+TODO\char`\"{} / \char`\"{}\+TODO\char`\"{} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a74aa3ba77c38d76bb96e1e2524f41d0d}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a74aa3ba77c38d76bb96e1e2524f41d0d}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!requestSms@{requestSms}}
+\index{requestSms@{requestSms}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{requestSms()}{requestSms()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1_sms_request}{Sms\+Request}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+request\+Sms (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}phone\char`\"{}) String}]{phone,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Devicde\+Id }\end{DoxyParamCaption})}
+
+
+
+Запрос, отправляя который, пользователь получает смс-\/код 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em sessionid} & идентификатор сессии \\
+\hline
+{\em phone} & номер телефона (в формате +7$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$) \\
+\hline
+{\em device\+Id} & -\/ device\+ID = old\+Devicde\+Id \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+initial\+Operation\+Ticket 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{См. также}
+Sms\+Request 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a25fd049a077a400ca2e2909733488d7e}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a25fd049a077a400ca2e2909733488d7e}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!setUpPin@{setUpPin}}
+\index{setUpPin@{setUpPin}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{setUpPin()}{setUpPin()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1_pin_confirm_1_1_set_up_pin_answer}{Set\+Up\+Pin\+Answer}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+set\+Up\+Pin (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Device\+Id,  }\item[{@Field(\char`\"{}pin\+Hash\char`\"{}) String}]{pin\+Hash,  }\item[{@Field(\char`\"{}auth\+\_\+type\+\_\+set\+\_\+date\char`\"{}) String}]{auth\+Type\+Set\+Date }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Аргументы}
+{\em sessionid} & идентификатор сессии \\
+\hline
+{\em device\+Id} & информация об устройстве \\
+\hline
+{\em pin\+Hash} & пин-\/код который, наверное, будет храниться у пользователя \\
+\hline
+{\em auth\+Type\+Set\+Date} & время установки пин кода \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+TODO\+: понять что вернет 
+\end{DoxyReturn}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a7171f3896ae174156c2a6ad262c00e77}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_a7171f3896ae174156c2a6ad262c00e77}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!transactionList@{transactionList}}
+\index{transactionList@{transactionList}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{transactionList()}{transactionList()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1transaction_1_1_transaction_answer}{Transaction\+Answer}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+transaction\+List (\begin{DoxyParamCaption}\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Device\+Id,  }\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}account\char`\"{}) String}]{account\+Id,  }\item[{@Field(\char`\"{}start\char`\"{}) String}]{start }\end{DoxyParamCaption})}
+
+
+
+Получить список транзакций для счета, начиная с даты 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em device\+Id} & информация об устройстве \\
+\hline
+{\em sessionid} & идентификатор сессии \\
+\hline
+{\em account\+Id} & идентификатор счета, получаемый из accounts\+List \\
+\hline
+{\em start} & дата начала \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+список транзакций 
+\end{DoxyReturn}
+\mbox{\Hypertarget{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_aedaf97da8e178f1c584b41e999e62504}\label{interfacefinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1calls_1_1_tinkoff_api_aedaf97da8e178f1c584b41e999e62504}} 
+\index{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}!warmUpCache@{warmUpCache}}
+\index{warmUpCache@{warmUpCache}!financeapp.bankConnection.tinkoff.api.calls.TinkoffApi@{financeapp.bankConnection.tinkoff.api.calls.TinkoffApi}}
+\doxysubsubsection{\texorpdfstring{warmUpCache()}{warmUpCache()}}
+{\footnotesize\ttfamily Call$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1_warm_up_cache}{Warm\+Up\+Cache}} $>$ financeapp.\+bank\+Connection.\+tinkoff.\+api.\+calls.\+Tinkoff\+Api.\+warm\+Up\+Cache (\begin{DoxyParamCaption}\item[{@Query(\char`\"{}sessionid\char`\"{}) String}]{sessionid,  }\item[{@Field(\char`\"{}device\+Id\char`\"{}) String}]{device\+Id,  }\item[{@Field(\char`\"{}old\+Device\+Id\char`\"{}) String}]{old\+Device\+Id }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Аргументы}
+{\em sessionid} & идентификатор сессии \\
+\hline
+{\em device\+Id} & информация об устройстве \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+Status\+Code должен быть OK 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{См. также}
+Warm\+Up\+Cache 
+\end{DoxySeeAlso}
+
+
+Объявления и описания членов интерфейса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/financeapp/bank\+Connection/tinkoff/api/calls/Tinkoff\+Api.\+java\end{DoxyCompactItemize}
