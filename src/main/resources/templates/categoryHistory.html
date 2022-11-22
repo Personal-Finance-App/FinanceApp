@@ -12,6 +12,9 @@
 
 <!-- content-->
 <section class="page-section my-4" id="portfolio">
+    <div class="container">
+        <h2>Гистограмма трат по категории </h2>
+        <p>С помощью выбора снизу можно нанести на график другие категории (до 3х)</p>
         <select id="cat-select" class="form-select"
                 aria-label="Default select example"
                 onchange="getData(this)">
@@ -20,9 +23,11 @@
         </select>
 
 
+
         <div id="myDiv">
 
         </div>
+    </div>
 </section>
 
 <!--Footer-->
@@ -32,6 +37,9 @@
 </body>
 </html>
 
+<script th:inline="javascript">
+    let default_len = [[${length}]];
+</script>
 
 <script>
     function createBarData(categoryName, x, y) {
@@ -77,21 +85,6 @@
 
 </script>
 
-
-
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    addBar([[${init.getCategory().getCategoryName()}]],
-        [[${init.getDates()}]],
-        [[${init.getSums()}]],
-        "myDiv",
-        layout
-    )
-
-    let default_len = [[${length}]];
-    /*]]>*/
-</script>
-
 <script>
     let selected = 1;
     function getData(e) {
@@ -123,3 +116,15 @@
     }
 </script>
 
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    addBar([[${init.getCategory().getCategoryName()}]],
+        [[${init.getDates()}]],
+        [[${init.getSums()}]],
+        "myDiv",
+        layout
+    )
+
+
+    /*]]>*/
+</script>
