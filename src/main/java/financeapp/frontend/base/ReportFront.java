@@ -47,10 +47,12 @@ public class ReportFront {
         var parts = report.getParts();
         parts.sort(Comparator.comparingDouble(ReportCategoryPart::getSum).reversed());
         var sum = parts.stream().map(ReportCategoryPart::getSum).toList();
+        var ids = parts.stream().map(i -> i.getCategory().getId()).toList();
         var labels = parts.stream().map(item -> item.getCategory().getCategoryName()).toList();
         var totalSpend = sum.stream().mapToDouble(f -> f).sum();
         model.addAttribute("categoryNames", labels);
         model.addAttribute("categoryAmounts", sum);
+        model.addAttribute("categoryIds", ids);
         model.addAttribute("totalSpend", totalSpend);
         model.addAttribute("categorySpendPercentage",
                 sum.stream().map(item -> item / totalSpend * 100).collect(Collectors.toList()));
