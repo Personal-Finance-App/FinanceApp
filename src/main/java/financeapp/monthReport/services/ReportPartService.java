@@ -4,6 +4,7 @@ import financeapp.monthReport.entity.ReportCategoryPart;
 import financeapp.monthReport.repos.ReportPartRepo;
 import financeapp.transaction.models.AbstractTransaction;
 import financeapp.transaction.models.PayTransaction;
+import financeapp.users.CustomUser;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class ReportPartService {
         reportPartRepo.saveAll(result);
         return result;
     }
+
+
 
 
 }

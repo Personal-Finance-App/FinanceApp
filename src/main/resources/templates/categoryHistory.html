@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Финасовые Цели</title>
+    <div th:insert="fragments/head.html :: head"></div>
+    <script src="https://cdn.plot.ly/plotly-2.15.0.min.js"></script>
+</head>
+<body id="page-top">
+<!-- navbar-->
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+
+<!-- content-->
+<section class="page-section my-4" id="portfolio">
+        <select id="cat-select" class="form-select"
+                aria-label="Default select example"
+                onchange="getData(this)">
+            <option selected>Категории</option>
+            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.categoryName}">
+        </select>
+
+
+        <div id="myDiv">
+
+        </div>
+</section>
+
+<!--Footer-->
+<div th:insert="fragments/footer.html :: footer"></div>
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+
+</body>
+</html>
+
+
+<script>
+    function createBarData(categoryName, x, y) {
+        return {
+            x: x,
+            y: y,
+            hovertemplate: '<b>' + categoryName + '</b>' +
+                '<br>%{y:.0f} ₽<br><extra></extra>',
+            name: categoryName,
+            type: 'bar'
+        }
+    }
+</script>
+
+<script>
+    function addBar(categoryName, x, y, chartName, layout) {
+        data.push(createBarData(
+            categoryName,
+            x,
+            y
+        ))
+
+        $('#cat-select option:contains(' + categoryName + ')').remove()
+        Plotly.newPlot(chartName, data, layout, {displayModeBar: false});
+    }
+</script>
+
+<script>
+
+
+    var data = [];
+    var layout = {
+        barmode: 'group',
+        xaxis: {
+            // tickangle: -45,
+            type: 'date',
+            'tickformat': '%B %Y'
+        },
+    };
+
+
+    Plotly.newPlot('myDiv', data, layout, {displayModeBar: false});
+
+</script>
+
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    addBar([[${init.getCategory().getCategoryName()}]],
+        [[${init.getDates()}]],
+        [[${init.getSums()}]],
+        "myDiv",
+        layout
+    )
+
+    let default_len = [[${length}]];
+    /*]]>*/
+</script>
+
+<script>
+    let selected = 1;
+    function getData(e) {
+        console.log(e);
+        let obj = $("#cat-select option:selected");
+        let id = obj.attr("value");
+        if (selected >= 3)
+            return;
+        selected = selected + 1;
+
+        $.ajax({
+            url: "/report/category-history",
+            method: 'POST',
+            data: JSON.stringify({
+                categoryId : id,
+                length : default_len
+            }),
+            contentType: "application/json",
+            success: function (response) {
+                addBar(response.category.categoryName,
+                    response.dates,
+                    response.sums,
+                    "myDiv",
+                    layout
+                )
+            },
+        })
+
+    }
+</script>
+

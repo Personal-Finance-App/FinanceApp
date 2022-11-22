@@ -6,6 +6,7 @@ import financeapp.users.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -77,6 +78,14 @@ public class ReportController {
                 .body(Collections.singletonMap("status", "error"));
     }
 
+    @PostMapping(value = "/category-history")
+    @ResponseBody
+    public ResponseEntity<?> getHistory(Authentication authentication,
+                                        @RequestBody CategoryHistory data) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        return ResponseEntity.ok().body(reportService.getCategoriesHistory(user, data.getCategoryId(), data.getLength()));
+    }
+
 }
 
 @Data
@@ -93,3 +102,8 @@ class CommentData {
     private String comment;
 }
 
+@Data
+class CategoryHistory {
+    private Long categoryId;
+    private Integer length;
+}
