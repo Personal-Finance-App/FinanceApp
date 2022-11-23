@@ -1,0 +1,54 @@
+\hypertarget{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service}{}\doxysection{Класс financeapp.\+transaction.\+services.\+Transaction\+Service}
+\label{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service}\index{financeapp.transaction.services.TransactionService@{financeapp.transaction.services.TransactionService}}
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a39e9de8e43a6b65173c8422e5c5db835}{save\+Transactions}} (List$<$ \mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} $>$ operations, \mbox{\hyperlink{classfinanceapp_1_1accounts_1_1models_1_1_account}{Account}} account, Local\+Date\+Time sync\+Time)
+\begin{DoxyCompactList}\small\item\em Метод для сохранения транзакций ~\newline
+ здесь же они проходят валидацию \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a2ba1a578f7fa1952112af30d4744d6b1}\label{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a2ba1a578f7fa1952112af30d4744d6b1}} 
+List$<$ \mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} $>$ {\bfseries get\+Transaction} (\mbox{\hyperlink{classfinanceapp_1_1accounts_1_1models_1_1_account}{Account}} account, Local\+Date\+Time after, Local\+Date\+Time before)
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a02bcb6b3de48e0741a18f2792141b4a2}\label{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a02bcb6b3de48e0741a18f2792141b4a2}} 
+List$<$ \mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_pay_transaction}{Pay\+Transaction}} $>$ {\bfseries get\+Transaction\+Without\+Category} (\mbox{\hyperlink{classfinanceapp_1_1accounts_1_1models_1_1_account}{Account}} account, Local\+Date\+Time after, Local\+Date\+Time before)
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_ac9494a8ed76c2239036a5bb62defbf7a}\label{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_ac9494a8ed76c2239036a5bb62defbf7a}} 
+\mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} {\bfseries get\+Transaction} (Long id)
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a7b70fad47f5a14cacee164d2b1ed1883}\label{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a7b70fad47f5a14cacee164d2b1ed1883}} 
+\mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} {\bfseries set\+Category} (\mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} transaction, \mbox{\hyperlink{classfinanceapp_1_1category_1_1entity_1_1_category}{Category}} category)
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a2433d50cdea84e4e97bc9dc749380023}\label{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a2433d50cdea84e4e97bc9dc749380023}} 
+\mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} {\bfseries save} (\mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} transaction)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Методы}
+\mbox{\Hypertarget{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a39e9de8e43a6b65173c8422e5c5db835}\label{classfinanceapp_1_1transaction_1_1services_1_1_transaction_service_a39e9de8e43a6b65173c8422e5c5db835}} 
+\index{financeapp.transaction.services.TransactionService@{financeapp.transaction.services.TransactionService}!saveTransactions@{saveTransactions}}
+\index{saveTransactions@{saveTransactions}!financeapp.transaction.services.TransactionService@{financeapp.transaction.services.TransactionService}}
+\doxysubsubsection{\texorpdfstring{saveTransactions()}{saveTransactions()}}
+{\footnotesize\ttfamily int financeapp.\+transaction.\+services.\+Transaction\+Service.\+save\+Transactions (\begin{DoxyParamCaption}\item[{List$<$ \mbox{\hyperlink{classfinanceapp_1_1transaction_1_1models_1_1_abstract_transaction}{Abstract\+Transaction}} $>$}]{operations,  }\item[{\mbox{\hyperlink{classfinanceapp_1_1accounts_1_1models_1_1_account}{Account}}}]{account,  }\item[{Local\+Date\+Time}]{sync\+Time }\end{DoxyParamCaption})}
+
+
+
+Метод для сохранения транзакций ~\newline
+ здесь же они проходят валидацию 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em operations} & список операций (которые заранее были созданы в Income/\+Pay/\+Transfer) \\
+\hline
+{\em account} & счет \\
+\hline
+{\em sync\+Time} & время сохранения (синхронизации) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+количество сохраненных операций 
+\end{DoxyReturn}
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/financeapp/transaction/services/Transaction\+Service.\+java\end{DoxyCompactItemize}

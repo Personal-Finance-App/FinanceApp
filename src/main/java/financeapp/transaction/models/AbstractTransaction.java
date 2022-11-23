@@ -25,16 +25,24 @@ public abstract class AbstractTransaction {
     private double amount;
     private String description;
     private LocalDateTime dateTime;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH
+            , CascadeType.MERGE
+            , CascadeType.PERSIST
+            , CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private Category category;
     private String merchant;
 
-
     @ManyToMany
+    @JoinTable(name="lable_transaction",
+    joinColumns = @JoinColumn(name = "transaction_id"),
+    inverseJoinColumns = @JoinColumn(name = "lable_id"))
     private List<Label> labelList;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH
+            , CascadeType.MERGE
+            , CascadeType.PERSIST
+            , CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;
 

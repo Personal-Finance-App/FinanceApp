@@ -1,0 +1,77 @@
+\hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller}{}\doxysection{Класс financeapp.\+bank\+Connection.\+tinkoff.\+controller.\+Tinkoff\+Controller}
+\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller}\index{financeapp.bankConnection.tinkoff.controller.TinkoffController@{financeapp.bankConnection.tinkoff.controller.TinkoffController}}
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+Response\+Entity$<$?$>$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_aa6fbc23a9330210209832d233cb407ef}{Register}} (@Request\+Body Phone\+Data phone\+Data, Authentication authentication)  throws IOException 
+\begin{DoxyCompactList}\small\item\em Начало процесса регистрации -\/ отправка СМС Кода \end{DoxyCompactList}\item 
+Response\+Entity$<$?$>$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_a68e3151684e3648ea0087ee6eae97b0f}{Final\+Register}} (@Request\+Body Final\+Register\+Data data, Authentication authentication)  throws IOException 
+\begin{DoxyCompactList}\small\item\em Завершение регстрации устройства \end{DoxyCompactList}\item 
+Response\+Entity$<$?$>$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_adceab2441fff99a79a62ef2f982aeb8c}{Request\+Account}} (Authentication authentication)  throws IOException 
+\begin{DoxyCompactList}\small\item\em Запрашивает список аккаунтов и возвращает их пользователю \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_a28959ae9e7c8c0139de0b7477cb966a7}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_a28959ae9e7c8c0139de0b7477cb966a7}} 
+Response\+Entity$<$?$>$ {\bfseries Confirm\+Account} (@Request\+Body List$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1api_1_1response_entitys_1_1accounts_list_1_1_account_payload}{Account\+Payload}} $>$ accounts, Authentication authentication)
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_a6f7f389511bd6a09925871c5db3cda25}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_a6f7f389511bd6a09925871c5db3cda25}} 
+Response\+Entity$<$?$>$ {\bfseries Sync\+Account} (Authentication authentication)  throws IOException 
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_ab839cf30cfa4988104f4428078b5ccb4}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_ab839cf30cfa4988104f4428078b5ccb4}} 
+Response\+Entity$<$?$>$ {\bfseries Sync\+Account\+User} (\mbox{\hyperlink{classfinanceapp_1_1users_1_1_custom_user}{Custom\+User}} user)  throws IOException 
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Методы}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_a68e3151684e3648ea0087ee6eae97b0f}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_a68e3151684e3648ea0087ee6eae97b0f}} 
+\index{financeapp.bankConnection.tinkoff.controller.TinkoffController@{financeapp.bankConnection.tinkoff.controller.TinkoffController}!FinalRegister@{FinalRegister}}
+\index{FinalRegister@{FinalRegister}!financeapp.bankConnection.tinkoff.controller.TinkoffController@{financeapp.bankConnection.tinkoff.controller.TinkoffController}}
+\doxysubsubsection{\texorpdfstring{FinalRegister()}{FinalRegister()}}
+{\footnotesize\ttfamily Response\+Entity$<$?$>$ financeapp.\+bank\+Connection.\+tinkoff.\+controller.\+Tinkoff\+Controller.\+Final\+Register (\begin{DoxyParamCaption}\item[{@Request\+Body Final\+Register\+Data}]{data,  }\item[{Authentication}]{authentication }\end{DoxyParamCaption}) throws IOException}
+
+
+
+Завершение регстрации устройства 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em data} & код из смс, пароль, operation\+Ticket\+Id \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+OK или не ок( 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_aa6fbc23a9330210209832d233cb407ef}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_aa6fbc23a9330210209832d233cb407ef}} 
+\index{financeapp.bankConnection.tinkoff.controller.TinkoffController@{financeapp.bankConnection.tinkoff.controller.TinkoffController}!Register@{Register}}
+\index{Register@{Register}!financeapp.bankConnection.tinkoff.controller.TinkoffController@{financeapp.bankConnection.tinkoff.controller.TinkoffController}}
+\doxysubsubsection{\texorpdfstring{Register()}{Register()}}
+{\footnotesize\ttfamily Response\+Entity$<$?$>$ financeapp.\+bank\+Connection.\+tinkoff.\+controller.\+Tinkoff\+Controller.\+Register (\begin{DoxyParamCaption}\item[{@Request\+Body Phone\+Data}]{phone\+Data,  }\item[{Authentication}]{authentication }\end{DoxyParamCaption}) throws IOException}
+
+
+
+Начало процесса регистрации -\/ отправка СМС Кода 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em phone\+Data} & номер телефона в формате +7$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$ -\/ обязательно проверять \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+operation\+Ticket\+Id -\/ его в будущем использовать нужно будет 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_adceab2441fff99a79a62ef2f982aeb8c}\label{classfinanceapp_1_1bank_connection_1_1tinkoff_1_1controller_1_1_tinkoff_controller_adceab2441fff99a79a62ef2f982aeb8c}} 
+\index{financeapp.bankConnection.tinkoff.controller.TinkoffController@{financeapp.bankConnection.tinkoff.controller.TinkoffController}!RequestAccount@{RequestAccount}}
+\index{RequestAccount@{RequestAccount}!financeapp.bankConnection.tinkoff.controller.TinkoffController@{financeapp.bankConnection.tinkoff.controller.TinkoffController}}
+\doxysubsubsection{\texorpdfstring{RequestAccount()}{RequestAccount()}}
+{\footnotesize\ttfamily Response\+Entity$<$?$>$ financeapp.\+bank\+Connection.\+tinkoff.\+controller.\+Tinkoff\+Controller.\+Request\+Account (\begin{DoxyParamCaption}\item[{Authentication}]{authentication }\end{DoxyParamCaption}) throws IOException}
+
+
+
+Запрашивает список аккаунтов и возвращает их пользователю 
+
+\begin{DoxyReturn}{Возвращает}
+список счетов пользователей 
+\end{DoxyReturn}
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/financeapp/bank\+Connection/tinkoff/controller/Tinkoff\+Controller.\+java\end{DoxyCompactItemize}

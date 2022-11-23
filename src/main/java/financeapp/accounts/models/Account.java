@@ -43,11 +43,13 @@ public abstract class Account {
 //    @JoinColumn(name = "bank_connection_id")
 //    private BankConnection bankConnection;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+//    @OneToOne
+//    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "customer_id")
     private CustomUser user;
 
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private List<AbstractTransaction> transactionList;
 
     public boolean AddTransaction(AbstractTransaction transaction) {
