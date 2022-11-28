@@ -23,7 +23,7 @@ public class SberbankApiFactory {
     static FormBody defaultFormBody = new FormBody.Builder()
         .add("version", "9.20")
         .add("appType", "android")
-        .add("appVersion", "14.5.0")
+        .add("appVersion", "14.3.0")
         .add("appBuildType", "RELEASE")
         .add("deviceName", "HUAWEI_ANE-LX1")
         .add("deviceOSVersion", "10")
