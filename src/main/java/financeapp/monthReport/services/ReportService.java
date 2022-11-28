@@ -1,6 +1,8 @@
 package financeapp.monthReport.services;
 
+import financeapp.category.entity.Category;
 import financeapp.monthReport.entity.Report;
+import financeapp.monthReport.entity.ReportCategoryPartResponse;
 import financeapp.monthReport.repos.ReportRepo;
 import financeapp.transaction.models.AbstractTransaction;
 import financeapp.transaction.services.TransactionService;
@@ -8,6 +10,7 @@ import financeapp.users.CustomUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +54,39 @@ public class ReportService {
         report.setComment(comment);
         reportRepo.save(report);
         return true;
+    }
+
+    public ReportCategoryPartResponse getCategoriesHistory(CustomUser user, Long category, Integer len) {
+        var reports = reportRepo.findReportByLinkedUser(user);
+        if (reports.size() > len)
+            reports = reports.subList(0, len + 1);
+
+
+        var result = ReportCategoryPartResponse.builder();
+        ArrayList<LocalDate> dates = new ArrayList<>();
+        var sums = new ArrayList<Double>();
+        final Category[] categoryObj = {null};
+        reports.forEach(report -> {
+            var date = LocalDate.of(report.getYear(), report.getMonth(), 1);
+            var part = report
+                    .getParts()
+                    .stream()
+                    .filter(i -> i.getCategory().getId().equals(category))
+                    .findFirst();
+
+            if (part.isPresent()) {
+                dates.add(date);
+                sums.add(part.get().getSum());
+                categoryObj[0] = part.get().getCategory();
+            }
+
+        });
+
+        return result
+                .sums(sums)
+                .dates(dates)
+                .category(categoryObj[0])
+                .build();
     }
 
 

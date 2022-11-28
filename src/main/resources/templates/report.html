@@ -161,10 +161,14 @@
 
 <script th:inline="javascript">
   let spend_in_category_labels = []
+  let spend_in_category_id = []
   /*<![CDATA[*/
 
   /*[# th:each="item : ${categoryNames}"]*/
   spend_in_category_labels.push(/*[[${item}]]*/);
+  /*[/]*/
+  /*[# th:each="item : ${categoryIds}"]*/
+  spend_in_category_id.push(/*[[${item}]]*/)
   /*[/]*/
 
   /*]]>*/
@@ -195,12 +199,12 @@
     }
   }
 
-  function createRow(categoryName, amount) {
+  function createRow(categoryName, amount, id) {
     let percent = (amount / analysis.spend) * 100;
-    return `<tr>
-              <th>${categoryName}</th>
-              <td>${toCurrency(amount, "RUB", 'Ru-ru')}</td>
-              <td>${percent.toFixed(2)}%</td>
+    return `<tr onclick="document.location='/category-history/${id}'">
+                  <th>${categoryName}</th>
+                  <td>${toCurrency(amount, "RUB", 'Ru-ru')}</td>
+                  <td>${percent.toFixed(2)}%</td>
             </tr>`
     }
 
@@ -252,7 +256,7 @@
     /*]]>*/
 
     for (let i = 0; i < spend_in_category_labels.length; i++) {
-      $('#categoryTable').append(createRow(spend_in_category_labels[i], spend_in_category[i]));
+      $('#categoryTable').append(createRow(spend_in_category_labels[i], spend_in_category[i], spend_in_category_id[i]));
     }
 
     const data = {
