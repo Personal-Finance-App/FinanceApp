@@ -1,8 +1,16 @@
 package financeapp.monthReport;
 
+import financeapp.config.AppError;
 import financeapp.monthReport.services.LabelService;
 import financeapp.transaction.services.TransactionService;
 import financeapp.users.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.MediaType;
@@ -17,14 +25,27 @@ import java.util.stream.Collectors;
 @RestController()
 @RequestMapping("/label")
 @AllArgsConstructor
+@Tag(name = "Label")
+@SecurityRequirement(name = "javainuseapi")
 public class LabelController {
     private final LabelService labelService;
     private final TransactionService transactionService;
     private final UserService userService;
 
+
+    @Operation(summary = "Установить список лейблов для транзакции")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Лейблы устанавлены"),
+		@ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+
+		@ApiResponse(responseCode = "500", description = "Ошибочка ",
+			content = { @Content(mediaType = "application/json",
+			schema = @Schema(implementation = AppError.class)) }),
+	})
+
     @PostMapping("/set")
     @ResponseBody
-    public ResponseEntity<?> setLabelsForTransaction(@RequestBody  DataForSet data, Authentication authentication) {
+    public ResponseEntity<?> setLabelsForTransaction(@RequestBody DataForSet data, Authentication authentication) {
         var labels = data.getLabelsIds()
                 .stream().map(labelService::getLabelById).collect(Collectors.toList());
 

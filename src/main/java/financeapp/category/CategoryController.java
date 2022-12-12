@@ -2,6 +2,8 @@ package financeapp.category;
 
 import financeapp.transaction.services.TransactionService;
 import financeapp.users.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.MediaType;
@@ -15,6 +17,8 @@ import java.util.Collections;
 @RestController()
 @RequestMapping("/category")
 @AllArgsConstructor
+@Tag(name = "Categories")
+@SecurityRequirement(name = "javainuseapi")
 public class CategoryController {
 
     private final CategoryService categoryService;

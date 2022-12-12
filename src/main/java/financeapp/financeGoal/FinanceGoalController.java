@@ -3,6 +3,8 @@ package financeapp.financeGoal;
 import financeapp.accounts.models.variousAccount.SavingAccount;
 import financeapp.accounts.services.AccountService;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,8 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/goals")
+@Tag(name = "Finance Goal")
+@SecurityRequirement(name = "javainuseapi")
 public class FinanceGoalController {
 
     private final UserRepo userRepo;
