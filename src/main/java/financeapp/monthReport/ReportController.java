@@ -3,10 +3,11 @@ package financeapp.monthReport;
 import com.google.gson.Gson;
 import financeapp.monthReport.services.ReportService;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,8 @@ import java.util.Collections;
 @RestController()
 @RequestMapping("/report")
 @AllArgsConstructor
+@SecurityRequirement(name = "javainuseapi")
+@Tag(name = "Report", description = "Connected with report things")
 public class ReportController {
 
     private final UserRepo userRepo;

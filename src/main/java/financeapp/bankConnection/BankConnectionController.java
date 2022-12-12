@@ -7,6 +7,9 @@ import financeapp.bankConnection.sberbank.controllers.SberbankController;
 import financeapp.bankConnection.tinkoff.TinkoffConnection;
 import financeapp.bankConnection.tinkoff.controller.TinkoffController;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import java.util.Collections;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/acc")
+@Tag(name = "Bank Connection")
+@SecurityRequirement(name = "javainuseapi")
 public class BankConnectionController {
     private final UserRepo userRepo;
     private final BankConnectionRepo bankConnectionRepo;
@@ -27,6 +32,7 @@ public class BankConnectionController {
     private final SberbankController sberbankController;
 
 
+    @Operation(summary = "Синронизировать все счета")
     @GetMapping(path = "/sync-all", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> SyncAll(Authentication authentication) throws IOException {

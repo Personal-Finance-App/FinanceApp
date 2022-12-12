@@ -1,5 +1,6 @@
 package financeapp.users;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@Tag(name = "Users", description = "Use this if u don't have opportunity to connect a real bank")
 public class UserController {
     private final UserService userService;
 
