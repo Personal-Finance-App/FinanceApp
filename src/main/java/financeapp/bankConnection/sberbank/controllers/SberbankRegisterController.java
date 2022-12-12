@@ -2,6 +2,7 @@ package financeapp.bankConnection.sberbank.controllers;
 
 import financeapp.bankConnection.sberbank.services.SberbankRegisterService;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/sberbank/auth")
+@Hidden
 public class SberbankRegisterController {
     public SberbankRegisterController(SberbankRegisterService sberbankRegisterService, UserRepo userRepo) {
         this.sberbankRegisterService = sberbankRegisterService;

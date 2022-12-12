@@ -9,6 +9,7 @@ import financeapp.bankConnection.tinkoff.services.TinkoffService;
 import financeapp.transaction.services.TransactionService;
 import financeapp.users.CustomUser;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.MediaType;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
 @RequestMapping("/tinkof")
+@Hidden
 public class TinkoffController {
     private final TinkoffService tinkoffService;
     private final UserRepo userRepo;
