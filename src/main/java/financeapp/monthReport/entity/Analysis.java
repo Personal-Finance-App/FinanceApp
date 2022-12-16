@@ -21,7 +21,7 @@ public class Analysis {
     private Double other = 0D;
     @OneToOne
     @JoinColumn(name = "biggest_payment_id")
-    private PayTransaction biggestPayment;
+    private transient PayTransaction biggestPayment;
     private Double averagePerDay;
 
 }

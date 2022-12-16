@@ -1,8 +1,11 @@
 package financeapp.monthReport;
 
 import com.google.gson.Gson;
+import financeapp.monthReport.entity.Report;
 import financeapp.monthReport.services.ReportService;
+import financeapp.monthReport.wrappers.ReportWrapper;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController()
@@ -87,6 +92,15 @@ public class ReportController {
                                         @RequestBody CategoryHistory data) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         return ResponseEntity.ok().body(reportService.getCategoriesHistory(user, data.getCategoryId(), data.getLength()));
+    }
+
+    @GetMapping("/all")
+    @ResponseBody
+    public ResponseEntity<List<ReportWrapper>> getPreviousData(Authentication authentication) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        var reports = reportService.findReportsByUserPeriod(user, 6);
+        var reportsWrapper = reports.stream().map(Report::toWrapper).collect(Collectors.toList());
+        return ResponseEntity.ok().body(reportsWrapper);
     }
 
 }

@@ -27,7 +27,7 @@ public class Report {
     private Integer year;
     private Integer month;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<ReportCategoryPart> parts;
 
     @OneToOne
@@ -48,6 +48,6 @@ public class Report {
     }
 
     public ReportWrapper toWrapper() {
-        return new ReportWrapper(year, month, updated, parts);
+        return new ReportWrapper(year, month, updated, parts, analysis);
     }
 }
