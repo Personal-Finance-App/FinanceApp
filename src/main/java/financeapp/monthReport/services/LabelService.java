@@ -47,4 +47,8 @@ public class LabelService {
         return labelRepo.findLabelById(id);
     }
 
+    public Label findLabelByName(String name){
+        return labelRepo.findLabelByName(name);
+    }
+
 }
