@@ -5,6 +5,7 @@ import financeapp.monthReport.entity.Analysis;
 import financeapp.monthReport.repos.AnalysisRepo;
 import financeapp.monthReport.repos.LabelRepo;
 import financeapp.transaction.models.AbstractTransaction;
+import financeapp.transaction.models.PayTransaction;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,6 @@ public class AnalysisService {
     public Analysis startAnalysis(List<AbstractTransaction> transactionList) {
         var income = new CountIncomeHandler(labelRepo.findLabelByName("Перевод самому себе"));
         var requirePay = new CountRequieredTransactionHandler(labelRepo.findLabelByName("Обязательный платеж"));
-        var maxTransaction = new MaxTransactionHandler();
         var savedAmount = new SavedAmountHandler();
         var other = new OtherHandler(); // ВСЕГДА ПОСЛЕДНИМ ИДЕТ
         var skipLabel = labelRepo.findLabelByName("Не учитывать");
@@ -34,12 +34,24 @@ public class AnalysisService {
         var analysis = new Analysis();
 
         // цепочка обработки
-        income.setNext(requirePay).setNext(maxTransaction).setNext(savedAmount).setNext(other);
+        income
+                .setNext(requirePay)
+//                .setNext(maxTransaction)
+                .setNext(savedAmount)
+                .setNext(other);
+
+
 
         for (AbstractTransaction transaction :
                 transactionList) {
             if (!transaction.getLabelList().contains(skipLabel) && !transaction.getLabelList().contains(selfTransfer)) {
                 income.Handle(transaction, analysis);
+            }
+            if ((analysis.getBiggestPayment() == null) && (transaction instanceof PayTransaction)){
+                analysis.setBiggestPayment((PayTransaction) transaction);
+            }
+            if ((analysis.getBiggestPayment().getAmount() < transaction.getAmount())&& (transaction instanceof PayTransaction)) {
+                analysis.setBiggestPayment((PayTransaction) transaction);
             }
         }
 
