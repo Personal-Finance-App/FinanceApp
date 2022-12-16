@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <style>
+    .report-card {
+      border-radius: 10px;
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s;
+      background: radial-gradient(#bbf8ad, #ecf693);
+    }
+
+    .report-card:hover {
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
+      transform: scale(1.01);
+    }
+
+    .card__icon {
+      grid-row: 2/3;
+      font-size: 30px;
+    }
+
+  </style>
+  <title>Создание плана</title>
+  <div th:insert="fragments/head.html :: head"></div>
+</head>
+
+<body id="page-top">
+
+<!-- content-->
+<div class="container mt-2 d-flex flex-column">
+  <div class="card report-card">
+    <!--    Icon-->
+    <!--    <div class="card__icon"><i class="fas fa-bolt"></i></div>-->
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Создание плана</div>
+    </div>
+  </div>
+
+  <div class="card report-card mt-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <input class="form-control" id="month" placeholder="месяц">
+        </div>
+        <div class="col">
+          <input class="form-control" id="year" placeholder="год">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a id="expectedIncomeCard">
+    <div class="card report-card mt-4">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Ожидаемый доход</div>
+      <form id="expectedIncome" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control expectedIncomeName">
+          </div>
+          <div class="col">
+            <input class="form-control expectedIncomeAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="expectedIncomeAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span id="expectedIncomeSum"></span></p>
+        </div>
+      </div>
+
+      <p>В среднем доход за предыдущие месяцы составил <span id="previousIncome"></span> руб</p>
+    </div>
+  </div>
+  </a>
+
+
+  <div class="card report-card mt-4" id="toSaveIncomeCard">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Необходимо отложить</div>
+      <form id="toSave" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control toSaveName">
+          </div>
+          <div class="col">
+            <input class="form-control toSaveAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="toSaveAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span id="toSaveSum"></span>
+            <br>Это <span id="toSaveSumPercentage"></span>% от планируемого дохода</p>
+          </p>
+        </div>
+      </div>
+
+      <p>Минимально нужно отложить <span id="NeedToSave"></span> руб
+      <br>
+      За прошлые месяца: <span id="savedPreviously"></span> руб
+      </p>
+      <p>Посмотреть свои цели</p>
+    </div>
+  </div>
+
+  <div class="card report-card mt-4" id="requiredPaymentCard">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Обязательные платежи</div>
+      <form id="requiredPayment" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control requiredPaymentName">
+          </div>
+          <div class="col">
+            <input class="form-control requiredPaymentAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="requiredPaymentAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span id="requiredPaymentSum"></span>
+            <br>Это <span id="requiredPaymentSumPercentage"></span>% от планируемого дохода</p>
+        </div>
+      </div>
+
+      <p>За прошлые месяцы обязательные платежи в среднем были <span id="requiredPaymentPrevious"></span> руб</p>
+    </div>
+  </div>
+
+  <div class="card report-card mt-4" id="otherPaymentCard">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Другие расходы</div>
+      <form id="otherPayment" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control otherPaymentName">
+          </div>
+          <div class="col">
+            <input class="form-control otherPaymentAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="otherPaymentAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span id="otherPaymentSum"></span>
+            <br>Это <span id="otherPaymentSumPercentage"></span>% от планируемого дохода</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
+        integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script th:src="@{/js/pallete.js}"></script>
+
+
+<script th:inline="javascript">
+
+</script>
+
+
+<script>
+function scriptCard(name) {
+
+  $(`#${name}Add`).click(function () {
+    $(`#${name}`).append("<div class=\"row mt-1\">\n" +
+            "          <div class=\"col\">\n" +
+            `            <input class=\"form-control ${name}Name\">\n`+
+            "          </div>\n" +
+            "          <div class=\"col\">\n" +
+            `            <input class=\"form-control ${name}Amount\">\n` +
+            "          </div>\n" +
+            "        </div>")
+  })
+
+
+  $(document).on('change', `.${name}Amount`, function(){
+    var sum = 0;
+    $(`.${name}Amount`).each(function (e) {
+      sum += Number($( this ).val());
+    })
+    $(`#${name}Sum`).html(sum);
+    let percentage = sum / Number($(`#expectedIncomeSum`).html());
+    $(`#${name}SumPercentage`).html(Math.ceil(percentage * 100));
+  })
+
+}
+scriptCard("expectedIncome")
+scriptCard("toSave")
+scriptCard("requiredPayment")
+scriptCard("otherPayment")
+</script>
+
+<script>
+  function median(values){
+    if(values.length ===0) throw new Error("No inputs");
+
+    values.sort(function(a,b){
+      return a-b;
+    });
+
+    var half = Math.floor(values.length / 2);
+
+    if (values.length % 2)
+      return values[half];
+
+    return (values[half - 1] + values[half]) / 2.0;
+  }
+
+  function previousDataProcces(array) {
+    // медиана или среднее
+    return median(array)
+  }
+
+  function parseReports(data) {
+    let analysis = data.map(x => x.analysis);
+    let incomeMean = previousDataProcces(analysis.map(x => x.income));
+    $("#previousIncome").html(incomeMean);
+    let requiredMean = previousDataProcces(analysis.map(x => x.requirePayments));
+    $("#requiredPaymentPrevious").html(requiredMean);
+    let toSaveMean = previousDataProcces(analysis.map(x => x.saved));
+    $("#savedPreviously").html(requiredMean);
+
+    let otherMean = median(analysis.map(x => x.other));
+
+
+  }
+
+  $.ajax({
+    url: "/report/all",
+    method: 'GET',
+    contentType: "application/json",
+    success: function (response) {
+      parseReports(response)
+      console.log(response)
+      console.log("ВСЕ ОКЕЙ")
+    },
+    error: function (response) {
+      $(this)
+              .prop("disabled", true)
+              .html(`Ошибка...`);
+      console.log("Чето пошло не так...")
+    }
+  })
+</script>
+
+</body>
+</html>
+
+
