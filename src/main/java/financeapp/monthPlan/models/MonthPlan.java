@@ -2,6 +2,7 @@ package financeapp.monthPlan.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import financeapp.monthPlan.models.planTransactionModels.*;
 import financeapp.users.CustomUser;
 import lombok.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MonthPlan {
     @Id
     @Column(name = "id", nullable = false)
