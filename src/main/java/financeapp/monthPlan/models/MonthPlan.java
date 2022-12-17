@@ -1,10 +1,10 @@
 package financeapp.monthPlan.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import financeapp.monthPlan.models.planTransactionModels.*;
 import financeapp.users.CustomUser;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +12,8 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class MonthPlan {
     @Id
     @Column(name = "id", nullable = false)
@@ -20,9 +22,10 @@ public class MonthPlan {
     private Integer month;
     private Integer year;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private CustomUser user;
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "linked_user_id")
+    @JsonIgnore
+    private CustomUser linkedUser;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<IncomePlanTransaction> expectedIncome;
@@ -36,28 +39,28 @@ public class MonthPlan {
     @OneToMany(cascade = CascadeType.ALL)
     private List<RequiredPlanTransaction> toRequiredPayment;
 
-    public CustomUser getUser() {
-        return user;
+    public CustomUser getLinkedUser() {
+        return linkedUser;
     }
 
-    public void setUser(CustomUser user) {
-        this.user = user;
+    public void setLinkedUser(CustomUser user) {
+        this.linkedUser = user;
     }
 
-    public Double getExpectedIncomeSum() {
-        return this.expectedIncome.stream().mapToDouble(PlanTransaction::getAmount).sum();
-    }
-
-    public Double getToSaveSum() {
-        return this.toSave.stream().mapToDouble(PlanTransaction::getAmount).sum();
-    }
-
-    public Double getToRequiredSum() {
-        return this.toRequiredPayment.stream().mapToDouble(PlanTransaction::getAmount).sum();
-    }
-
-    public Double getOtherSum() {
-        return this.otherPlans.stream().mapToDouble(PlanTransaction::getAmount).sum();
-    }
+//    public Double getExpectedIncomeSum() {
+//        return this.expectedIncome.stream().mapToDouble(PlanTransaction::getAmount).sum();
+//    }
+//
+//    public Double getToSaveSum() {
+//        return this.toSave.stream().mapToDouble(PlanTransaction::getAmount).sum();
+//    }
+//
+//    public Double getToRequiredSum() {
+//        return this.toRequiredPayment.stream().mapToDouble(PlanTransaction::getAmount).sum();
+//    }
+//
+//    public Double getOtherSum() {
+//        return this.otherPlans.stream().mapToDouble(PlanTransaction::getAmount).sum();
+//    }
 
 }

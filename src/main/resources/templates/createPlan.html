@@ -70,7 +70,7 @@
           <button id="expectedIncomeAdd" type="button" class="btn btn-success"> Добавить + </button>
         </div>
         <div class="col">
-          <p>В сумме <span id="expectedIncomeSum"></span></p>
+          <p>В сумме <span class="expectedIncomeSum"></span></p>
         </div>
       </div>
 
@@ -99,13 +99,13 @@
           <button id="toSaveAdd" type="button" class="btn btn-success"> Добавить + </button>
         </div>
         <div class="col">
-          <p>В сумме <span id="toSaveSum"></span>
-            <br>Это <span id="toSaveSumPercentage"></span>% от планируемого дохода</p>
+          <p>В сумме <span class="toSaveSum"></span>
+            <br>Это <span class="toSaveSumPercentage"></span>% от планируемого дохода</p>
           </p>
         </div>
       </div>
 
-      <p>Минимально нужно отложить <span id="NeedToSave"></span> руб
+      <p>Минимально нужно отложить <span id="needToSave"></span> руб
       <br>
       За прошлые месяца: <span id="savedPreviously"></span> руб
       </p>
@@ -132,8 +132,8 @@
           <button id="requiredPaymentAdd" type="button" class="btn btn-success"> Добавить + </button>
         </div>
         <div class="col">
-          <p>В сумме <span id="requiredPaymentSum"></span>
-            <br>Это <span id="requiredPaymentSumPercentage"></span>% от планируемого дохода</p>
+          <p>В сумме <span class="requiredPaymentSum"></span>
+            <br>Это <span class="requiredPaymentSumPercentage"></span>% от планируемого дохода</p>
         </div>
       </div>
 
@@ -160,11 +160,55 @@
           <button id="otherPaymentAdd" type="button" class="btn btn-success"> Добавить + </button>
         </div>
         <div class="col">
-          <p>В сумме <span id="otherPaymentSum"></span>
-            <br>Это <span id="otherPaymentSumPercentage"></span>% от планируемого дохода</p>
+          <p>В сумме <span class="otherPaymentSum"></span>
+            <br>Это <span class="otherPaymentSumPercentage"></span>% от планируемого дохода</p>
         </div>
       </div>
 
+    </div>
+  </div>
+
+
+  <div class="card report-card mt-4">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">В итоге</div>
+      <table class="table">
+        <tbody>
+        <tr>
+          <th scope="row">Ожидается получить</th>
+          <td><span class="expectedIncomeSum">считаю...</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">Обязательные платежи</th>
+          <td><span class="requiredPaymentSum">считаю...</span></td>
+          <td><span class="requiredPaymentSumPercentage">считаю...</span>%</td>
+        </tr>
+        <tr>
+          <th scope="row">Будет отложено</th>
+          <td>
+            <span class="toSaveSum">считаю...</span>
+          <td><span class="toSaveSumPercentage">считаю...</span>%</td>
+          </td>
+
+        </tr>
+        <tr>
+          <th scope="row">Остальное (Запланированное)</th>
+          <td>
+            <span class="otherPaymentSum">считаю...</span>
+          </td>
+          <td><span class="otherPaymentSumPercentage">считаю...</span>%</td>
+        </tr>
+        <tr>
+          <th scope="row">Остальное</th>
+          <td>
+            <span class="otherPaymentNotPlannedSum">считаю...</span>
+          </td>
+          <td><span class="otherPaymentNotPlannedSumPercentage">считаю...</span>%</td>
+        </tr>
+        </tbody>
+      </table>
+      <p>В среднем тратить в день <span id="everyDayMoney"></span></p>
     </div>
   </div>
 
@@ -183,6 +227,31 @@
 
 
 <script>
+  var Income = 0.;
+  var Required = 0.;
+  var ToSave = 0.;
+  var Other = 0.;
+
+  function updateOne(name, sum) {
+    var percentage = sum / Income;
+    $(`.${name}Sum`).html(toCurrency(sum, "RUB", 'Ru-ru'));
+    $(`.${name}SumPercentage`).html(Math.ceil(percentage * 100), 2);
+  }
+
+  function updateSummary() {
+    updateOne("expectedIncome", Income);
+    updateOne("toSave", ToSave);
+    updateOne("requiredPayment", Required);
+    updateOne("otherPayment", Other);
+    let left =  Income - ToSave - Required - Other;
+    updateOne("otherPaymentNotPlanned", left);
+    var dayAmount = new Date($("#year").val(), $("#month").val() , 0).getDate()
+    $("#everyDayMoney").html(toCurrency( left / dayAmount  ,"RUB", 'Ru-ru'));
+  }
+
+  const toCurrency = (n, curr, LanguageFormat = undefined) =>
+
+          Intl.NumberFormat(LanguageFormat, {style: 'currency', currency: curr}).format(n);
 function scriptCard(name) {
 
   $(`#${name}Add`).click(function () {
@@ -202,9 +271,16 @@ function scriptCard(name) {
     $(`.${name}Amount`).each(function (e) {
       sum += Number($( this ).val());
     })
-    $(`#${name}Sum`).html(sum);
-    let percentage = sum / Number($(`#expectedIncomeSum`).html());
-    $(`#${name}SumPercentage`).html(Math.ceil(percentage * 100));
+    switch (name) {
+      case "expectedIncome": Income = sum;
+      break;
+      case "toSave": ToSave = sum;
+      break;
+      case "requiredPayment": Required = sum;
+      break;
+      case "otherPayment": Other = sum;
+    }
+    updateSummary();
   })
 
 }
@@ -215,6 +291,7 @@ scriptCard("otherPayment")
 </script>
 
 <script>
+
   function median(values){
     if(values.length ===0) throw new Error("No inputs");
 
@@ -232,7 +309,7 @@ scriptCard("otherPayment")
 
   function previousDataProcces(array) {
     // медиана или среднее
-    return median(array)
+    return toCurrency(median(array), "RUB", 'Ru-ru')
   }
 
   function parseReports(data) {
@@ -259,9 +336,19 @@ scriptCard("otherPayment")
       console.log("ВСЕ ОКЕЙ")
     },
     error: function (response) {
-      $(this)
-              .prop("disabled", true)
-              .html(`Ошибка...`);
+      console.log("Чето пошло не так...")
+    }
+  })
+
+
+  $.ajax({
+    url: "/goals/monthly-fee",
+    method: 'GET',
+    contentType: "application/json",
+    success: function (response) {
+      $("#needToSave").html(toCurrency(response.monthlyFee, "RUB", 'Ru-ru'))
+    },
+    error: function (response) {
       console.log("Чето пошло не так...")
     }
   })
