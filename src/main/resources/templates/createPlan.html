@@ -2,6 +2,8 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+  <script th:src="@{/js/pallete.js}" type="module"></script>
+  <script th:src="@{/js/plan.js}" type="module" defer></script>
   <style>
     .report-card {
       border-radius: 10px;
@@ -218,140 +220,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
         integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script th:src="@{/js/pallete.js}"></script>
 
 
-<script th:inline="javascript">
+<script th:inline="javascript" type="module">
+  import insertPlan from "/js/plan.js";
+  let PLAN_ID = 10;
+  if (PLAN_ID !== -1) {
+    $.ajax({
+      url: "/plan/get/" + PLAN_ID,
+      method: 'GET',
+      contentType: "application/json",
+      success: function (response) {
+        console.log(response)
+        insertPlan(response)
 
-</script>
-
-
-<script>
-  var Income = 0.;
-  var Required = 0.;
-  var ToSave = 0.;
-  var Other = 0.;
-
-  function updateOne(name, sum) {
-    var percentage = sum / Income;
-    $(`.${name}Sum`).html(toCurrency(sum, "RUB", 'Ru-ru'));
-    $(`.${name}SumPercentage`).html(Math.ceil(percentage * 100), 2);
-  }
-
-  function updateSummary() {
-    updateOne("expectedIncome", Income);
-    updateOne("toSave", ToSave);
-    updateOne("requiredPayment", Required);
-    updateOne("otherPayment", Other);
-    let left =  Income - ToSave - Required - Other;
-    updateOne("otherPaymentNotPlanned", left);
-    var dayAmount = new Date($("#year").val(), $("#month").val() , 0).getDate()
-    $("#everyDayMoney").html(toCurrency( left / dayAmount  ,"RUB", 'Ru-ru'));
-  }
-
-  const toCurrency = (n, curr, LanguageFormat = undefined) =>
-
-          Intl.NumberFormat(LanguageFormat, {style: 'currency', currency: curr}).format(n);
-function scriptCard(name) {
-
-  $(`#${name}Add`).click(function () {
-    $(`#${name}`).append("<div class=\"row mt-1\">\n" +
-            "          <div class=\"col\">\n" +
-            `            <input class=\"form-control ${name}Name\">\n`+
-            "          </div>\n" +
-            "          <div class=\"col\">\n" +
-            `            <input class=\"form-control ${name}Amount\">\n` +
-            "          </div>\n" +
-            "        </div>")
-  })
-
-
-  $(document).on('change', `.${name}Amount`, function(){
-    var sum = 0;
-    $(`.${name}Amount`).each(function (e) {
-      sum += Number($( this ).val());
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+      }
     })
-    switch (name) {
-      case "expectedIncome": Income = sum;
-      break;
-      case "toSave": ToSave = sum;
-      break;
-      case "requiredPayment": Required = sum;
-      break;
-      case "otherPayment": Other = sum;
-    }
-    updateSummary();
-  })
-
-}
-scriptCard("expectedIncome")
-scriptCard("toSave")
-scriptCard("requiredPayment")
-scriptCard("otherPayment")
-</script>
-
-<script>
-
-  function median(values){
-    if(values.length ===0) throw new Error("No inputs");
-
-    values.sort(function(a,b){
-      return a-b;
-    });
-
-    var half = Math.floor(values.length / 2);
-
-    if (values.length % 2)
-      return values[half];
-
-    return (values[half - 1] + values[half]) / 2.0;
   }
-
-  function previousDataProcces(array) {
-    // медиана или среднее
-    return toCurrency(median(array), "RUB", 'Ru-ru')
-  }
-
-  function parseReports(data) {
-    let analysis = data.map(x => x.analysis);
-    let incomeMean = previousDataProcces(analysis.map(x => x.income));
-    $("#previousIncome").html(incomeMean);
-    let requiredMean = previousDataProcces(analysis.map(x => x.requirePayments));
-    $("#requiredPaymentPrevious").html(requiredMean);
-    let toSaveMean = previousDataProcces(analysis.map(x => x.saved));
-    $("#savedPreviously").html(requiredMean);
-
-    let otherMean = median(analysis.map(x => x.other));
-
-
-  }
-
-  $.ajax({
-    url: "/report/all",
-    method: 'GET',
-    contentType: "application/json",
-    success: function (response) {
-      parseReports(response)
-      console.log(response)
-      console.log("ВСЕ ОКЕЙ")
-    },
-    error: function (response) {
-      console.log("Чето пошло не так...")
-    }
-  })
-
-
-  $.ajax({
-    url: "/goals/monthly-fee",
-    method: 'GET',
-    contentType: "application/json",
-    success: function (response) {
-      $("#needToSave").html(toCurrency(response.monthlyFee, "RUB", 'Ru-ru'))
-    },
-    error: function (response) {
-      console.log("Чето пошло не так...")
-    }
-  })
 </script>
 
 </body>
