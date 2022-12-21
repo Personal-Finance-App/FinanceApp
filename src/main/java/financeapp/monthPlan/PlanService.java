@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -30,5 +31,9 @@ public class PlanService {
 
     public MonthPlan getPlan(Long id) {
         return planRepository.getById(id);
+    }
+
+    public List<MonthPlan> monthPlansByUser(CustomUser user) {
+        return planRepository.getByLinkedUser(user);
     }
 }

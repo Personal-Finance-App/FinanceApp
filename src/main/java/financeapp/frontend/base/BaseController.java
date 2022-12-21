@@ -1,18 +1,18 @@
 package financeapp.frontend.base;
 
+import financeapp.monthPlan.PlanService;
 import financeapp.users.UserRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@AllArgsConstructor
 public class BaseController {
     private final UserRepo userRepo;
-
-    public BaseController(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
+    private final PlanService planService;
 
 
     @GetMapping("/")
@@ -28,4 +28,11 @@ public class BaseController {
         return "accounts";
     }
 
+    @GetMapping("/plans")
+    public String plans(Model model, Authentication authentication) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        var plans = planService.monthPlansByUser(user);
+        model.addAttribute("plansList", plans);
+        return "plans";
+    }
 }

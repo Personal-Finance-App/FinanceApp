@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -63,6 +64,10 @@ public class MonthPlan {
         this.linkedUser = user;
     }
 
+    public String getDate() {
+        var date = LocalDate.of(year, month, 1);
+        return date.getMonth().toString() + " " + date.getYear();
+    }
 //    public Double getExpectedIncomeSum() {
 //        return this.expectedIncome.stream().mapToDouble(PlanTransaction::getAmount).sum();
 //    }
