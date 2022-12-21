@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <script th:src="@{/js/pallete.js}" type="module"></script>
+  <script th:src="@{/js/plan.js}" type="module" defer></script>
+  <style>
+    .report-card {
+      border-radius: 10px;
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s;
+      background: radial-gradient(#bbf8ad, #ecf693);
+    }
+
+    .report-card:hover {
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
+      transform: scale(1.01);
+    }
+
+    .card__icon {
+      grid-row: 2/3;
+      font-size: 30px;
+    }
+
+  </style>
+  <title>Создание плана</title>
+  <div th:insert="fragments/head.html :: head"></div>
+</head>
+
+<body id="page-top">
+
+<!-- content-->
+<div class="container mt-2 d-flex flex-column">
+  <div class="card report-card">
+    <!--    Icon-->
+    <!--    <div class="card__icon"><i class="fas fa-bolt"></i></div>-->
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Создание плана</div>
+    </div>
+  </div>
+
+  <div class="card report-card mt-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <input class="form-control" id="month" placeholder="месяц">
+        </div>
+        <div class="col">
+          <input class="form-control" id="year" placeholder="год">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a id="expectedIncomeCard">
+    <div class="card report-card mt-4">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Ожидаемый доход</div>
+      <form id="expectedIncome" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control expectedIncomeName">
+          </div>
+          <div class="col">
+            <input class="form-control expectedIncomeAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="expectedIncomeAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span class="expectedIncomeSum"></span></p>
+        </div>
+      </div>
+
+      <p>В среднем доход за предыдущие месяцы составил <span id="previousIncome"></span> руб</p>
+    </div>
+  </div>
+  </a>
+
+
+  <div class="card report-card mt-4" id="toSaveIncomeCard">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Необходимо отложить</div>
+      <form id="toSave" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control toSaveName">
+          </div>
+          <div class="col">
+            <input class="form-control toSaveAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="toSaveAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span class="toSaveSum"></span>
+            <br>Это <span class="toSaveSumPercentage"></span>% от планируемого дохода</p>
+          </p>
+        </div>
+      </div>
+
+      <p>Минимально нужно отложить <span id="needToSave"></span> руб
+      <br>
+      За прошлые месяца: <span id="savedPreviously"></span> руб
+      </p>
+      <p>Посмотреть свои цели</p>
+    </div>
+  </div>
+
+  <div class="card report-card mt-4" id="requiredPaymentCard">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Обязательные платежи</div>
+      <form id="requiredPayment" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control requiredPaymentName">
+          </div>
+          <div class="col">
+            <input class="form-control requiredPaymentAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="requiredPaymentAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span class="requiredPaymentSum"></span>
+            <br>Это <span class="requiredPaymentSumPercentage"></span>% от планируемого дохода</p>
+        </div>
+      </div>
+
+      <p>За прошлые месяцы обязательные платежи в среднем были <span id="requiredPaymentPrevious"></span> руб</p>
+    </div>
+  </div>
+
+  <div class="card report-card mt-4" id="otherPaymentCard">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">Другие расходы</div>
+      <form id="otherPayment" class="my-2">
+        <div class="row">
+          <div class="col">
+            <input class="form-control otherPaymentName">
+          </div>
+          <div class="col">
+            <input class="form-control otherPaymentAmount">
+          </div>
+        </div>
+
+      </form>
+      <div class="row">
+        <div class="col">
+          <button id="otherPaymentAdd" type="button" class="btn btn-success"> Добавить + </button>
+        </div>
+        <div class="col">
+          <p>В сумме <span class="otherPaymentSum"></span>
+            <br>Это <span class="otherPaymentSumPercentage"></span>% от планируемого дохода</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="card report-card mt-4">
+    <div class="card-body">
+      <div style="text-align: center; font-weight: bold;">В итоге</div>
+      <table class="table">
+        <tbody>
+        <tr>
+          <th scope="row">Ожидается получить</th>
+          <td><span class="expectedIncomeSum">считаю...</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">Обязательные платежи</th>
+          <td><span class="requiredPaymentSum">считаю...</span></td>
+          <td><span class="requiredPaymentSumPercentage">считаю...</span>%</td>
+        </tr>
+        <tr>
+          <th scope="row">Будет отложено</th>
+          <td>
+            <span class="toSaveSum">считаю...</span>
+          <td><span class="toSaveSumPercentage">считаю...</span>%</td>
+          </td>
+
+        </tr>
+        <tr>
+          <th scope="row">Остальное (Запланированное)</th>
+          <td>
+            <span class="otherPaymentSum">считаю...</span>
+          </td>
+          <td><span class="otherPaymentSumPercentage">считаю...</span>%</td>
+        </tr>
+        <tr>
+          <th scope="row">Остальное</th>
+          <td>
+            <span class="otherPaymentNotPlannedSum">считаю...</span>
+          </td>
+          <td><span class="otherPaymentNotPlannedSumPercentage">считаю...</span>%</td>
+        </tr>
+        </tbody>
+      </table>
+      <p>В среднем тратить в день <span id="everyDayMoney"></span></p>
+      <button type="button" class="btn btn-success"  onclick="proceed();"><span id="action">Сохранить</span> </button>
+    </div>
+  </div>
+
+
+
+
+</div>
+
+<div th:insert="fragments/baseScripts.html :: baseScript"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"
+        integrity="sha512-zjlf0U0eJmSo1Le4/zcZI51ks5SjuQXkU0yOdsOBubjSmio9iCUp8XPLkEAADZNBdR9crRy3cniZ65LF2w8sRA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script th:inline="javascript" type="module">
+  import insertPlan from "/js/plan.js";
+  let PLAN_ID = [[${planId}]];
+  if (PLAN_ID !== -1) {
+    $.ajax({
+      url: "/plan/get/" + PLAN_ID,
+      method: 'GET',
+      contentType: "application/json",
+      success: function (response) {
+        console.log(response)
+        insertPlan(response)
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+      }
+    })
+  }
+
+</script>
+
+<script th:inline="javascript">
+  let PLAN_ID = [[${planId}]];
+</script>
+
+<script>
+
+  function proceed() {
+    if (PLAN_ID === -1)
+      savePlan();
+    else
+      editPlan(PLAN_ID);
+  }
+
+  function parseTransaction(name) {
+    let result = []
+    $(`#${name} .row`).each(function(e) {
+      let nameInput = $( this ).find(`.${name}Name`)
+      let descr = nameInput.val();
+      let amount = $( this ).find(`.${name}Amount`).val();
+      let id = Number(nameInput.attr("data"))
+      result.push({
+        id: id,
+        description: descr,
+        amount: amount
+      })
+    })
+    return result
+  }
+
+  function grabPlan() {
+    return {
+      month: Number($("#month").val()),
+      year: Number($("#year").val()),
+      expectedIncome: parseTransaction("expectedIncome"),
+      toSave: parseTransaction("toSave"),
+      toRequiredPayment: parseTransaction("requiredPayment"),
+      otherPlans: parseTransaction("otherPayment")
+    }
+  }
+
+  function savePlan() {
+    var data = grabPlan();
+    data.id = -1;
+    $.ajax({
+      url: "/plan/create/",
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function (response) {
+        console.log(response)
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+      }
+    })
+  }
+
+  function editPlan(plan_id) {
+    data = grabPlan();
+    data.id = plan_id
+    $.ajax({
+      url: "/plan/edit/",
+      method: 'PUT',
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function (response) {
+        console.log(response)
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+      }
+    })
+  }
+
+
+</script>
+
+</body>
+</html>
+
+

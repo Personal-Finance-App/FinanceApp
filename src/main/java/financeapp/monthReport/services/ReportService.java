@@ -91,4 +91,18 @@ public class ReportService {
     }
 
 
+    public List<Report> findReportsByUserPeriod(CustomUser user, Integer length) {
+        LocalDate now = LocalDate.now().minusMonths(1);
+        List<Report> reports = new ArrayList<>();
+        for (var i = 0; i < length; i++) {
+            var report = reportRepo.findReportByLinkedUserAndMonthAndYear(user, now.getMonthValue(), now.getYear());
+            if (report != null)
+                reports.add(report);
+            System.out.println(now.getMonthValue());
+            System.out.println(now.getYear());
+            now = now.minusMonths(1);
+        }
+        return reports;
+    }
+
 }

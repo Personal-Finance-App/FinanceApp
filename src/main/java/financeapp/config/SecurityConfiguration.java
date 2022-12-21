@@ -55,6 +55,9 @@ public class SecurityConfiguration {
                 .antMatchers("/goals").fullyAuthenticated()
                 .antMatchers("/monthTransaction/**").fullyAuthenticated()
                 .antMatchers("/category-history/**").fullyAuthenticated()
+                .antMatchers("/new-plan/**").fullyAuthenticated()
+                .antMatchers("/edit-plan/**").fullyAuthenticated()
+                .antMatchers("/plans/**").fullyAuthenticated()
                 .and().formLogin();
         return http.build();
     }
