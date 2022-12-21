@@ -33,11 +33,11 @@ public class ReportService {
             var operations = transactionService.getTransaction(account, start, end);
             transactionList.addAll(operations);
         });
-
+        var analysis = analysisService.startAnalysis(transactionList);
         var parts = reportPartService.sortTransactions(transactionList);
 
         var newReport = new Report(user, start.getYear(), start.getMonthValue(), parts, syncTime);
-        var analysis = analysisService.startAnalysis(transactionList);
+
         newReport.setAnalysis(analysis);
         reportRepo.save(newReport);
         return newReport;

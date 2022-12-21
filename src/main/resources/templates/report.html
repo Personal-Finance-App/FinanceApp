@@ -241,9 +241,9 @@
     }
 
     let analysisPercentage = {
-      requirePaymentsPercent: analysis.requirePayments / analysis.spend,
-      savedPercent: analysis.saved / analysis.spend,
-      otherPercent: analysis.other / analysis.spend,
+      requirePaymentsPercent: analysis.requirePayments / analysis.income,
+      savedPercent: analysis.saved / analysis.income,
+      otherPercent: analysis.other / analysis.income,
     }
     showPercentage(analysisPercentage);
 
