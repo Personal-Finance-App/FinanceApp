@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import financeapp.monthPlan.models.planTransactionModels.*;
 import financeapp.users.CustomUser;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,9 +17,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Transactional
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@DynamicUpdate
 public class MonthPlan {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -40,6 +45,15 @@ public class MonthPlan {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<RequiredPlanTransaction> toRequiredPayment;
+
+    public MonthPlan(MonthPlan plan) {
+        this.month = plan.month;
+        this.year = plan.year;
+        this.expectedIncome = plan.expectedIncome;
+        this.toSave = plan.toSave;
+        this.otherPlans = plan.otherPlans;
+        this.toRequiredPayment = plan.toRequiredPayment;
+    }
 
     public CustomUser getLinkedUser() {
         return linkedUser;

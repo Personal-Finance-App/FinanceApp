@@ -24,10 +24,10 @@ const toCurrency = (n, curr, LanguageFormat = undefined) =>
 
     Intl.NumberFormat(LanguageFormat, {style: 'currency', currency: curr}).format(n);
 
-function generateInputs(name, nameDesc, value) {
+function generateInputs(name, nameDesc, value, id=-1) {
     return "<div class=\"row mt-1\">\n" +
         "          <div class=\"col\">\n" +
-        `            <input class=\"form-control ${name}Name\" value='${nameDesc}'>\n`+
+        `            <input class=\"form-control ${name}Name\" data="${id}" value='${nameDesc}'>\n`+
         "          </div>\n" +
         "          <div class=\"col\">\n" +
         `            <input class=\"form-control ${name}Amount\" value='${value}'>\n` +
@@ -131,8 +131,8 @@ function inserInputsFromPlan(name, data) {
     div.html(" ")
     for (let i = 0; i < data.length; i++)
     {
-        let elem = data[0];
-        div.append(generateInputs(name, elem.description, elem.amount));
+        let elem = data[i];
+        div.append(generateInputs(name, elem.description, elem.amount, elem.id));
         switch (name) {
             case "expectedIncome": Income += elem.amount;
                 break;
@@ -155,5 +155,7 @@ function insertPlan(plan) {
     updateSummary()
 }
 
-export default insertPlan;
 
+
+
+export default insertPlan;

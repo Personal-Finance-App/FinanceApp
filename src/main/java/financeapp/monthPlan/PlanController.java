@@ -32,7 +32,7 @@ public class PlanController {
     public ResponseEntity<MonthPlan> updatePlan (@RequestBody MonthPlan monthPlan,
                                                  Authentication authentication) {
         var user = userService.findUserByEmail(authentication.getName());
-        var plan = planService.createPlan(monthPlan, user);
+        var plan = planService.updatePlan(monthPlan, user);
         return ResponseEntity.ok().body(plan);
     }
 

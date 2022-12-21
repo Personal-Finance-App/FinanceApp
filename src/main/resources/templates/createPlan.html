@@ -211,8 +211,12 @@
         </tbody>
       </table>
       <p>В среднем тратить в день <span id="everyDayMoney"></span></p>
+      <button type="button" class="btn btn-success"  onclick="proceed();"><span id="action">Сохранить</span> </button>
     </div>
   </div>
+
+
+
 
 </div>
 
@@ -224,7 +228,7 @@
 
 <script th:inline="javascript" type="module">
   import insertPlan from "/js/plan.js";
-  let PLAN_ID = 10;
+  let PLAN_ID = [[${planId}]];
   if (PLAN_ID !== -1) {
     $.ajax({
       url: "/plan/get/" + PLAN_ID,
@@ -233,13 +237,90 @@
       success: function (response) {
         console.log(response)
         insertPlan(response)
-
       },
       error: function (response) {
         console.log("Чето пошло не так...")
       }
     })
   }
+
+</script>
+
+<script th:inline="javascript">
+  let PLAN_ID = [[${planId}]];
+</script>
+
+<script>
+
+  function proceed() {
+    if (PLAN_ID === -1)
+      savePlan();
+    else
+      editPlan(PLAN_ID);
+  }
+
+  function parseTransaction(name) {
+    let result = []
+    $(`#${name} .row`).each(function(e) {
+      let nameInput = $( this ).find(`.${name}Name`)
+      let descr = nameInput.val();
+      let amount = $( this ).find(`.${name}Amount`).val();
+      let id = Number(nameInput.attr("data"))
+      result.push({
+        id: id,
+        description: descr,
+        amount: amount
+      })
+    })
+    return result
+  }
+
+  function grabPlan() {
+    return {
+      month: Number($("#month").val()),
+      year: Number($("#year").val()),
+      expectedIncome: parseTransaction("expectedIncome"),
+      toSave: parseTransaction("toSave"),
+      toRequiredPayment: parseTransaction("requiredPayment"),
+      otherPlans: parseTransaction("otherPayment")
+    }
+  }
+
+  function savePlan() {
+    var data = grabPlan();
+    data.id = -1;
+    $.ajax({
+      url: "/plan/create/",
+      method: 'POST',
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function (response) {
+        console.log(response)
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+      }
+    })
+  }
+
+  function editPlan(plan_id) {
+    data = grabPlan();
+    data.id = plan_id
+    $.ajax({
+      url: "/plan/edit/",
+      method: 'PUT',
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function (response) {
+        console.log(response)
+      },
+      error: function (response) {
+        console.log("Чето пошло не так...")
+      }
+    })
+  }
+
+
 </script>
 
 </body>

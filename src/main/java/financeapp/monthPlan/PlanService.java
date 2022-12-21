@@ -6,8 +6,11 @@ import financeapp.users.CustomUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @AllArgsConstructor
+@Transactional
 public class PlanService {
     private final PlanRepository planRepository;
 
@@ -17,10 +20,11 @@ public class PlanService {
     }
 
     public MonthPlan updatePlan(MonthPlan plan, CustomUser user) {
-        if (!plan.getLinkedUser().getId().equals(user.getId()))
-            throw new RuntimeException("Not your plan");
         var planFromDb = planRepository.getById(plan.getId());
+        if (!planFromDb.getLinkedUser().getId().equals(user.getId()))
+            throw new RuntimeException("Not yours plan");
         planFromDb = plan;
+        planFromDb.setLinkedUser(user);
         return planRepository.save(planFromDb);
     }
 
