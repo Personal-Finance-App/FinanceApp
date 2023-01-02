@@ -41,10 +41,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // TODO: Настроить в будущем права доступа
-        http
+        // TODO: Настроена BasicAuth. На будущее: это скорее всего надо будет поменять
+        http.httpBasic().and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/user/**").permitAll()
+                .antMatchers("/javainuse-openapi/**").permitAll()
                 .antMatchers("/accounts").fullyAuthenticated()
                 .antMatchers("/tinkof/*").fullyAuthenticated()
                 .antMatchers("/sberbank/*").fullyAuthenticated()
@@ -58,7 +60,14 @@ public class SecurityConfiguration {
                 .antMatchers("/new-plan/**").fullyAuthenticated()
                 .antMatchers("/edit-plan/**").fullyAuthenticated()
                 .antMatchers("/plans/**").fullyAuthenticated()
-                .and().formLogin();
+                .and()
+                .formLogin()
+                    .loginProcessingUrl("/login")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+
+                .permitAll()
+        ;
         return http.build();
     }
 

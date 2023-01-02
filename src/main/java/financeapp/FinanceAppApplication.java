@@ -10,9 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication
 
 @SecurityScheme(name = "javainuseapi", scheme = "basic", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
+
 public class FinanceAppApplication {
 
     public static void main(String[] args) {
