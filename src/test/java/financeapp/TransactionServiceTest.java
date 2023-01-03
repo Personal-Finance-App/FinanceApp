@@ -54,7 +54,7 @@ public class TransactionServiceTest extends AbstractTest{
 
     @Test
     public void saveTransactions_repositoryCalls() {
-        var user = new CustomUser("Test", "bla");
+        var user = new CustomUser("Test", "bla", "bla", "bla", "bla");
         var account = new DebitAccount("1", "debit", user, "test");
         accountService.CreateAccountFromPayload(new LinkedList<>() {{
             add(account);
