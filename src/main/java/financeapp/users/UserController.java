@@ -16,7 +16,8 @@ public class UserController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<UserWrapper> createPerson(@RequestBody DataForRegister data) {
-        CustomUser customUser = new CustomUser(data.getEmail(), data.getPassword());
+        CustomUser customUser = new CustomUser(data.getEmail(), data.getPassword(), data.getFirstName()
+                , data.getLastName(), data.getMiddleName());
         if (userService.saveUser(customUser))
             return ResponseEntity.ok().body(customUser.toWrapper());
         return null;
@@ -36,6 +37,9 @@ public class UserController {
 class DataForRegister {
     private String password;
     private String email;
+    private String firstName;
+    private String lastName;
+    private String middleName;
 }
 
 @Data

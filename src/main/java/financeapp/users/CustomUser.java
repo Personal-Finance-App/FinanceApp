@@ -1,6 +1,7 @@
 package financeapp.users;
 
 import financeapp.accounts.models.Account;
+import io.swagger.v3.oas.models.info.Contact;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,14 +36,35 @@ public class CustomUser implements UserDetails {
 
     private String email;
     private String password;
+    private String firstName;
+    private String lastName;
+    private String middleName;
 
-
-    public CustomUser(String email, String password) {
+    public CustomUser(String email, String password, String firstName, String lastName, String middleName) {
         this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
         this.role = "USER";
         this.accountList = new ArrayList<>();
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.middleName = middleName;
+    }
+
+
+
+
+    public boolean checkName(String merchant, String description){
+        String[] firstNameAndLastNameAndMeddleName = merchant.split("\\s");
+        String lastNameSecond = firstNameAndLastNameAndMeddleName[2];
+        char firstSymbolLastName = lastName.charAt(0);
+        String firstNameWithFirstSymbol = firstName.concat(" " + firstSymbolLastName);
+        if(firstNameAndLastNameAndMeddleName[0].equalsIgnoreCase(firstName) &&
+                firstNameAndLastNameAndMeddleName[1].equalsIgnoreCase(middleName) &&
+                lastName.charAt(0) == lastNameSecond.charAt(0)){
+            return true;
+        }
+        return description.equalsIgnoreCase(firstNameWithFirstSymbol + ".");
     }
 
 
