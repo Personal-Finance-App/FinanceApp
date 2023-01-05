@@ -47,10 +47,11 @@ public class AnalysisService {
             if (!transaction.getLabelList().contains(skipLabel) && !transaction.getLabelList().contains(selfTransfer)) {
                 income.Handle(transaction, analysis);
             }
-            if ((analysis.getBiggestPayment() == null) && (transaction instanceof PayTransaction)){
+
+            if (transaction instanceof PayTransaction && analysis.getBiggestPayment() == null ){
                 analysis.setBiggestPayment((PayTransaction) transaction);
             }
-            if ((analysis.getBiggestPayment().getAmount() < transaction.getAmount())&& (transaction instanceof PayTransaction)) {
+            if ((transaction instanceof PayTransaction) && (analysis.getBiggestPayment().getAmount() < transaction.getAmount())) {
                 analysis.setBiggestPayment((PayTransaction) transaction);
             }
         }
