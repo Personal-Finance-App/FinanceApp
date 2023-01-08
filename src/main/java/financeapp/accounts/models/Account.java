@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ public abstract class Account {
         this.user = user;
         lastSync = null;
         this.provider = provider;
+        transactionList = new ArrayList<>();
     }
 
 //    @OneToOne
