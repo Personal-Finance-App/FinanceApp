@@ -55,6 +55,17 @@ public class ReportController {
 
     }
 
+    @PostMapping("/updateReport")
+    public ResponseEntity<?> updateReport(Authentication authentication,
+                                          @RequestParam Report report) throws Exception {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        reportService.updateReport(report, user);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("status", "ok"));
+    }
+
+
+
 
     @PostMapping("/get")
     public ResponseEntity<?> getReport(Authentication authentication,
