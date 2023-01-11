@@ -53,22 +53,19 @@ public class CustomUser implements UserDetails {
 
 
 
+    //extendable
+    public boolean checkName(String data) {
+        // Ivanov I.
+        if (data.equalsIgnoreCase(lastName + " " + firstName.charAt(0) + "."))
+            return true;
 
-    public boolean checkName(String merchant, String description){
-        String[] firstNameAndLastNameAndMeddleName = merchant.split("\\s");
-        if(firstNameAndLastNameAndMeddleName.length == 3) {
-            String lastNameSecond = firstNameAndLastNameAndMeddleName[2];
-            if (firstNameAndLastNameAndMeddleName[0].equalsIgnoreCase(firstName) &&
-                    firstNameAndLastNameAndMeddleName[1].equalsIgnoreCase(middleName) &&
-                    lastName.charAt(0) == lastNameSecond.charAt(0)) {
-                return true;
-            }
-        }
-        char firstSymbolLastName = lastName.charAt(0);
-        String firstNameWithFirstSymbol = firstName.concat(" " + firstSymbolLastName);
-        return description.equalsIgnoreCase(firstNameWithFirstSymbol + ".");
+        // Ivan I.
+        if (data.equalsIgnoreCase(firstName + " " + lastName.charAt(0) + "."))
+            return true;
+
+        // Ivan Yovanovitch I.
+        return data.equalsIgnoreCase(firstName + " " + middleName + " " + lastName.charAt(0) + ".");
     }
-
 
     public boolean addAccount(Account account) {
         return this.accountList.add(account);
