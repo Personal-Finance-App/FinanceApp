@@ -42,7 +42,7 @@ public class TransactionService {
 
         transactionRepo.saveAll(operations);
         account.setLastSync(syncTime);
-        accountRepo.save(account);
+//        accountRepo.save(account);
 
         return operations.size();
     }

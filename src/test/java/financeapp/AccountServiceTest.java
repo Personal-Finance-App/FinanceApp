@@ -52,7 +52,7 @@ public class AccountServiceTest extends AbstractTest{
 
     @Before
     public void setUp() throws Exception {
-        user = new CustomUser("bla", "bla");
+        user = new CustomUser("bla", "bla", "bla", "bla", "bla");
         userService.saveUser(user);
     }
 
