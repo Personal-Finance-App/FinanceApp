@@ -79,7 +79,7 @@ public class ReportServiceTest extends AbstractTest {
 
     @Before
     public void setUp() {
-        user = new CustomUser("we@new.com", "qwerty");
+        user = new CustomUser("we@new.com", "qwerty", "name", "last", "middle");
         account = new DebitAccount("1", "debit", user, "testReport");
         time = new TimeSpanData(1, 2023);
         transactionList = new ArrayList<>() {
