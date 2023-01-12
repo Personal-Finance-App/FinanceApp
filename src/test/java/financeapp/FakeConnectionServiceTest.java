@@ -59,7 +59,7 @@ public class FakeConnectionServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        user = new CustomUser("vasya@gmail.com", "12345");
+        user = new CustomUser("vasya@gmail.com", "12345", "bla", "bla", "bla");
         userService.saveUser(user);
     }
 

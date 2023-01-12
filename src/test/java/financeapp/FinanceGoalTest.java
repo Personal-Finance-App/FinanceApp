@@ -62,7 +62,7 @@ public class FinanceGoalTest extends AbstractTest{
 
     @Before
     public void startUp() {
-        user = new CustomUser("bla", "bla");
+        user = new CustomUser("bla", "bla", "bla", "bla", "bla");
         savingAccount = new SavingAccount("3", "saving", user, "test");
 
         Mockito.when(financeGoalRepository.save(Mockito.any())).thenReturn(

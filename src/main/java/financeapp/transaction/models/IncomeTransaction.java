@@ -1,9 +1,12 @@
 package financeapp.transaction.models;
 
+import lombok.Getter;
+
 import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 public class IncomeTransaction extends AbstractTransaction {
 
     private String senderDetails;
