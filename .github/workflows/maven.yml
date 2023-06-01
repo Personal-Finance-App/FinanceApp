@@ -36,14 +36,18 @@ jobs:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             tag: ${{ env.VERSION }}
             message: "Version ${{ env.VERSION }}"
-        - name: Build the Docker image
-          run: docker build . --file Dockerfile --tag finance-app:${{ env.VERSION }}
+        - name: Convert repository name to lowercase
+          run: |
+            echo "::set-env name=LOWERCASE_REPO::$(echo ${GITHUB_REPOSITORY} | tr '[:upper:]' '[:lower:]')"
         
+        - name: Build Docker image
+          run: docker build . -t docker.pkg.github.com/${{ env.LOWERCASE_REPO }}/inance-app:${{ env.VERSION }} 
+
         - name: Log in to GitHub Container Registry
           run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
         - name: Push Docker image to GitHub Container Registry
-          run: docker push docker.pkg.github.com/${{ github.repository | lowercase }}/finance-app:${{ env.VERSION }}
+          run: docker push docker.pkg.github.com/${{ env.LOWERCASE_REPO }}/finance-app:${{ env.VERSION }}
 
    
      
