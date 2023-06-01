@@ -43,7 +43,7 @@ jobs:
           run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
         - name: Push Docker image to GitHub Container Registry
-          run: docker push docker.pkg.github.com/${{ github.repository }}/finance-app:${{ env.VERSION }}
+          run: docker push docker.pkg.github.com/${{ github.repository | lowercase }}/finance-app:${{ env.VERSION }}
 
    
      
