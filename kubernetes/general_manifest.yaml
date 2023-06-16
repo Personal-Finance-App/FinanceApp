@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finance-app
+  template:
+    metadata:
+      labels:
+        app: finance-app
+    spec:
+      containers:
+        - name: finance-app
+          image: ghcr.io/personal-finance-app/finance-app-server:0.0.1-snapshot
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://db.ezgkmhgpkamgwrjfxlio.supabase.co:5432/postgres"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "hegkoh-Pozqyp-6biqwa"
+            - name: SPRING_DATASOURCE_ACTION
+              value: "update"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-app-service
+spec:
+  selector:
+    app: finance-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-db-service
+spec:
+  type: NodePort
+  selector:
+    app: finance-app
+  ports:
+    - name: db-port
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
