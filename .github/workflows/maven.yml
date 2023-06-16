@@ -59,6 +59,14 @@ jobs:
           uses: actions/checkout@v2
         - uses: azure/setup-kubectl@v2.0
 
+
+        - name: Set up Kubernetes context
+          run: |
+            echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
+            sed -i 's|current-context: docker-desktop|current-context: docker-desktop\n    cluster:\n      insecure-skip-tls-verify: true\n      server: ${{ secrets.CLUSTER_URL }}|' kubeconfig.yaml
+          env:
+            KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
+
         - uses: Azure/k8s-set-context@v2
           name: Connect to Cluster
           with:
