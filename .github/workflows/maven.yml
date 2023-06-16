@@ -70,8 +70,9 @@ jobs:
         - uses: Azure/k8s-set-context@v2
           name: Connect to Cluster
           with:
-            k8s-url: ${{ secrets.CLUSTER_URL }}
-            kubeconfig: ${{ secrets.KUBECONFIG }}
+            kubeconfig: kubeconfig.yaml
+            context: docker-desktop
+
        
         - uses: Azure/k8s-deploy@v4
           name: Deploy
