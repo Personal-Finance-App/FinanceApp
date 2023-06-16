@@ -57,16 +57,25 @@ jobs:
      steps:
         - name: Checkout repository
           uses: actions/checkout@v2
-        - name: Connect to Kubernetes cluster
-          uses: azure/k8s-set-context@v1
+        - uses: azure/setup-kubectl@v2.0
+
+        - uses: Azure/k8s-set-context@v2
+          name: Connect to Cluster
           with:
             method: service-account
             k8s-url: ${{ secrets.CLUSTER_URL }}
             k8s-secret: ${{ secrets.KUBECONFIG }}
+       
+        - uses: Azure/k8s-deploy@v4
+          name: Deploy
+          with:
+              action: deploy
+              manifests: |
+                 kubernetes/general_manifest.yaml
+          
+                 
+
       
-        - name: Deploy to Kubernetes
-          run: |
-            kubectl apply -f kubernetes/general_manifest.yaml
 
   
 
