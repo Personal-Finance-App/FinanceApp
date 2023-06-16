@@ -63,7 +63,6 @@ jobs:
             method: service-account
             k8s-url: ${{ secrets.CLUSTER_URL }}
             k8s-secret: ${{ secrets.KUBECONFIG }}
-            context: docker-desktop
       
         - name: Deploy to Kubernetes
           run: |
