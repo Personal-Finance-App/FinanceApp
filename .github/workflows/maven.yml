@@ -60,9 +60,10 @@ jobs:
         - name: Connect to Kubernetes cluster
           uses: azure/k8s-set-context@v1
           with:
+            k8s-url: ${{ secrets.CLUSTER_URL }}
             kubeconfig: ${{ secrets.KUBECONFIG }}
             context: docker-desktop
-            k8s-url: ${{ secrets.CLUSTER_URL }}
+      
         - name: Deploy to Kubernetes
           run: |
             kubectl apply -f kubernetes/general_manifest.yaml
