@@ -58,6 +58,13 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v2
         - uses: azure/setup-kubectl@v2.0
+        - name: Replace values in manifest
+          run: |
+            sed -i 's|SECRET_SPRING_DATASOURCE_URL|'"${{ secrets.SECRET_SPRING_DATASOURCE_URL }}"'|g' kubernetes/general_manifest.yaml
+            sed -i 's|SECRET_SPRING_DATASOURCE_USERNAME|'"${{ secrets.SECRET_SPRING_DATASOURCE_USERNAME }}"'|g' kubernetes/general_manifest.yaml
+            sed -i 's|SECRET_SPRING_DATASOURCE_PASSWORD|'"${{ secrets.SECRET_SPRING_DATASOURCE_PASSWORD }}"'|g' kubernetes/general_manifest.yaml
+            sed -i 's|SECRET_SPRING_DATASOURCE_ACTION|'"${{ secrets.SECRET_SPRING_DATASOURCE_ACTION }}"'|g' kubernetes/general_manifest.yaml
+
 
 
         - uses: Azure/k8s-set-context@v2
