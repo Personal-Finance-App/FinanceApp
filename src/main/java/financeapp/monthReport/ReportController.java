@@ -2,8 +2,10 @@ package financeapp.monthReport;
 
 import com.google.gson.Gson;
 import financeapp.monthReport.entity.Report;
+import financeapp.monthReport.repos.ReportRepo;
 import financeapp.monthReport.services.ReportService;
 import financeapp.monthReport.wrappers.ReportWrapper;
+import financeapp.users.CustomUser;
 import financeapp.users.UserRepo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,6 +33,7 @@ public class ReportController {
 
     private final UserRepo userRepo;
     private final ReportService reportService;
+    private final ReportRepo reportRepo;
 
     @PostMapping(value = "/createReport/startend")
     @ResponseBody
@@ -54,6 +57,21 @@ public class ReportController {
         return createReport(authentication, new MonthYear(LocalDateTime.now().getMonthValue(), LocalDateTime.now().getYear()));
 
     }
+
+    @PostMapping("/updateReport/{id}")
+    public ResponseEntity<?> updateReport(Authentication authentication,
+                                          @RequestParam Long id) throws Exception {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        Report report = reportRepo.findReportByIdAndLinkedUser(id, user);
+        if (report == null){
+            throw new Exception("Отчет еще не создан!");
+        }
+        reportService.updateReport(report, user);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("status", "ok"));
+    }
+
+
 
 
     @PostMapping("/get")
