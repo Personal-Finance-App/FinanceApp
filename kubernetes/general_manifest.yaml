@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finance-app
+  template:
+    metadata:
+      labels:
+        app: finance-app
+    spec:
+      containers:
+        - name: finance-app
+          image: ghcr.io/personal-finance-app/finance-app-server:0.0.1-snapshot
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "SECRET_SPRING_DATASOURCE_URL"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "SECRET_SPRING_DATASOURCE_USERNAME"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "SECRET_SPRING_DATASOURCE_PASSWORD"
+            - name: SPRING_DATASOURCE_ACTION
+              value: "update"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-app-service
+spec:
+  selector:
+    app: finance-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
