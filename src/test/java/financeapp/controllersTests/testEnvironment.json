@@ -1,0 +1,15 @@
+{
+	"id": "60ea83f6-76a7-41c9-a13c-c2f05fe34292",
+	"name": "test environment",
+	"values": [
+		{
+			"key": "curEmail",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2023-01-26T17:50:18.743Z",
+	"_postman_exported_using": "Postman/10.8.10-230124-1337"
+}

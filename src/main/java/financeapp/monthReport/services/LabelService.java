@@ -42,4 +42,13 @@ public class LabelService {
         });
 
     }
+
+    public Label getLabelById(Long id) {
+        return labelRepo.findLabelById(id);
+    }
+
+    public Label findLabelByName(String name){
+        return labelRepo.findLabelByName(name);
+    }
+
 }

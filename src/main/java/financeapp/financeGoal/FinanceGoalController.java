@@ -2,23 +2,27 @@ package financeapp.financeGoal;
 
 import financeapp.accounts.models.variousAccount.SavingAccount;
 import financeapp.accounts.services.AccountService;
+import financeapp.financeGoal.serializedEnitites.*;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/goals")
+@Tag(name = "Finance Goal")
+@SecurityRequirement(name = "javainuseapi")
 public class FinanceGoalController {
 
     private final UserRepo userRepo;
@@ -54,23 +58,15 @@ public class FinanceGoalController {
         financeGoalService.deleteGoal(data.getGoalId(), user);
         return ResponseEntity.ok().body(data.getGoalId());
     }
-//
-//    public ResponseEntity<?> loadAllGoals(Authentication authentication) {
-//
-//    };
+
+    @Operation(description = "Minimum amount of money based on all goals")
+    @GetMapping("/monthly-fee")
+    public ResponseEntity<MonthlyFee> getMonthlyFee(Authentication authentication) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        var goals = financeGoalService.getAllByUser(user);
+        var monthlyFee = goals.stream().collect(Collectors.summarizingDouble(FinanceGoal::MonthlyFee));
+        return ResponseEntity.ok().body(MonthlyFee.builder().monthlyFee(monthlyFee.getSum()).build());
+    }
 
 }
 
-@Data
-class DataForGoal {
-    private String friendlyName;
-    private double goalAmount;
-    private String date;
-    private UUID accountId;
-    private String url;
-}
-
-@Data
-class RemoveData {
-    private Long goalId;
-}

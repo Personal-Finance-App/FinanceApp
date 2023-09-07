@@ -1,0 +1,94 @@
+\hypertarget{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type}{}\doxysection{Класс financeapp.\+bank\+Connection.\+sberbank.\+api.\+response\+Entitys.\+account\+List.\+Accounts\+Type}
+\label{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type}\index{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType@{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType}}
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1set_up_pin_1_1_status_type}{Status\+Type}} \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a4f1191f7fb2c5dc6747c6b3c7bdf04ef}{get\+Status}} ()
+\begin{DoxyCompactList}\small\item\em Gets the value of the status property. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a7333d06ab584d430b4924eb4b77c1bec}{set\+Status}} (\mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1set_up_pin_1_1_status_type}{Status\+Type}} value)
+\begin{DoxyCompactList}\small\item\em Sets the value of the status property. \end{DoxyCompactList}\item 
+List$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_account_type}{Account\+Type}} $>$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a0c570ccbd4ec0def3bbbeecab83a803e}{get\+Account}} ()
+\begin{DoxyCompactList}\small\item\em Gets the value of the account property. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные данные}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a9a7e51c61f0e4f64723a99c95b895cdb}\label{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a9a7e51c61f0e4f64723a99c95b895cdb}} 
+\mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1set_up_pin_1_1_status_type}{Status\+Type}} {\bfseries status}
+\item 
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_aefd9bf8a974efdf7a7a3504a318d9ee8}\label{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_aefd9bf8a974efdf7a7a3504a318d9ee8}} 
+List$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_account_type}{Account\+Type}} $>$ {\bfseries account}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Java class for accounts\+Type complex type.
+
+The following schema fragment specifies the expected content contained within this class.
+
+
+\begin{DoxyPre}
+<complexType name="{}accountsType"{}>
+  <complexContent>
+    <restriction base="{}\{http://www.w3.org/2001/XMLSchema\}anyType"{}>
+      <sequence>
+        <element name="{}status"{} type="{}\{\}statusType"{}/>
+        <element name="{}account"{} type="{}\{\}accountType"{} maxOccurs="{}unbounded"{} minOccurs="{}0"{}/>
+      </sequence>
+    </restriction>
+  </complexContent>
+</complexType>
+\end{DoxyPre}
+ 
+
+\doxysubsection{Методы}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a0c570ccbd4ec0def3bbbeecab83a803e}\label{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a0c570ccbd4ec0def3bbbeecab83a803e}} 
+\index{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType@{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType}!getAccount@{getAccount}}
+\index{getAccount@{getAccount}!financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType@{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType}}
+\doxysubsubsection{\texorpdfstring{getAccount()}{getAccount()}}
+{\footnotesize\ttfamily List$<$ \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_account_type}{Account\+Type}} $>$ financeapp.\+bank\+Connection.\+sberbank.\+api.\+response\+Entitys.\+account\+List.\+Accounts\+Type.\+get\+Account (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the value of the account property. 
+
+This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the Jakarta XML Binding object. This is why there is not a {\ttfamily set} method for the account property.
+
+For example, to add a new item, do as follows\+: 
+\begin{DoxyPre}
+   \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a0c570ccbd4ec0def3bbbeecab83a803e}{getAccount()}}.add(newItem);
+\end{DoxyPre}
+
+
+Objects of the following type(s) are allowed in the list {\ttfamily \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_account_type}{Account\+Type}}} \mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a4f1191f7fb2c5dc6747c6b3c7bdf04ef}\label{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a4f1191f7fb2c5dc6747c6b3c7bdf04ef}} 
+\index{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType@{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType}!getStatus@{getStatus}}
+\index{getStatus@{getStatus}!financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType@{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType}}
+\doxysubsubsection{\texorpdfstring{getStatus()}{getStatus()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1set_up_pin_1_1_status_type}{Status\+Type}} financeapp.\+bank\+Connection.\+sberbank.\+api.\+response\+Entitys.\+account\+List.\+Accounts\+Type.\+get\+Status (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the value of the status property. 
+
+\begin{DoxyReturn}{Возвращает}
+possible object is {\ttfamily \mbox{\hyperlink{}{Status\+Type}}} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a7333d06ab584d430b4924eb4b77c1bec}\label{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1account_list_1_1_accounts_type_a7333d06ab584d430b4924eb4b77c1bec}} 
+\index{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType@{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType}!setStatus@{setStatus}}
+\index{setStatus@{setStatus}!financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType@{financeapp.bankConnection.sberbank.api.responseEntitys.accountList.AccountsType}}
+\doxysubsubsection{\texorpdfstring{setStatus()}{setStatus()}}
+{\footnotesize\ttfamily void financeapp.\+bank\+Connection.\+sberbank.\+api.\+response\+Entitys.\+account\+List.\+Accounts\+Type.\+set\+Status (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classfinanceapp_1_1bank_connection_1_1sberbank_1_1api_1_1response_entitys_1_1set_up_pin_1_1_status_type}{Status\+Type}}}]{value }\end{DoxyParamCaption})}
+
+
+
+Sets the value of the status property. 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em value} & allowed object is {\ttfamily \mbox{\hyperlink{}{Status\+Type}}} \\
+\hline
+\end{DoxyParams}
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/financeapp/bank\+Connection/sberbank/api/response\+Entitys/account\+List/Accounts\+Type.\+java\end{DoxyCompactItemize}

@@ -25,11 +25,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestPropertySource("classpath:application-test.properties")
-public class TransactionServiceTest {
+public class TransactionServiceTest extends AbstractTest{
 
     @Autowired
     private TransactionService transactionService;
@@ -58,7 +54,7 @@ public class TransactionServiceTest {
 
     @Test
     public void saveTransactions_repositoryCalls() {
-        var user = new CustomUser("Test", "bla");
+        var user = new CustomUser("Test", "bla", "bla", "bla", "bla");
         var account = new DebitAccount("1", "debit", user, "test");
         accountService.CreateAccountFromPayload(new LinkedList<>() {{
             add(account);

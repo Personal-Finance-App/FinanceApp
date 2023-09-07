@@ -6,6 +6,8 @@ import financeapp.users.CustomUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,10 +29,10 @@ public class Report {
     private Integer year;
     private Integer month;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReportCategoryPart> parts;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "analysis_id")
     private Analysis analysis;
 
@@ -48,6 +50,6 @@ public class Report {
     }
 
     public ReportWrapper toWrapper() {
-        return new ReportWrapper(year, month, updated, parts);
+        return new ReportWrapper(year, month, updated, parts, analysis);
     }
 }

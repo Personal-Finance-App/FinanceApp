@@ -1,31 +1,47 @@
 package financeapp.monthReport;
 
 import com.google.gson.Gson;
+import financeapp.monthReport.entity.Report;
+import financeapp.monthReport.repos.ReportRepo;
 import financeapp.monthReport.services.ReportService;
+import financeapp.monthReport.wrappers.ReportWrapper;
+import financeapp.users.CustomUser;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController()
 @RequestMapping("/report")
 @AllArgsConstructor
+@SecurityRequirement(name = "javainuseapi")
+@Tag(name = "Report", description = "Connected with report things")
 public class ReportController {
 
     private final UserRepo userRepo;
     private final ReportService reportService;
+    private final ReportRepo reportRepo;
 
     @PostMapping(value = "/createReport/startend")
+    @ResponseBody
     public ResponseEntity<?> createReport(Authentication authentication, @RequestBody TimeSpanData timeSpanData) {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         reportService.create(user, timeSpanData.getTimeStart(), timeSpanData.getTimeEnd());
-        return ResponseEntity.ok().body("OK");
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("status", "ok"));
 
     }
 
@@ -41,6 +57,21 @@ public class ReportController {
         return createReport(authentication, new MonthYear(LocalDateTime.now().getMonthValue(), LocalDateTime.now().getYear()));
 
     }
+
+    @PostMapping("/updateReport/{id}")
+    public ResponseEntity<?> updateReport(Authentication authentication,
+                                          @RequestParam Long id) throws Exception {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        Report report = reportRepo.findReportByIdAndLinkedUser(id, user);
+        if (report == null){
+            throw new Exception("Отчет еще не создан!");
+        }
+        reportService.updateReport(report, user);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("status", "ok"));
+    }
+
+
 
 
     @PostMapping("/get")
@@ -67,8 +98,27 @@ public class ReportController {
         var report = reportService.findReport(user, month, year);
 
         if (reportService.setComment(report, data.getComment()))
-            return ResponseEntity.ok().body("saved");
-        return ResponseEntity.internalServerError().body("Error");
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                    .body(Collections.singletonMap("status", "saved"));
+        return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
+                .body(Collections.singletonMap("status", "error"));
+    }
+
+    @PostMapping(value = "/category-history")
+    @ResponseBody
+    public ResponseEntity<?> getHistory(Authentication authentication,
+                                        @RequestBody CategoryHistory data) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        return ResponseEntity.ok().body(reportService.getCategoriesHistory(user, data.getCategoryId(), data.getLength()));
+    }
+
+    @GetMapping("/all")
+    @ResponseBody
+    public ResponseEntity<List<ReportWrapper>> getPreviousData(Authentication authentication) {
+        var user = userRepo.findCustomUserByEmail(authentication.getName());
+        var reports = reportService.findReportsByUserPeriod(user, 6);
+        var reportsWrapper = reports.stream().map(Report::toWrapper).collect(Collectors.toList());
+        return ResponseEntity.ok().body(reportsWrapper);
     }
 
 }
@@ -87,3 +137,8 @@ class CommentData {
     private String comment;
 }
 
+@Data
+class CategoryHistory {
+    private Long categoryId;
+    private Integer length;
+}

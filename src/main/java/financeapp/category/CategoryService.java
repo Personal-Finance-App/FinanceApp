@@ -39,8 +39,7 @@ public class CategoryService {
         }
     }
 
-    public Category createCategory(String categoryName, String mccCode) {
-        var category = getOrCreateCategory(categoryName);
+    public Category createCategory(Category category, String mccCode){
         var found = mccRepo.findMccToCategoryByCode(mccCode);
         if (found != null) {
             return category;
@@ -49,7 +48,11 @@ public class CategoryService {
         converter.setLinkCategory(category);
         mccRepo.save(converter);
         return category;
+    }
 
+    public Category createCategory(String categoryName, String mccCode) {
+        var category = getOrCreateCategory(categoryName);
+        return createCategory(category, mccCode);
     }
 
     public Category convertMcc(String mccCode) {
@@ -61,9 +64,20 @@ public class CategoryService {
         return found.getLinkCategory();
     }
 
+    public Category createCategory(String categoryName, List<String> codes) {
+        var category = getOrCreateCategory(categoryName);
+        codes.forEach(code -> {
+            createCategory(category, code);
+        });
+        return category;
+    }
 
     public List<Category> getAll() {
         return categoryRepo.findAll();
+    }
+
+    public Category getCategory(Long id) {
+        return categoryRepo.getById(id);
     }
 
 

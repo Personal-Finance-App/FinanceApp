@@ -39,6 +39,7 @@ public interface TinkoffApi {
      * @return initialOperationTicket
      * @see SmsRequest
      */
+
     @POST("/v1/auth/by/phone")
     @FormUrlEncoded
     Call<SmsRequest> requestSms(

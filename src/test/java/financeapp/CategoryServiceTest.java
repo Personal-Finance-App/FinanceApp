@@ -19,11 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = FinanceAppApplication.class)
-@AutoConfigureMockMvc
-@TestPropertySource("classpath:application-test.properties")
-public class CategoryServiceTest {
+public class CategoryServiceTest extends AbstractTest {
 
     @Autowired
     private CategoryService categoryService;

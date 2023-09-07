@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,17 +38,20 @@ public abstract class Account {
         this.user = user;
         lastSync = null;
         this.provider = provider;
+        transactionList = new ArrayList<>();
     }
 
 //    @OneToOne
 //    @JoinColumn(name = "bank_connection_id")
 //    private BankConnection bankConnection;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+//    @OneToOne
+//    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "customer_id")
     private CustomUser user;
 
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private List<AbstractTransaction> transactionList;
 
     public boolean AddTransaction(AbstractTransaction transaction) {

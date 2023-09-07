@@ -1,9 +1,12 @@
 package financeapp.users;
 
 import financeapp.accounts.models.Account;
+import io.swagger.v3.oas.models.info.Contact;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -27,22 +30,42 @@ public class CustomUser implements UserDetails {
     @Column(name = "id", nullable = false)
     private UUID id;
     private String role;
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.ALL}, fetch=FetchType.EAGER)
     private List<Account> accountList;
 
 
     private String email;
     private String password;
+    private String firstName;
+    private String lastName;
+    private String middleName;
 
-
-    public CustomUser(String email, String password) {
+    public CustomUser(String email, String password, String firstName, String lastName, String middleName) {
         this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
         this.role = "USER";
         this.accountList = new ArrayList<>();
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.middleName = middleName;
     }
 
+
+
+    //extendable
+    public boolean checkName(String data) {
+        // Ivanov I.
+        if (data.equalsIgnoreCase(lastName + " " + firstName.charAt(0) + "."))
+            return true;
+
+        // Ivan I.
+        if (data.equalsIgnoreCase(firstName + " " + lastName.charAt(0) + "."))
+            return true;
+
+        // Ivan Yovanovitch I.
+        return data.equalsIgnoreCase(firstName + " " + middleName + " " + lastName.charAt(0) + ".");
+    }
 
     public boolean addAccount(Account account) {
         return this.accountList.add(account);

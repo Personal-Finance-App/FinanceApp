@@ -65,7 +65,8 @@ public class SberbankService {
 
         CookieHandler cookieHandler = new CookieManager();
         var result = new Retrofit.Builder()
-                .baseUrl("https://" + data.getHost() + ":4477/")
+//                .baseUrl("https://" + data.getHost() + "/")
+                .baseUrl("https://node3.online.sberbank.ru:4477/")
                 .addConverterFactory(JaxbConverterFactory.create())
                 .client(
                         new OkHttpClient.Builder()

@@ -1,5 +1,6 @@
 package financeapp.monthReport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import financeapp.transaction.models.PayTransaction;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class Analysis {
     private Double other = 0D;
     @OneToOne
     @JoinColumn(name = "biggest_payment_id")
+    @JsonIgnore
     private PayTransaction biggestPayment;
     private Double averagePerDay;
 

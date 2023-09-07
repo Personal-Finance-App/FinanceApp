@@ -51,7 +51,9 @@ public class FinanceGoal {
         var rest = this.goalAmount - saved;
         if (rest <= 0)
             return 0;
-        var monthRest = Period.between(LocalDate.now(), achieveDate).getMonths();
-        return Math.ceil(rest / monthRest);
+        var period = Period.between(LocalDate.now(), achieveDate);
+        var years = period.getYears();
+        var months = years * 12 + period.getMonths();
+        return Math.ceil(rest / months);
     }
 }

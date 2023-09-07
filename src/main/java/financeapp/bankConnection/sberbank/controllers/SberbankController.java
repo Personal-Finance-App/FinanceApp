@@ -10,6 +10,8 @@ import financeapp.bankConnection.sberbank.services.SberbankService;
 import financeapp.transaction.services.TransactionService;
 import financeapp.users.CustomUser;
 import financeapp.users.UserRepo;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -26,12 +28,14 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/sberbank")
+@Hidden
 public class SberbankController {
     private final UserRepo userRepo;
     private final SberbankService sberbankService;
     private final AccountService accountService;
     private final TransactionService transactionService;
     Gson gson = new Gson().newBuilder().create();
+
 
     @GetMapping("/accounts")
     @ResponseBody
@@ -85,4 +89,7 @@ public class SberbankController {
         var user = userRepo.findCustomUserByEmail(authentication.getName());
         return SyncAccountUser(user);
     }
+    
+
+
 }
